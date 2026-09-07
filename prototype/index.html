@@ -125,6 +125,25 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 .bar{height:6px;border-radius:9999px;background:var(--g-200);overflow:hidden}
 .bar>i{display:block;height:6px;border-radius:9999px;background:var(--blue-700);width:0;transition:width .18s linear}
 
+/* tally */
+.tal{border:1px solid var(--g-200);border-radius:var(--r-btn);overflow:hidden}
+.tal .r{display:flex;align-items:center;gap:14px;padding:12px 15px}
+.tal .r+.r{border-top:1px solid var(--g-200)}
+.tal .n{flex:0 0 56px;text-align:right;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.tal .l{flex:1;font-size:13.5px;color:var(--g-700)}
+.tal .r.hi{background:var(--grn-50)}
+.why{display:flex;flex-wrap:wrap;gap:6px 18px;padding:2px 4px}
+.why span{font-size:12.5px;color:var(--g-600)}
+.why b{color:var(--g-900);font-variant-numeric:tabular-nums}
+/* sample preview */
+.samp{border:1px solid var(--g-200);border-radius:var(--r-btn);overflow:hidden}
+.samp table{width:100%;border-collapse:collapse;font-size:12.5px}
+.samp th{background:var(--g-50);text-align:left;padding:7px 12px;font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--g-500);border-bottom:1px solid var(--g-200)}
+.samp td{padding:8px 12px;border-bottom:1px solid var(--g-100);color:var(--g-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px}
+.samp tr:last-child td{border-bottom:0}
+.samp .rn{color:var(--g-500);font-weight:600;font-variant-numeric:tabular-nums;width:44px}
+.samp .bad{font-family:var(--mono);font-size:11.5px;color:var(--red-800);background:var(--red-50)}
+
 /* summary groups */
 .gwrap{display:flex;flex-direction:column;gap:4px}
 .ghd{display:flex;align-items:baseline;gap:9px;padding:0 2px 6px}
@@ -512,42 +531,55 @@ function grpRows(list,sev){
 
 function scSummary(){
   var d=f(), fx=fixG(), sk=skipG(), tfx=sum(fx), tsk=sum(sk), body='';
-  var pct = Math.round(d.ready/d.rows*100);
+
   body += '<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">'+
           '<span style="font-size:13px;font-weight:600;color:var(--g-700)">'+esc(d.name)+'</span>'+
           '<span class="muted">'+n(d.rows)+' rows checked</span></div>';
-  body += '<div class="bn bn-grn" style="align-items:center;padding:12px 15px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.8 10A10 10 0 1 1 17 3.34"/><path d="m9 11 3 3L22 4"/></svg>'+
-    '<span style="font-size:16px;font-weight:600;flex:1">'+(fx.length||sk.length? n(d.ready)+' ready to import' : 'All '+n(d.ready)+' ready to import')+'</span>'+
-    (fx.length||sk.length ? '<span style="font-size:12.5px;font-weight:600;color:var(--grn-700);opacity:.75">'+pct+'% of the file</span>' : '')+'</div>';
 
+  /* the tally — every row of the file in one of three buckets */
+  body += '<div class="tal">'+
+    '<div class="r hi"><span class="n" style="color:var(--grn-700)">'+n(d.ready)+'</span>'+
+      '<span class="l" style="font-weight:600;color:var(--grn-900)">Ready to import</span></div>'+
+    (tfx? '<div class="r"><span class="n" style="color:var(--red-700)">'+n(tfx)+'</span>'+
+      '<span class="l">Need fixing, will not be imported</span></div>':'')+
+    (tsk? '<div class="r"><span class="n" style="color:var(--g-600)">'+n(tsk)+'</span>'+
+      '<span class="l">Skipped, already on file</span></div>':'')+
+    '</div>';
+
+  /* why, compactly — the diagnosis the card is actually about */
   if(fx.length){
-    body += '<div class="gwrap"><div class="ghd"><strong style="font-size:14px;color:var(--red-700)">'+n(tfx)+' need fixing</strong>'+
-      '<span class="muted">download them to see which</span></div><div class="gbox fix">'+grpRows(fx,'fix')+'</div></div>';
+    body += '<div><div style="font-size:12px;font-weight:600;color:var(--g-700);padding:0 4px 6px">Why '+n(tfx)+' need fixing</div>'+
+      '<div class="why">'+fx.map(function(g){ return '<span><b>'+n(g.count)+'</b> &middot; '+esc(g.label)+'</span>'; }).join('')+'</div></div>';
   }
   if(sk.length){
-    body += '<div class="gwrap"><div class="ghd"><strong style="font-size:14px;color:var(--g-700)">'+n(tsk)+' will be skipped</strong>'+
-      '<span class="muted">no action needed</span></div><div class="gbox skip">'+grpRows(sk,'skip')+'</div></div>';
+    body += '<div><div style="font-size:12px;font-weight:600;color:var(--g-700);padding:0 4px 6px">Why '+n(tsk)+' are skipped</div>'+
+      '<div class="why">'+sk.map(function(g){ return '<span><b>'+n(g.count)+'</b> &middot; '+esc(g.label)+'</span>'; }).join('')+'</div></div>';
+  }
+
+  /* a few examples — one per kind, not a browsable view */
+  if(fx.length){
+    var ex = fx.map(function(g){ var r=g.rows[0]; return {n:r.n, val:r.cells[r.bad], why:g.label}; }).slice(0,4);
+    body += '<div><div style="font-size:12px;font-weight:600;color:var(--g-700);padding:0 4px 6px">'+
+      'A few examples <span style="font-weight:400;color:var(--g-500)">&mdash; one of each kind. Download to see all '+n(tfx+tsk)+'.</span></div>'+
+      '<div class="samp"><table><thead><tr><th class="rn">Row</th><th>Value in your file</th><th>What is wrong</th></tr></thead><tbody>'+
+      ex.map(function(e){ return '<tr><td class="rn">'+e.n+'</td><td class="bad">'+esc(e.val)+'</td><td>'+esc(e.why)+'</td></tr>'; }).join('')+
+      '</tbody></table></div>'+
+      '<div style="margin-top:10px"><button class="btn btn-s" type="button" onclick="dl()">'+
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>'+
+      'Download all '+n(tfx+tsk)+' rows</button></div></div>';
   }
   if(!fx.length && !sk.length){
     body += '<div class="muted" style="background:var(--g-50);border:1px solid var(--g-200);border-radius:var(--r-btn);padding:13px 15px">'+
-      'Nothing needs your attention. When a file is clean this whole section collapses to this one line, so a good import never costs an extra decision.</div>';
+      'Nothing needs your attention. When a file is clean this section collapses to this one line, so a good import never costs an extra decision.</div>';
   }
 
-  if(fx.length||sk.length){
-    body += '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:-3px">'+
-      '<button class="btn btn-s" type="button" onclick="dl()">'+
-      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>'+
-      'Download all '+n(tfx+tsk)+' rows</button>'+
-      '<span class="muted" style="flex:1;min-width:200px">Your file, filtered to these rows, with a reason column added.</span></div>';
-  }
-  body += '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-    '<div><strong>This screen does not exist today.</strong> Step 3 is currently a tag box and two checkboxes &mdash; nothing to review. Every row was checked against your prospect list before you got here, so these numbers are final, not a forecast. The rows themselves stay in the download rather than on screen, which is what keeps this a dialog.</div></div>';
   body += '<div class="rule"></div>'+
     '<div style="display:flex;flex-direction:column;gap:11px">'+
-    '<div style="display:flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="#6B7280"/></svg>'+
+    '<div style="display:flex;align-items:center;gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="#6B7280"/></svg>'+
     '<span style="font-size:13px;font-weight:500;color:var(--g-700)">Tag prospects</span></div>'+
-    '<div style="border:1px solid var(--g-300);border-radius:var(--r-input);padding:9px 12px" class="muted">Add tags to categorize your prospects…</div>'+
-    '<label style="display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--g-700);cursor:pointer"><input type="checkbox" checked style="margin-top:3px;accent-color:var(--blue-700)"> Start email verification after import</label>'+
+    '<div style="border:1px solid var(--g-300);border-radius:var(--r-input);padding:9px 12px" class="muted">Add tags to categorize your prospects&hellip;</div>'+
+    '<label style="display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--g-700);cursor:pointer"><input type="checkbox" checked style="margin-top:3px;accent-color:var(--blue-700)"> '+
+    '<span>Start email verification after import<span class="muted" style="display:block;margin-top:2px">Runs on the '+n(d.ready)+' imported prospects. Uses verification credits.</span></span></label>'+
     '</div>';
 
   var ft = '<div class="m-ft">'+
