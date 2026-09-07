@@ -53,7 +53,7 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 .bdg{display:inline-block;font-size:11px;padding:2px 8px;border-radius:var(--r-badge);background:var(--g-100);color:var(--g-600)}
 .bdg.act{background:var(--grn-50);color:var(--grn-700)}
 
-.btn{border-radius:var(--r-btn);padding:9px 16px;font-size:13.5px;font-weight:500;border:1px solid transparent;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.btn{border-radius:var(--r-btn);padding:9px 16px;font-size:13.5px;font-weight:500;border:1px solid transparent;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;flex:0 0 auto}
 .btn-p{background:var(--blue-700);color:#fff}.btn-p:hover{background:var(--blue-800)}
 .btn-p[disabled]{background:var(--g-300);cursor:not-allowed}
 .btn-s{background:#fff;color:var(--g-700);border-color:var(--g-300)}.btn-s:hover{background:var(--g-50)}
@@ -64,6 +64,21 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 #addmenu{position:absolute;top:44px;right:0;background:#fff;border:1px solid var(--g-200);border-radius:var(--r-btn);box-shadow:var(--sh-lg);width:196px;padding:5px;z-index:30}
 #addmenu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;padding:9px 11px;border-radius:var(--r-input);font-size:13.5px;color:var(--g-700);text-align:left}
 #addmenu button:hover{background:var(--g-50);color:var(--blue-700)}
+
+/* ══ intro ══ */
+#intro{position:absolute;inset:38px 0 0 0;background:rgba(17,24,39,.62);display:flex;align-items:center;justify-content:center;padding:28px 20px;overflow:auto;z-index:160}
+#intro.hide{display:none}
+#icard{background:#fff;border-radius:var(--r-modal);box-shadow:var(--sh-lg);max-width:560px;width:100%;padding:28px 30px;display:flex;flex-direction:column;gap:16px}
+#icard .eb{font-size:10px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--g-500)}
+#icard h1{margin:0;font-size:23px;line-height:1.2;font-weight:700;letter-spacing:-.018em}
+#icard p{margin:0;font-size:14px;line-height:1.55;color:var(--g-600)}
+#icard .lbl{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--g-500);margin-top:2px}
+.fopt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;background:var(--g-50);border:1px solid var(--g-200);border-radius:var(--r-btn);padding:12px 14px}
+.fopt:hover{border-color:var(--blue-700);background:var(--blue-50)}
+.fopt .fn{font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--blue-700);display:block}
+.fopt .fd{font-size:12.5px;color:var(--g-600);display:block;margin-top:3px;line-height:1.45}
+.fopt .ar{color:var(--g-400);flex:0 0 auto;margin-top:3px}
+.fopt:hover .ar{color:var(--blue-700)}
 
 /* ══ modal ══ */
 #scrim{position:absolute;inset:38px 0 0 0;background:rgba(17,24,39,.5);display:none;align-items:flex-start;justify-content:center;padding:34px 20px;overflow:auto;z-index:100}
@@ -78,7 +93,7 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 .stp.done{color:var(--g-600)}
 .rule{height:1px;background:var(--g-200)}
 .m-bd{padding:20px 22px;display:flex;flex-direction:column;gap:15px}
-.m-ft{padding:15px 22px;display:flex;align-items:center;gap:10px}
+.m-ft{padding:15px 22px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .m-ft .sp{flex:1}
 
 .drop{border:1px dashed var(--g-300);border-radius:var(--r-btn);background:var(--g-50);padding:28px;display:flex;flex-direction:column;align-items:center;gap:11px;text-align:center}
@@ -207,6 +222,31 @@ table.dd td.nul{color:var(--g-400);font-style:italic}
 
 <div id="toast"></div>
 
+<div id="intro">
+  <div id="icard">
+    <div class="eb">Saleshandy &middot; prospect CSV import</div>
+    <h1>What changes when an import goes wrong</h1>
+    <p>Today the import accepts whatever you upload and tells you nothing until it is over &mdash; and what comes back cannot be matched to the file it came from. This walks the revamped flow end to end, in the real product.</p>
+    <div class="lbl">Pick a file to start</div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <button class="fopt" type="button" onclick="startWith('messy')">
+        <span style="flex:1"><span class="fn">prospects-q3-outbound.csv</span><span class="fd">The main demo. 4,000 rows, 460 need attention across five reasons.</span></span>
+        <svg class="ar" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></button>
+      <button class="fopt" type="button" onclick="startWith('clean')">
+        <span style="flex:1"><span class="fn">verified-list-sept.csv</span><span class="fd">Nothing wrong. Shows the new machinery disappearing when there is nothing to report.</span></span>
+        <svg class="ar" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></button>
+      <button class="fopt" type="button" onclick="startWith('noemail')">
+        <span style="flex:1"><span class="fn">linkedin-outreach.csv</span><span class="fd">No email column. Today this dead-ends in silence; here it says why.</span></span>
+        <svg class="ar" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;padding-top:4px;border-top:1px solid var(--g-200);margin-top:4px">
+      <button class="btn btn-l" type="button" onclick="closeIntro()" style="padding-left:0">Explore the app first</button>
+      <span class="sp" style="flex:1"></span>
+      <span class="muted" style="font-size:11.5px">Reproduced live 5 Sep 2026</span>
+    </div>
+  </div>
+</div>
+
 <div id="scrim"><div id="modal"></div></div>
 
 <script>
@@ -322,6 +362,9 @@ function toast(kind,html){
 
 /* ═══════════════════ router ═══════════════════ */
 function go(screen){ S.screen=screen; $('pstep').textContent=screen; render(); }
+function closeIntro(){ document.getElementById('intro').classList.add('hide'); }
+function showIntro(){ document.getElementById('intro').classList.remove('hide'); }
+function startWith(k){ closeIntro(); openWizard(); pickFile(k); }
 function reset(){
   if(S.timer){clearInterval(S.timer);S.timer=null;}
   S={screen:'entry',file:null,map:{},reason:null,prog:0,timer:null,imported:false};
@@ -329,7 +372,7 @@ function reset(){
   $('notif').classList.remove('show'); $('notifdot').style.display='none';
   $('notifbody').innerHTML='<span class="muted">Nothing yet. Run an import.</span>';
   $('addmenu').style.display='none'; $('pstep').textContent='entry';
-  drawCRM();
+  drawCRM(); showIntro();
 }
 function openWizard(){ $('addmenu').style.display='none'; S.file=null; S.map={}; go('upload'); }
 function closeWizard(){ if(S.timer){clearInterval(S.timer);S.timer=null;} $('scrim').classList.remove('show'); $('pstep').textContent='entry'; }
@@ -474,25 +517,42 @@ function grpRows(list,sev){
   }).join('');
 }
 
+function dl(){
+  var d=f();
+  alert(d.name.replace('.csv','')+' - rows to fix.csv\n\nrow_number, then every original column verbatim, then action_needed, problem, how_to_fix.\n\nTheir own columns come back in order, so they fix it in Excel and re-upload that same file.');
+}
 function scSummary(){
   var d=f(), fx=fixG(), sk=skipG(), tfx=sum(fx), tsk=sum(sk), body='';
-  body += '<div class="muted">'+n(d.rows)+' rows checked</div>';
-  body += '<div class="bn bn-grn" style="align-items:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.8 10A10 10 0 1 1 17 3.34"/><path d="m9 11 3 3L22 4"/></svg>'+
-    '<span style="font-size:16px;font-weight:600">'+(fx.length||sk.length? n(d.ready)+' ready to import' : 'All '+n(d.ready)+' ready to import')+'</span></div>';
+  var pct = Math.round(d.ready/d.rows*100);
+  body += '<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">'+
+          '<span style="font-size:13px;font-weight:600;color:var(--g-700)">'+esc(d.name)+'</span>'+
+          '<span class="muted">'+n(d.rows)+' rows checked</span></div>';
+  body += '<div class="bn bn-grn" style="align-items:center;padding:12px 15px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.8 10A10 10 0 1 1 17 3.34"/><path d="m9 11 3 3L22 4"/></svg>'+
+    '<span style="font-size:16px;font-weight:600;flex:1">'+(fx.length||sk.length? n(d.ready)+' ready to import' : 'All '+n(d.ready)+' ready to import')+'</span>'+
+    (fx.length||sk.length ? '<span style="font-size:12.5px;font-weight:600;color:var(--grn-700);opacity:.75">'+pct+'% of the file</span>' : '')+'</div>';
 
   if(fx.length){
     body += '<div class="gwrap"><div class="ghd"><strong style="font-size:14px;color:var(--red-700)">'+n(tfx)+' need fixing</strong>'+
-      '<span class="muted">the file is wrong here</span></div><div class="gbox fix">'+grpRows(fx,'fix')+'</div></div>';
+      '<span class="muted">rows you need to change</span></div><div class="gbox fix">'+grpRows(fx,'fix')+'</div></div>';
   }
   if(sk.length){
     body += '<div class="gwrap"><div class="ghd"><strong style="font-size:14px;color:var(--g-700)">'+n(tsk)+' will be skipped</strong>'+
-      '<span class="muted">expected, nothing to do</span></div><div class="gbox skip">'+grpRows(sk,'skip')+'</div></div>';
+      '<span class="muted">no action needed</span></div><div class="gbox skip">'+grpRows(sk,'skip')+'</div></div>';
   }
   if(!fx.length && !sk.length){
     body += '<div class="muted" style="background:var(--g-50);border:1px solid var(--g-200);border-radius:var(--r-btn);padding:13px 15px">'+
       'Nothing needs your attention. When a file is clean this whole section collapses to this one line, so a good import never costs an extra decision.</div>';
   }
 
+  if(fx.length||sk.length){
+    body += '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:-3px">'+
+      '<button class="btn btn-s" type="button" onclick="dl()">'+
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>'+
+      'Download all '+n(tfx+tsk)+' rows</button>'+
+      '<span class="muted" style="flex:1;min-width:180px">'+n(d.ready)+' + '+n(tfx)+' + '+n(tsk)+' = '+n(d.rows)+' rows read at upload</span></div>';
+  }
+  body += '<div class="bn bn-blu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
+    '<div><strong>This screen does not exist today.</strong> Step 3 is currently a tag box and two checkboxes &mdash; nothing to review. Every row above was checked against your prospect list before you got here, so these numbers are final, not a forecast.</div></div>';
   body += '<div class="rule"></div>'+
     '<div style="display:flex;flex-direction:column;gap:11px">'+
     '<div style="display:flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="#6B7280"/></svg>'+
@@ -502,9 +562,9 @@ function scSummary(){
     '</div>';
 
   var ft = '<div class="m-ft">'+
-    (tfx+tsk ? '<button class="btn btn-s" type="button" onclick="alert(\''+esc(d.name.replace('.csv',''))+' - rows to fix.csv\\n\\nrow_number, then every original column verbatim, then action_needed, problem, how_to_fix.\\n\\nBecause their own columns come back in order, they fix it in Excel and re-upload that same file.\')">Download '+n(tfx+tsk)+' rows</button>' : '')+
+    '<button class="btn btn-l" type="button" onclick="go(\'map\')" style="padding-left:0">'+
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>Back to mapping</button>'+
     '<span class="sp"></span>'+
-    '<button class="btn btn-l" type="button" onclick="go(\'map\')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>Back to mapping</button>'+
     '<button class="btn btn-g" type="button" onclick="closeWizard()">Cancel</button>'+
     '<button class="btn btn-p" type="button" onclick="doImport()">Import '+n(d.ready)+' rows</button></div>';
 
