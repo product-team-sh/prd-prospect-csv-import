@@ -23,6 +23,7 @@
 }
 *{box-sizing:border-box;min-width:0}
 html,body{margin:0;height:100%}
+body.plain .xnote{display:none}
 body{background:var(--g-100);font-family:var(--sans);font-size:14px;color:var(--g-900);-webkit-font-smoothing:antialiased;overflow:hidden}
 button{font-family:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--blue-700);outline-offset:2px}
@@ -158,13 +159,14 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
-<body>
+<body class="plain">
 
 <div id="pbar">
   <span class="tag">Prototype</span>
   <span>Prospect CSV import &mdash; revamped, end to end</span>
   <span class="sp"></span>
   <span class="step" id="pstep">entry</span>
+  <button type="button" id="noteBtn" onclick="toggleNotes()">Show what changed</button>
   <button type="button" onclick="reset()">Start over</button>
 </div>
 
@@ -338,6 +340,10 @@ function drawCRM(extra){
   });
   $('crmrows').innerHTML=out;
 }
+function toggleNotes(){
+  var on = document.body.classList.toggle('plain');
+  document.getElementById('noteBtn').textContent = on ? 'Show what changed' : 'Hide annotations';
+}
 function toggleAdd(){ var m=$('addmenu'); m.style.display = m.style.display==='none'?'block':'none'; }
 function toggleNotif(){ var el=$('notif'); el.classList.toggle('show'); }
 function toast(kind,html){
@@ -424,7 +430,7 @@ function scUpload(){
       '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/><path d="M20 16.7A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 14.9"/></svg>'+
       '<div style="font-size:14px;color:var(--g-600)">Drag &amp; drop your CSV with prospect details</div></div>'+
       '<div class="bn bn-blu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-      '<div><strong>This is a prototype.</strong> Pick one of three real test files to walk the flow.'+
+      '<div><strong>Prototype</strong> &mdash; choose a sample file to continue.'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:11px">'+
       Object.keys(FILES).map(function(k){ return '<button class="chip" type="button" onclick="pickFile(\''+k+'\')">'+esc(FILES[k].name)+'</button>'; }).join('')+
       '</div></div></div>';
@@ -436,7 +442,7 @@ function scUpload(){
       '<div class="pill"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'+
       n(d.rows)+' rows &middot; '+d.cols+' columns</div>'+
       '<button class="btn btn-g" type="button" onclick="S.file=null;render()" style="font-size:12px">Remove file</button></div>'+
-      '<div class="bn bn-blu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
+      '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
       '<div><strong>Changed here.</strong> The file is parsed on upload and the counts stated. A wrong delimiter or a mangled encoding shows up as an absurd column count now, before any mapping work is wasted. Today this step says only &ldquo;Successfully uploaded.&rdquo;</div></div>';
   }
   return hd()+steps('upload')+'<div class="rule"></div><div class="m-bd">'+body+'</div><div class="rule"></div>'+
@@ -471,7 +477,7 @@ function scMap(){
   return hd()+steps('map')+'<div class="rule"></div><div class="m-bd">'+warn+
     '<div><div class="hdlbl"><span style="flex:0 0 112px">Fields from file</span><span style="flex:1">First 3 rows</span><span style="flex:0 0 138px;text-align:right">Field</span></div>'+
     rows+reqrow+'</div>'+
-    '<div class="bn bn-blu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
+    '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
     '<div><strong>Changed here.</strong> Three sample rows instead of one, and <strong>no validity ticks</strong> &mdash; nothing has been checked yet, so nothing claims it has. Today a green tick sits beside <span class="mono">adaexample.com</span>, which is rejected 90 seconds later.</div></div>'+
     '</div><div class="rule"></div>'+
     '<div class="m-ft"><span class="sp"></span>'+
@@ -534,7 +540,7 @@ function scSummary(){
       'Download all '+n(tfx+tsk)+' rows</button>'+
       '<span class="muted" style="flex:1;min-width:200px">Your file, filtered to these rows, with a reason column added.</span></div>';
   }
-  body += '<div class="bn bn-blu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
+  body += '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
     '<div><strong>This screen does not exist today.</strong> Step 3 is currently a tag box and two checkboxes &mdash; nothing to review. Every row was checked against your prospect list before you got here, so these numbers are final, not a forecast. The rows themselves stay in the download rather than on screen, which is what keeps this a dialog.</div></div>';
   body += '<div class="rule"></div>'+
     '<div style="display:flex;flex-direction:column;gap:11px">'+
@@ -573,7 +579,7 @@ function scDone(){
     '<button class="btn btn-p" type="button" onclick="closeWizard()">View imported prospects</button>'+
     (tfx+tsk?'<button class="btn btn-s" type="button" onclick="alert(\'Row numbers, their original columns, a specific reason and a fix hint per row.\')">Download '+n(tfx+tsk)+' rows</button>':'')+
     '</div>'+
-    '<div class="bn bn-blu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
+    '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
     '<div><strong>This screen holds no new information.</strong> That is the payoff of checking everything first &mdash; it confirms the numbers you already agreed to. Today the equivalent is a green &ldquo;successfully&rdquo; toast whatever happened, with the truth buried in the bell.</div></div>'+
     '</div>';
 }
