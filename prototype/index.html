@@ -65,29 +65,6 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 #addmenu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;padding:9px 11px;border-radius:var(--r-input);font-size:13.5px;color:var(--g-700);text-align:left}
 #addmenu button:hover{background:var(--g-50);color:var(--blue-700)}
 
-/* ══ import record page ══ */
-#page{flex:1;overflow:auto;background:var(--g-50);display:none}
-#page.show{display:block}
-.pwrap{max-width:900px;margin:0 auto;padding:22px 24px 60px}
-.crumb{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--g-500);margin-bottom:14px}
-.crumb a{color:var(--g-500);text-decoration:none}
-.crumb a:hover{color:var(--blue-700)}
-.phd{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:6px}
-.phd h2{margin:0;font-size:21px;font-weight:700;letter-spacing:-.014em}
-.chip{font-size:11px;font-weight:600;letter-spacing:.04em;padding:4px 10px;border-radius:9999px;white-space:nowrap}
-.c-run{background:var(--blue-50);color:var(--blue-700);border:1px solid var(--blue-200)}
-.c-rev{background:var(--yel-50);color:var(--yel-700);border:1px solid var(--yel-200)}
-.c-ok{background:var(--grn-50);color:var(--grn-700);border:1px solid var(--grn-200)}
-.psub{font-size:13px;color:var(--g-500);margin-bottom:20px}
-.card{background:#fff;border:1px solid var(--g-200);border-radius:var(--r-modal);box-shadow:var(--sh-xs)}
-.cpad{padding:20px 22px}
-.sect{display:flex;flex-direction:column;gap:15px}
-.ptable{width:100%;border-collapse:collapse;font-size:13px}
-.ptable th{background:var(--g-50);text-align:left;padding:9px 14px;font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--g-500);border-bottom:1px solid var(--g-200)}
-.ptable td{padding:11px 14px;border-bottom:1px solid var(--g-100);color:var(--g-700)}
-.ptable tr:last-child td{border-bottom:0}
-.ptable tr.clk:hover td{background:var(--g-50);cursor:pointer}
-
 /* ══ intro ══ */
 #intro{position:absolute;inset:38px 0 0 0;background:rgba(17,24,39,.62);display:flex;align-items:center;justify-content:center;padding:28px 20px;overflow:auto;z-index:160}
 #intro.hide{display:none}
@@ -154,22 +131,10 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 .gbox.fix{background:var(--red-50);border:1px solid var(--red-200)}
 .gbox.skip{background:var(--g-50);border:1px solid var(--g-200)}
 .grow{display:flex;align-items:center;gap:13px;padding:10px 13px;width:100%;border:1px solid transparent;background:transparent;border-radius:var(--r-input);text-align:left}
-.grow:hover{background:#fff;border-color:var(--g-200)}
+
 .grow .n{flex:0 0 48px;text-align:right;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
 .grow .l{flex:1;font-size:13.5px}
 .grow .v{font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
-
-/* drilldown grid */
-.gridwrap{max-height:420px;overflow:auto;border-top:1px solid var(--g-200);border-bottom:1px solid var(--g-200)}
-.gridwrap.pg{max-height:none;border:0}
-table.dd{border-collapse:separate;border-spacing:0;width:1180px;font-size:13px}
-table.dd th{position:sticky;top:0;z-index:2;background:var(--g-100);color:var(--g-700);font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;text-align:left;padding:9px 12px;border-bottom:1px solid var(--g-300);white-space:nowrap}
-table.dd th.rn,table.dd td.rn{position:sticky;left:0;border-right:1px solid var(--g-300);width:62px}
-table.dd th.rn{z-index:3}
-table.dd td{padding:9px 12px;border-bottom:1px solid var(--g-200);color:var(--g-700);white-space:nowrap}
-table.dd td.rn{background:var(--g-50);color:var(--g-500);font-weight:600;font-variant-numeric:tabular-nums;z-index:1}
-table.dd td.bad{background:var(--red-100);color:var(--red-800);font-weight:600;font-family:var(--mono);font-size:12px}
-table.dd td.nul{color:var(--g-400);font-style:italic}
 
 /* done */
 .tick{width:46px;height:46px;border-radius:9999px;background:var(--grn-50);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
@@ -229,8 +194,7 @@ table.dd td.nul{color:var(--g-400);font-style:italic}
         </div>
       </div>
     </div>
-    <div id="tabs"><span id="tabAll" class="on" onclick="showList()" style="cursor:pointer">All Prospects</span><span>Unverified Prospects</span><span id="tabImp" onclick="showImports()" style="cursor:pointer">Imports</span><span>View List</span></div>
-    <div id="page"></div>
+    <div id="tabs"><span class="on">All Prospects</span><span>Unverified Prospects</span><span>Prospects Created</span><span>View List</span></div>
     <div id="tblwrap">
       <table class="crm">
         <thead><tr><th>Name</th><th>Email</th><th>Job Title</th><th>Latest Status</th><th>Sequence</th><th>Company</th></tr></thead>
@@ -341,7 +305,7 @@ var FILES = {
 };
 
 /* ═══════════════════ state ═══════════════════ */
-var S = { screen:'entry', file:null, map:{}, reason:null, prog:0, timer:null, imported:false, history:[], importId:null, seq:0 };
+var S = { screen:'entry', file:null, map:{}, reason:null, prog:0, timer:null, imported:false };
 
 function $(id){ return document.getElementById(id); }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -386,24 +350,18 @@ function toast(kind,html){
 }
 
 /* ═══════════════════ router ═══════════════════ */
-function go(screen){
-  S.screen=screen;
-  var h = hashFor(screen);
-  if((location.hash||'') !== h){ location.hash = h; }   // triggers applyRoute
-  else { renderNow(); }
-}
+function go(screen){ S.screen=screen; $('pstep').textContent=screen; render(); }
 function closeIntro(){ document.getElementById('intro').classList.add('hide'); }
 function showIntro(){ document.getElementById('intro').classList.remove('hide'); }
 function startWith(k){ closeIntro(); openWizard(); pickFile(k); }
 function reset(){
   if(S.timer){clearInterval(S.timer);S.timer=null;}
-  S={screen:'entry',file:null,map:{},reason:null,prog:0,timer:null,imported:false,history:[],importId:null,seq:0};
+  S={screen:'entry',file:null,map:{},reason:null,prog:0,timer:null,imported:false};
   $('scrim').classList.remove('show'); $('toast').classList.remove('show');
   $('notif').classList.remove('show'); $('notifdot').style.display='none';
   $('notifbody').innerHTML='<span class="muted">Nothing yet. Run an import.</span>';
   $('addmenu').style.display='none'; $('pstep').textContent='entry';
-  if(location.hash){ location.hash=''; }
-  drawCRM(); showList(); showIntro();
+  drawCRM(); showIntro();
 }
 function openWizard(){ $('addmenu').style.display='none'; S.file=null; S.map={}; go('upload'); }
 function closeWizard(){ if(S.timer){clearInterval(S.timer);S.timer=null;} $('scrim').classList.remove('show'); $('pstep').textContent='entry'; }
@@ -415,21 +373,16 @@ function pickFile(k){
 }
 
 function startCheck(){
-  S.prog=0;
-  S.seq++; S.importId='imp_'+(1000+S.seq);
-  var d=f(), tfx=sum(fixG()), tsk=sum(skipG());
-  S.history.unshift({id:S.importId,key:S.file,file:d.name,rows:d.rows,ready:d.ready,problems:tfx+tsk,state:'review',when:'just now'});
-  go('checking');
+  S.prog=0; go('checking');
   S.timer=setInterval(function(){
     S.prog += Math.random()*11+7;
-    if(S.prog>=100){ S.prog=100; clearInterval(S.timer); S.timer=null; setTimeout(function(){go('review');},260); }
+    if(S.prog>=100){ S.prog=100; clearInterval(S.timer); S.timer=null; setTimeout(function(){go('summary');},260); }
     var el=$('pfill'); if(el){ el.style.width=Math.min(S.prog,100)+'%'; }
     var lb=$('pcount'); if(lb){ lb.textContent=n(Math.round(f().rows*Math.min(S.prog,100)/100))+' of '+n(f().rows)+' rows'; }
   },190);
 }
 function doImport(){
   S.imported=true;
-  S.history.forEach(function(h){ if(h.id===S.importId) h.state='done'; });
   var d=f();
   drawCRM([['Ada Lovelace','ada@analyticalengine.test','Mathematician','Active','—','Analytical Engine'],
            ['Grace Hopper','grace@cobol.test','Rear Admiral','Active','—','COBOL Inc']]);
@@ -526,250 +479,115 @@ function scMap(){
     '<button class="btn btn-p" type="button" '+(ok?'onclick="startCheck()"':'disabled')+'>Check '+n(d.rows)+' rows</button></div>';
 }
 
+function scChecking(){
+  var d=f();
+  return hd()+steps('review')+'<div class="rule"></div>'+
+    '<div class="m-bd" style="padding:40px 22px;align-items:center;gap:17px">'+
+    '<div style="font-size:16px;font-weight:600">Checking your file</div>'+
+    '<div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:9px">'+
+    '<div class="bar"><i id="pfill"></i></div>'+
+    '<div style="display:flex;justify-content:space-between" class="muted"><span id="pcount">0 of '+n(d.rows)+' rows</span><span>checking against your prospect list</span></div></div>'+
+    '<div class="muted" style="text-align:center;max-width:420px">Nothing has been imported yet. We check every row before you commit so the next screen can tell you the whole picture.</div>'+
+    '<button class="btn btn-s" type="button" onclick="closeWizard()">Cancel check</button>'+
+    '</div><div class="rule"></div>'+
+    '<div class="m-ft"><span class="sp"></span><button class="btn btn-g" type="button" onclick="closeWizard()">Cancel</button>'+
+    '<button class="btn btn-p" disabled>Import</button></div>';
+}
+
 function grpRows(list,sev){
   return list.map(function(g){
     var col = sev==='fix'?'var(--red-700)':'var(--g-700)';
     var lcol= sev==='fix'?'var(--red-900)':'var(--g-600)';
-    return '<button class="grow" type="button" onclick="S.reason=\''+g.key+'\';go(\'drill\')">'+
+    return '<div class="grow" style="cursor:default">'+
       '<span class="n" style="color:'+col+'">'+n(g.count)+'</span>'+
-      '<span class="l" style="color:'+lcol+'">'+esc(g.label)+'</span>'+
-      '<span class="v" style="color:'+col+'">View rows '+
-      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></span></button>';
+      '<span class="l" style="color:'+lcol+'">'+esc(g.label)+'</span></div>';
   }).join('');
 }
 
-function dl(){
-  var d=f();
-  alert(d.name.replace('.csv','')+' - rows to fix.csv\n\nYour file exactly as you uploaded it, filtered to the rows that need attention, with row_number and a reason column added.\n\nFix it in Excel and re-upload that same file.');
-}
-
-function crumb(){
-  return '<div class="crumb"><a href="#" onclick="reset();return false;">Prospects</a>'+
-    '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>'+
-    '<a href="#" onclick="showImports();return false;">Imports</a>'+
-    '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>'+
-    '<span style="color:var(--g-700)">'+esc(f().name)+'</span></div>';
-}
-function phead(chip, sub){
-  return crumb()+'<div class="phd"><h2>'+esc(f().name)+'</h2>'+chip+'</div><div class="psub">'+sub+'</div>';
-}
-
-function pgChecking(){
-  var d=f();
-  return '<div class="pwrap">'+
-    phead('<span class="chip c-run">Checking</span>', 'Started just now &middot; '+n(d.rows)+' rows &middot; nothing has been imported yet')+
-    '<div class="card cpad sect" style="align-items:center;padding:46px 22px">'+
-    '<div style="font-size:16px;font-weight:600">Checking every row against your prospect list</div>'+
-    '<div style="width:100%;max-width:420px;display:flex;flex-direction:column;gap:9px">'+
-    '<div class="bar"><i id="pfill"></i></div>'+
-    '<div style="display:flex;justify-content:space-between" class="muted"><span id="pcount">0 of '+n(d.rows)+' rows</span><span>about 8 seconds left</span></div></div>'+
-    '<div class="muted" style="text-align:center;max-width:460px">You can leave this page. The import is saved as a record and we will notify you when it is ready to review.</div>'+
-    '<div style="display:flex;gap:10px"><button class="btn btn-s" type="button" onclick="showImports()">Leave and notify me</button>'+
-    '<button class="btn btn-g" type="button" onclick="reset()">Cancel check</button></div>'+
-    '</div></div>';
-}
-
-function pgReview(){
-  var d=f(), fx=fixG(), sk=skipG(), tfx=sum(fx), tsk=sum(sk);
+function scSummary(){
+  var d=f(), fx=fixG(), sk=skipG(), tfx=sum(fx), tsk=sum(sk), body='';
   var pct = Math.round(d.ready/d.rows*100);
-  var body='';
-
-  body += '<div class="bn bn-grn" style="align-items:center;padding:14px 16px">'+
-    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.8 10A10 10 0 1 1 17 3.34"/><path d="m9 11 3 3L22 4"/></svg>'+
-    '<span style="font-size:17px;font-weight:600;flex:1">'+(fx.length||sk.length? n(d.ready)+' ready to import' : 'All '+n(d.ready)+' ready to import')+'</span>'+
-    (fx.length||sk.length?'<span style="font-size:12.5px;font-weight:600;color:var(--grn-700);opacity:.75">'+pct+'% of the file</span>':'')+'</div>';
+  body += '<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">'+
+          '<span style="font-size:13px;font-weight:600;color:var(--g-700)">'+esc(d.name)+'</span>'+
+          '<span class="muted">'+n(d.rows)+' rows checked</span></div>';
+  body += '<div class="bn bn-grn" style="align-items:center;padding:12px 15px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.8 10A10 10 0 1 1 17 3.34"/><path d="m9 11 3 3L22 4"/></svg>'+
+    '<span style="font-size:16px;font-weight:600;flex:1">'+(fx.length||sk.length? n(d.ready)+' ready to import' : 'All '+n(d.ready)+' ready to import')+'</span>'+
+    (fx.length||sk.length ? '<span style="font-size:12.5px;font-weight:600;color:var(--grn-700);opacity:.75">'+pct+'% of the file</span>' : '')+'</div>';
 
   if(fx.length){
     body += '<div class="gwrap"><div class="ghd"><strong style="font-size:14px;color:var(--red-700)">'+n(tfx)+' need fixing</strong>'+
-      '<span class="muted">rows you need to change</span></div><div class="gbox fix">'+grpRows(fx,'fix')+'</div></div>';
+      '<span class="muted">download them to see which</span></div><div class="gbox fix">'+grpRows(fx,'fix')+'</div></div>';
   }
   if(sk.length){
     body += '<div class="gwrap"><div class="ghd"><strong style="font-size:14px;color:var(--g-700)">'+n(tsk)+' will be skipped</strong>'+
       '<span class="muted">no action needed</span></div><div class="gbox skip">'+grpRows(sk,'skip')+'</div></div>';
   }
   if(!fx.length && !sk.length){
-    body += '<div class="muted" style="background:var(--g-50);border:1px solid var(--g-200);border-radius:var(--r-btn);padding:14px 16px">'+
-      'Nothing needs your attention. When a file is clean this whole section collapses to one line, so a good import never costs an extra decision.</div>';
+    body += '<div class="muted" style="background:var(--g-50);border:1px solid var(--g-200);border-radius:var(--r-btn);padding:13px 15px">'+
+      'Nothing needs your attention. When a file is clean this whole section collapses to this one line, so a good import never costs an extra decision.</div>';
   }
+
   if(fx.length||sk.length){
-    body += '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">'+
+    body += '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:-3px">'+
       '<button class="btn btn-s" type="button" onclick="dl()">'+
       '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>'+
       'Download all '+n(tfx+tsk)+' rows</button>'+
-      '<span class="muted" style="flex:1;min-width:200px">'+n(d.ready)+' + '+n(tfx)+' + '+n(tsk)+' = '+n(d.rows)+' rows read at upload</span></div>';
+      '<span class="muted" style="flex:1;min-width:200px">Your file, filtered to these rows, with a reason column added.</span></div>';
   }
-
-  var settings = '<div class="card cpad sect" style="margin-top:16px">'+
+  body += '<div class="bn bn-blu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
+    '<div><strong>This screen does not exist today.</strong> Step 3 is currently a tag box and two checkboxes &mdash; nothing to review. Every row was checked against your prospect list before you got here, so these numbers are final, not a forecast. The rows themselves stay in the download rather than on screen, which is what keeps this a dialog.</div></div>';
+  body += '<div class="rule"></div>'+
+    '<div style="display:flex;flex-direction:column;gap:11px">'+
     '<div style="display:flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="#6B7280"/></svg>'+
     '<span style="font-size:13px;font-weight:500;color:var(--g-700)">Tag prospects</span></div>'+
-    '<div style="border:1px solid var(--g-300);border-radius:var(--r-input);padding:9px 12px" class="muted">Add tags to categorize your prospects&hellip;</div>'+
+    '<div style="border:1px solid var(--g-300);border-radius:var(--r-input);padding:9px 12px" class="muted">Add tags to categorize your prospects…</div>'+
     '<label style="display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--g-700);cursor:pointer"><input type="checkbox" checked style="margin-top:3px;accent-color:var(--blue-700)"> Start email verification after import</label>'+
     '</div>';
 
-  var actions = '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px">'+
-    '<button class="btn btn-p" type="button" onclick="doImport()">Import '+n(d.ready)+' rows</button>'+
-    '<button class="btn btn-s" type="button" onclick="openWizard();pickFile(S.file);go(\'map\')">Back to mapping</button>'+
-    '<div style="flex:1"></div>'+
-    '<button class="btn btn-g" type="button" onclick="reset()">Discard this import</button></div>';
+  var ft = '<div class="m-ft">'+
+    '<button class="btn btn-l" type="button" onclick="go(\'map\')" style="padding-left:0">'+
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>Back to mapping</button>'+
+    '<span class="sp"></span>'+
+    '<button class="btn btn-g" type="button" onclick="closeWizard()">Cancel</button>'+
+    '<button class="btn btn-p" type="button" onclick="doImport()">Import '+n(d.ready)+' rows</button></div>';
 
-  return '<div class="pwrap">'+
-    phead('<span class="chip c-rev">Needs review</span>',
-          n(d.rows)+' rows checked &middot; nothing imported yet &middot; this page is saved, you can come back to it')+
-    '<div class="card cpad sect">'+body+'</div>'+ settings + actions +
-    '<div class="bn bn-blu" style="margin-top:18px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-    '<div><strong>This is a page, not a dialog &mdash; the same shape as Email Verifier.</strong> A 20,000-row file has room, the check can finish while you do something else, and the import stays in your Imports list instead of vanishing when you close a modal.</div></div>'+
-    '</div>';
+  return hd()+steps('review')+'<div class="rule"></div><div class="m-bd">'+body+'</div><div class="rule"></div>'+ft;
 }
 
-function pgDrill(){
-  var g=G[S.reason], d=f();
-  var head='<tr><th class="rn">Row</th>'+d.cols_list.map(function(c){return '<th>'+esc(c)+'</th>';}).join('')+'</tr>';
-  var body=g.rows.map(function(r){
-    var tds=r.cells.slice(0,d.cols_list.length).map(function(v,i){
-      var cls = i===r.bad ? (g.nul?'bad nul':'bad') : '';
-      return '<td class="'+cls+'">'+esc(v)+'</td>';
-    }).join('');
-    return '<tr><td class="rn">'+r.n+'</td>'+tds+'</tr>';
-  }).join('');
-
-  return '<div class="pwrap">'+
-    crumb()+
-    '<div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:16px">'+
-    '<button class="btn btn-s" type="button" onclick="go(\'review\')" style="padding:7px 12px;flex:0 0 auto">'+
-    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>Back</button>'+
-    '<div style="flex:1"><h2 style="margin:0;font-size:19px;font-weight:700;letter-spacing:-.012em">'+esc(g.title)+'</h2>'+
-    '<div class="muted" style="margin-top:4px;font-size:13px">'+esc(g.hint)+'</div></div></div>'+
-    '<div class="card" style="overflow:hidden"><div class="gridwrap pg"><table class="dd" style="width:100%">'+
-    '<thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>'+
-    '<div style="padding:14px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--g-200)">'+
-    '<span class="muted" style="flex:1;min-width:240px">Read only. Showing '+g.rows.length+' of '+n(g.count)+'. Row numbers are the line in your original file &mdash; no sorting or filtering, because the reason is the filter.</span>'+
-    '<button class="btn btn-s" type="button" onclick="dl()">Download these '+n(g.count)+'</button></div></div>'+
-    '</div>';
-}
-
-function pgDone(){
+function scDone(){
   var d=f(), tfx=sum(fixG()), tsk=sum(skipG());
   var tally='<div class="tally"><div class="r"><span class="n" style="color:var(--grn-700)">'+n(d.ready)+'</span><span style="flex:1;font-size:13.5px;color:var(--g-700)">Imported</span></div>'+
     (tfx?'<div class="r"><span class="n" style="color:var(--red-700)">'+n(tfx)+'</span><span style="flex:1;font-size:13.5px;color:var(--g-700)">Need fixing, not imported</span></div>':'')+
     (tsk?'<div class="r"><span class="n" style="color:var(--g-600)">'+n(tsk)+'</span><span style="flex:1;font-size:13.5px;color:var(--g-700)">Skipped, already on file</span></div>':'')+'</div>';
 
-  return '<div class="pwrap">'+
-    phead('<span class="chip c-ok">Completed</span>', n(d.rows)+' rows &middot; finished just now')+
-    '<div class="card cpad sect">'+
+  return '<div class="m-bd" style="padding:30px 26px 24px;gap:19px">'+
     '<div style="display:flex;align-items:center;gap:13px"><div class="tick">'+
     '<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>'+
-    '<div style="font-size:20px;font-weight:700">'+n(d.ready)+' prospect'+(d.ready===1?'':'s')+' imported</div></div>'+
+    '<div><div style="font-size:20px;font-weight:700;line-height:1.25">'+n(d.ready)+' prospect'+(d.ready===1?'':'s')+' imported</div>'+
+    '<div class="muted" style="margin-top:2px">from '+esc(d.name)+', '+n(d.rows)+' rows</div></div></div>'+
     tally+
     (tfx||tsk
       ? '<div class="muted">Every row is accounted for in one of these buckets, and they sum to the '+n(d.rows)+' read at upload. Email verification has started on the '+n(d.ready)+' imported prospects.</div>'
       : '<div class="muted">Nothing needed your attention. Email verification has started.</div>')+
     '<div style="display:flex;gap:10px;flex-wrap:wrap">'+
-    '<button class="btn btn-p" type="button" onclick="reset()">View imported prospects</button>'+
-    (tfx+tsk?'<button class="btn btn-s" type="button" onclick="dl()">Download '+n(tfx+tsk)+' rows</button>':'')+
-    '<button class="btn btn-s" type="button" onclick="showImports()">All imports</button>'+
-    '</div></div>'+
-    '<div class="bn bn-blu" style="margin-top:18px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-    '<div><strong>This holds no new information.</strong> That is the payoff of checking everything first &mdash; it confirms the numbers you already agreed to, and the record stays in Imports so the failed rows are still downloadable next week.</div></div>'+
+    '<button class="btn btn-p" type="button" onclick="closeWizard()">View imported prospects</button>'+
+    (tfx+tsk?'<button class="btn btn-s" type="button" onclick="alert(\'Row numbers, their original columns, a specific reason and a fix hint per row.\')">Download '+n(tfx+tsk)+' rows</button>':'')+
+    '</div>'+
+    '<div class="bn bn-blu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
+    '<div><strong>This screen holds no new information.</strong> That is the payoff of checking everything first &mdash; it confirms the numbers you already agreed to. Today the equivalent is a green &ldquo;successfully&rdquo; toast whatever happened, with the truth buried in the bell.</div></div>'+
     '</div>';
 }
 
-var PAGE_SCREENS = {checking:1, review:1, drill:1, done:1};
-function render(){ renderNow(); }
-
-function showList(){
-  $('page').classList.remove('show'); $('tblwrap').style.display='';
-  $('tabAll').className='on'; $('tabImp').className='';
-}
-function showPage(){
-  $('scrim').classList.remove('show');
-  $('tblwrap').style.display='none'; $('page').classList.add('show');
-  $('tabAll').className=''; $('tabImp').className='on';
-}
-function pgImports(){
-  var rows = S.history.length
-    ? S.history.map(function(h){
-        var chip = h.state==='done' ? '<span class="chip c-ok">Completed</span>' : '<span class="chip c-rev">Needs review</span>';
-        return '<tr class="clk" onclick="reopen(\''+h.id+'\')"><td><strong>'+esc(h.file)+'</strong></td><td>'+n(h.rows)+'</td>'+
-               '<td>'+(h.state==='done'? n(h.ready) : '&mdash;')+'</td><td>'+(h.problems? n(h.problems):'0')+'</td><td>'+chip+'</td><td class="muted">'+h.when+'</td></tr>';
-      }).join('')
-    : '<tr><td colspan="6" class="muted" style="padding:26px 14px;text-align:center">No imports yet. Add Prospect &rarr; Import via CSV.</td></tr>';
-  return '<div class="pwrap"><div class="phd"><h2>Imports</h2></div>'+
-    '<div class="psub">Every import is kept as a record. Open one to review what failed, download the rows, or finish importing.</div>'+
-    '<div class="card" style="overflow:hidden"><table class="ptable"><thead><tr>'+
-    '<th>File</th><th>Rows</th><th>Imported</th><th>Needs attention</th><th>Status</th><th>Started</th>'+
-    '</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
-}
-function showImports(){ go('imports'); }
-function reopen(id){
-  var h = S.history.filter(function(x){return x.id===id;})[0];
-  if(!h) return;
-  S.file=h.key; S.importId=id; S.reason=null;
-  go(h.state==='done' ? 'done' : 'review');
-}
-
-/* ══ routing: the hash is the address, so back/forward and the
-      breadcrumb behave the way they do on any other page ══ */
-function hashFor(sc){
-  if(sc==='entry')   return '';
-  if(sc==='imports') return '#/imports';
-  if(sc==='upload')  return '#/import/new/upload';
-  if(sc==='map')     return '#/import/new/map';
-  var id = S.importId || 'new';
-  if(sc==='checking') return '#/import/'+id+'/checking';
-  if(sc==='review')   return '#/import/'+id;
-  if(sc==='drill')    return '#/import/'+id+'/r/'+S.reason;
-  if(sc==='done')     return '#/import/'+id+'/done';
-  return '';
-}
-function applyRoute(){
-  var h = (location.hash||'').replace(/^#/,'');
-  var seg = h.split('/').filter(Boolean);
-  if(!seg.length){ S.screen='entry'; renderNow(); return; }
-  if(seg[0]==='imports'){ S.screen='imports'; renderNow(); return; }
-  if(seg[0]==='import'){
-    var id = seg[1];
-    if(id && id!=='new'){
-      var rec = S.history.filter(function(x){return x.id===id;})[0];
-      if(!rec){ S.screen='imports'; renderNow(); return; }
-      S.importId=id; S.file=rec.key;
-    }
-    var tail = seg[2];
-    if(tail==='upload'){ S.screen='upload'; }
-    else if(tail==='map'){ S.screen = S.file ? 'map' : 'upload'; }
-    else if(tail==='checking'){ S.screen='checking'; }
-    else if(tail==='done'){ S.screen='done'; }
-    else if(tail==='r' && seg[3]){ S.reason=seg[3]; S.screen='drill'; }
-    else { S.screen='review'; }
-    renderNow(); return;
-  }
-  S.screen='entry'; renderNow();
-}
-window.addEventListener('hashchange', applyRoute);
-
-function renderNow(){
+function render(){
   var m=$('modal'), sc=$('scrim');
-  if(S.screen!=='done'){ $('toast').classList.remove('show'); }
-  if(S.screen==='entry'){ sc.classList.remove('show'); showList(); return; }
-
-  if(S.screen==='imports'){
-    showPage(); $('page').innerHTML=pgImports(); $('page').scrollTop=0;
-    $('pstep').textContent='imports'; return;
-  }
-  if(PAGE_SCREENS[S.screen]){
-    showPage();
-    if(S.screen==='checking') $('page').innerHTML=pgChecking();
-    if(S.screen==='review')   $('page').innerHTML=pgReview();
-    if(S.screen==='drill')    $('page').innerHTML=pgDrill();
-    if(S.screen==='done')     $('page').innerHTML=pgDone();
-    $('page').scrollTop=0;
-    $('pstep').textContent=S.screen;
-    return;
-  }
-
+  if(S.screen==='entry'){ sc.classList.remove('show'); return; }
   sc.classList.add('show');
   m.classList.remove('wide');
-  if(S.screen==='upload') m.innerHTML=scUpload();
-  if(S.screen==='map')    m.innerHTML=scMap();
+  if(S.screen==='upload')   m.innerHTML=scUpload();
+  if(S.screen==='map')      m.innerHTML=scMap();
+  if(S.screen==='checking') m.innerHTML=scChecking();
+  if(S.screen==='summary')  m.innerHTML=scSummary();
+  if(S.screen==='done')     m.innerHTML=scDone();
   $('pstep').textContent=S.screen;
 }
 
@@ -778,7 +596,6 @@ document.addEventListener('click',function(e){
   if(!e.target.closest('#notif') && !e.target.closest('#hdr .btn-s')) $('notif').classList.remove('show');
 });
 drawCRM();
-if(location.hash){ applyRoute(); }
 </script>
 </body>
 </html>
