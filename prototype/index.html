@@ -410,19 +410,19 @@ var FILES = {
                     ['ada@analyticalengine.test','adaexample.com','grace@cobol.test'],
                     ['Analytical Engine','Acme','COBOL Inc'],['Mathematician','VP','Rear Admiral'],
                     ['United Kingdom','United States','United States']],
-           groups:['at','empty','multi','db','dupe'], ready:3540, recent:1360, note:'The main demo. 460 rows need attention across five reasons.' },
+           groups:['at','empty','multi','db','dupe'], ready:3540, note:'The main demo. 460 rows need attention across five reasons.' },
   clean: { name:'verified-list-sept.csv', rows:1200, cols:5, cols_list:COLS.slice(0,5),
            samples:[['Ada','Grace','Alan'],['Lovelace','Hopper','Turing'],
                     ['ada@analyticalengine.test','grace@cobol.test','alan@bletchley.test'],
                     ['Analytical Engine','COBOL Inc','Bletchley Park'],['Mathematician','Rear Admiral','Cryptanalyst']],
-           groups:[], ready:1200, recent:900, note:'Nothing wrong. Shows that the new machinery disappears when there is nothing to report.' },
+           groups:[], ready:1200, note:'Nothing wrong. Shows that the new machinery disappears when there is nothing to report.' },
   noemail:{ name:'linkedin-outreach.csv', rows:800, cols:5,
            cols_list:['First Name','Last Name','LinkedIn','Phone Number','Company'],
            samples:[['Ada','Grace','Alan'],['Lovelace','Hopper','Turing'],
                     ['linkedin.com/in/adalovelace','linkedin.com/in/ghopper','linkedin.com/in/aturing'],
                     ['+441234567890','+15125550143','+441134960000'],
                     ['Analytical Engine','COBOL Inc','Bletchley Park']],
-           groups:[], ready:0, recent:0, blocked:true, note:'A LinkedIn-first list with no email column. Today this dead-ends silently; here it says why.' }
+           groups:[], ready:0, blocked:true, note:'A LinkedIn-first list with no email column. Today this dead-ends silently; here it says why.' }
 };
 
 /* ═══════════════════ state ═══════════════════ */
@@ -829,7 +829,6 @@ function scSummary(){
      choice on this screen, it is just what verification does. Nobody has a
      reason to pay twice for the same address inside a fortnight, so the rule
      is stated and the window is changed in settings, not here. */
-  var recent = Math.min(d.recent||0, d.ready), toVerify = Math.max(0, d.ready-recent);
   body += '<div class="rule"></div>'+
     '<div class="setr"><div class="k">Tags</div><div class="v">'+
       '<div class="tagin">Add tags to categorize your prospects&hellip;</div></div></div>'+
@@ -839,12 +838,7 @@ function scSummary(){
       '<span class="sb">Addresses already verified in the last 15 days are skipped. '+
       '<span class="lnk">Change the 15 days</span></span></span></label>'+
       (S.verify
-        ? '<div class="sub"><div class="cred">'+
-            (toVerify===0
-              ? 'Nothing to verify, and nothing to pay. All '+n(d.ready)+' were checked in the last 15 days.'
-              : '<strong>'+n(toVerify)+'</strong> of '+n(d.ready)+' will be verified &middot; <strong>'+n(toVerify)+'</strong> credits'+
-                (recent ? ' &middot; <span class="sv">'+n(recent)+' skipped</span>' : ''))+
-          '</div></div>'
+        ? '<div class="sub"><div class="cred">Up to <strong>'+n(d.ready)+'</strong> credits.</div></div>'
         : '<div class="sub"><div class="cred">No credits will be used. You can verify these from the prospect list later.</div></div>')+
     '</div></div>';
 
