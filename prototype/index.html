@@ -15,9 +15,9 @@
   --red-900:#7F1D1D;--red-800:#991B1B;--red-700:#B91C1C;--red-200:#FECACA;--red-100:#FEE2E2;--red-50:#FEF2F2;
   --grn-900:#064E3B;--grn-700:#047857;--grn-200:#A7F3D0;--grn-50:#ECFDF5;
   --yel-900:#78350F;--yel-700:#B45309;--yel-200:#FDE68A;--yel-50:#FFFBEB;
-  --r-badge:4px;--r-input:6px;--r-btn:8px;--r-modal:12px;
+  --r-badge:4px;--r-input:4px;--r-btn:4px;--r-modal:4px;
   --sh-xs:0 1.62px 3.239px 0 rgba(0,0,0,.16);
-  --sh-lg:0 32.394px 64.788px -12.958px rgba(0,0,0,.16),0 1.62px 3.239px 0 rgba(0,0,0,.04);
+  --sh-lg:0 4px 12px 0 rgba(0,0,0,.15);
   --sans:Inter,system-ui,-apple-system,sans-serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
@@ -38,27 +38,27 @@ button{font-family:inherit;cursor:pointer}
 
 /* ══ fake app chrome ══ */
 #app{position:absolute;inset:38px 0 0 0;display:flex;filter:saturate(.9)}
-#rail{width:52px;background:#fff;border-right:1px solid var(--g-200);display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:16px;flex:0 0 auto}
+#rail{width:56px;background:#fff;border-right:1px solid var(--g-200);display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:16px;flex:0 0 auto}
 #rail .ic{width:22px;height:22px;border-radius:var(--r-input);background:var(--g-100)}
 #rail .ic.on{background:var(--blue-100)}
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#fff}
-#hdr{height:52px;border-bottom:1px solid var(--g-200);display:flex;align-items:center;padding:0 20px;gap:12px;flex:0 0 auto}
+#hdr{height:50px;border-bottom:1px solid var(--g-200);display:flex;align-items:center;padding:0 24px;gap:12px;flex:0 0 auto}
 #hdr .ttl{font-size:16px;font-weight:600}
 #hdr .sp{flex:1}
-#tabs{height:44px;border-bottom:1px solid var(--g-200);display:flex;align-items:center;gap:22px;padding:0 20px;flex:0 0 auto;font-size:13.5px;color:var(--g-500)}
+#tabs{height:56px;border-bottom:1px solid var(--g-200);display:flex;align-items:center;gap:24px;padding:0 24px;flex:0 0 auto;font-size:14px;color:var(--g-500)}
 #tabs .on{color:var(--blue-700);font-weight:600;box-shadow:inset 0 -2px 0 var(--blue-700);height:100%;display:flex;align-items:center}
 #tblwrap{flex:1;overflow:auto}
-table.crm{width:100%;border-collapse:collapse;font-size:13px}
-table.crm th{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--g-200);text-align:left;padding:10px 14px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--g-500);white-space:nowrap}
-table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--g-700);white-space:nowrap}
+table.crm{width:100%;border-collapse:collapse;font-size:14px}
+table.crm th{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--g-200);text-align:left;padding:11px 24px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--g-500);white-space:nowrap}
+table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--g-700);white-space:nowrap}
 .bdg{display:inline-block;font-size:11px;padding:2px 8px;border-radius:var(--r-badge);background:var(--g-100);color:var(--g-600)}
 .bdg.act{background:var(--grn-50);color:var(--grn-700)}
 
-.btn{border-radius:var(--r-btn);padding:9px 16px;font-size:13.5px;font-weight:500;border:1px solid transparent;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;flex:0 0 auto}
+.btn{border-radius:var(--r-btn);padding:6px 16px;min-height:32px;font-size:14px;font-weight:500;border:1px solid transparent;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;flex:0 0 auto}
 .btn-p{background:var(--blue-700);color:#fff}.btn-p:hover{background:var(--blue-800)}
 .btn-p[disabled]{background:var(--g-300);cursor:not-allowed}
-.btn-s{background:#fff;color:var(--g-700);border-color:var(--g-300)}.btn-s:hover{background:var(--g-50)}
-.btn-g{background:transparent;color:var(--g-500);border:0}.btn-g:hover{color:var(--g-700)}
+.btn-s{background:#fff;color:var(--g-700);border-color:var(--g-200)}.btn-s:hover{background:var(--g-50)}
+.btn-g{background:transparent;color:var(--g-500);border-color:var(--g-200)}.btn-g:hover{color:var(--g-700);background:var(--g-50)}
 .btn-l{background:transparent;color:var(--blue-700);border:0;font-weight:500}.btn-l:hover{color:var(--blue-800)}
 
 /* dropdown */
@@ -82,20 +82,24 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 .fopt:hover .ar{color:var(--blue-700)}
 
 /* ══ modal ══ */
-#scrim{position:absolute;inset:38px 0 0 0;background:rgba(17,24,39,.5);display:none;align-items:flex-start;justify-content:center;padding:34px 20px;overflow:auto;z-index:100}
+#scrim{position:absolute;inset:38px 0 0 0;background:rgba(17,24,39,.5);display:none;align-items:center;justify-content:center;padding:30px 20px;overflow:auto;z-index:100}
 #scrim.show{display:flex}
-#modal{background:#fff;border-radius:var(--r-modal);box-shadow:var(--sh-lg);width:100%;max-width:580px;overflow:hidden;transition:max-width .22s ease}
+#modal{background:#fff;border-radius:var(--r-modal);box-shadow:var(--sh-lg);width:100%;max-width:720px;overflow:hidden;margin:auto}
 #modal.wide{max-width:900px}
-.m-hd{padding:18px 22px 0;display:flex;align-items:center;justify-content:space-between}
-.m-hd .t{font-size:16px;font-weight:600}
-.m-steps{padding:16px 22px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-.stp{font-size:12.5px;color:var(--g-400)}
-.stp.on{font-weight:600;color:var(--blue-700);background:var(--blue-50);padding:5px 11px;border-radius:var(--r-input)}
+.m-hd{padding:22px 24px 0;display:flex;align-items:center;justify-content:space-between}
+.m-hd .t{font-size:16px;font-weight:600;color:var(--g-800)}
+.m-hd .btn-g{border:0;min-width:0;min-height:0;padding:5px;background:transparent;color:var(--g-500)}
+.m-hd .btn-g:hover{background:var(--g-100);color:var(--g-800)}
+.m-steps{padding:16px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.stp{font-size:14px;color:var(--g-400)}
+.stp.on{font-weight:600;color:var(--blue-700);background:var(--blue-50);padding:8px 16px;border-radius:var(--r-input)}
 .stp.done{color:var(--g-600)}
 .rule{height:1px;background:var(--g-200)}
-.m-bd{padding:20px 22px;display:flex;flex-direction:column;gap:15px}
-.m-ft{padding:15px 22px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.m-bd{padding:20px 24px;display:flex;flex-direction:column;gap:15px}
+.m-ft{padding:16px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .m-ft .sp{flex:1}
+.m-ft .btn{min-width:100px}
+.m-ft .btn-l{min-width:0}
 
 .drop{border:1px dashed var(--g-300);border-radius:var(--r-btn);background:var(--g-50);padding:28px;display:flex;flex-direction:column;align-items:center;gap:11px;text-align:center}
 .drop.ok{border-style:solid;border-color:var(--grn-200);background:var(--grn-50)}
@@ -114,7 +118,7 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 .maprow{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--g-100)}
 .maprow.req{background:var(--blue-50);margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:var(--r-input);border-top-color:transparent}
 .maprow.bad{background:var(--red-50);margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:var(--r-input);border-top-color:transparent}
-.maprow .f{flex:0 0 112px;font-size:13px;font-weight:600}
+.maprow .f{flex:0 0 150px;font-size:13px;font-weight:600}
 .maprow .s{flex:1;font-size:12px;color:var(--g-600);line-height:1.45;word-break:break-word}
 .maprow select{flex:0 0 138px;font-family:inherit;font-size:12.5px;padding:7px 8px;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-900)}
 .maprow select.set{border-color:var(--blue-700);color:var(--blue-700);font-weight:500}
@@ -122,7 +126,7 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 .hdlbl{display:flex;gap:10px;padding-bottom:8px;font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--g-500)}
 
 /* ══ step 2: the field picker ══ */
-.fpick{position:relative;flex:0 0 168px}
+.fpick{position:relative;flex:0 0 190px}
 .fpick>button{width:100%;display:flex;align-items:center;gap:6px;text-align:left;font-size:12.5px;padding:7px 9px;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-900)}
 .fpick>button .v{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fpick>button svg{flex:0 0 auto;opacity:.6}
@@ -184,9 +188,16 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 .setr .k{flex:0 0 96px;font-size:13px;font-weight:500;color:var(--g-700);padding-top:9px}
 .setr .v{flex:1;min-width:0}
 .tagin{border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;padding:9px 12px;font-size:13px;color:var(--g-400)}
-.vrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:9px}
-.vrow label{display:inline-flex;align-items:center;gap:9px;font-size:13px;color:var(--g-700);cursor:pointer}
-.cred{font-size:12px;color:var(--g-500);font-variant-numeric:tabular-nums}
+.ck{display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:5px 0}
+.ck input{margin-top:2px;width:15px;height:15px;accent-color:var(--blue-700);flex:0 0 auto}
+.ck .t{display:block;font-size:14px;line-height:20px;color:var(--g-800)}
+.ck .sb{display:block;font-size:12.5px;line-height:18px;color:var(--g-500);margin-top:1px}
+.ck .sb em{font-style:normal;font-weight:500;color:var(--g-600)}
+.lnk{color:var(--blue-700);cursor:pointer}.lnk:hover{text-decoration:underline}
+.sub{margin-left:25px;border-left:2px solid var(--g-200);padding-left:13px;margin-top:2px}
+.cred{font-size:13px;line-height:19px;color:var(--g-600);font-variant-numeric:tabular-nums;margin-top:5px}
+.cred strong{color:var(--g-900);font-weight:600}
+.cred .sv{color:var(--grn-700)}
 
 /* summary groups */
 .gwrap{display:flex;flex-direction:column;gap:4px}
@@ -209,7 +220,7 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 
 /* ══ the result strip: what an import leaves behind ══ */
 #strip{flex:0 0 auto}
-.strip{display:flex;align-items:center;gap:13px;padding:11px 20px;border-bottom:1px solid var(--g-200);font-size:13.5px}
+.strip{display:flex;align-items:center;gap:13px;padding:11px 24px;border-bottom:1px solid var(--g-200);font-size:13.5px}
 .strip.run{background:var(--blue-50);color:var(--blue-900);border-bottom-color:var(--blue-200)}
 .strip.todo{background:var(--yel-50);color:var(--yel-900);border-bottom-color:var(--yel-200)}
 .strip .msg{flex:1;line-height:1.45;min-width:0}
@@ -399,24 +410,24 @@ var FILES = {
                     ['ada@analyticalengine.test','adaexample.com','grace@cobol.test'],
                     ['Analytical Engine','Acme','COBOL Inc'],['Mathematician','VP','Rear Admiral'],
                     ['United Kingdom','United States','United States']],
-           groups:['at','empty','multi','db','dupe'], ready:3540, note:'The main demo. 460 rows need attention across five reasons.' },
+           groups:['at','empty','multi','db','dupe'], ready:3540, recent:1360, note:'The main demo. 460 rows need attention across five reasons.' },
   clean: { name:'verified-list-sept.csv', rows:1200, cols:5, cols_list:COLS.slice(0,5),
            samples:[['Ada','Grace','Alan'],['Lovelace','Hopper','Turing'],
                     ['ada@analyticalengine.test','grace@cobol.test','alan@bletchley.test'],
                     ['Analytical Engine','COBOL Inc','Bletchley Park'],['Mathematician','Rear Admiral','Cryptanalyst']],
-           groups:[], ready:1200, note:'Nothing wrong. Shows that the new machinery disappears when there is nothing to report.' },
+           groups:[], ready:1200, recent:900, note:'Nothing wrong. Shows that the new machinery disappears when there is nothing to report.' },
   noemail:{ name:'linkedin-outreach.csv', rows:800, cols:5,
            cols_list:['First Name','Last Name','LinkedIn','Phone Number','Company'],
            samples:[['Ada','Grace','Alan'],['Lovelace','Hopper','Turing'],
                     ['linkedin.com/in/adalovelace','linkedin.com/in/ghopper','linkedin.com/in/aturing'],
                     ['+441234567890','+15125550143','+441134960000'],
                     ['Analytical Engine','COBOL Inc','Bletchley Park']],
-           groups:[], ready:0, blocked:true, note:'A LinkedIn-first list with no email column. Today this dead-ends silently; here it says why.' }
+           groups:[], ready:0, recent:0, blocked:true, note:'A LinkedIn-first list with no email column. Today this dead-ends silently; here it says why.' }
 };
 
 /* ═══════════════════ state ═══════════════════ */
 var S = { screen:'entry', file:null, map:{}, auto:{}, touched:{}, restored:null,
-          pick:null, q:'', reason:null, prog:0, timer:null, jt:null, job:null, imported:false };
+          pick:null, q:'', verify:true, smart:true, reason:null, prog:0, timer:null, jt:null, job:null, imported:false };
 
 /* Mapping memory, keyed on the file's header row. Survives one import to the
    next; only "Start over" clears it. */
@@ -479,7 +490,7 @@ function reset(){
   if(S.jt){clearInterval(S.jt);S.jt=null;}
   $('strip').innerHTML='';
   S={screen:'entry',file:null,map:{},auto:{},touched:{},restored:null,pick:null,q:'',
-     reason:null,prog:0,timer:null,jt:null,job:null,imported:false};
+     verify:true,smart:true,reason:null,prog:0,timer:null,jt:null,job:null,imported:false};
   MEM={};
   $('scrim').classList.remove('show'); $('toast').classList.remove('show');
   $('notif').classList.remove('show'); $('notifdot').style.display='none';
@@ -577,7 +588,7 @@ function drawStrip(){
     return;
   }
 
-  var note = '<div class="bn bn-blu xnote" style="margin:12px 20px">'+
+  var note = '<div class="bn bn-blu xnote" style="margin:12px 24px">'+
     '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
     '<div><strong>Changed here.</strong> There is no fourth step any more. The old one restated Review&rsquo;s three numbers in the past tense and offered four buttons. The import is not news: every row was checked before you committed, so the dialog closes and the list itself is the confirmation. Only the unfinished work outlives the dialog, and it sits here until you deal with it or dismiss it. The bell keeps the record either way.</div></div>';
 
@@ -741,7 +752,7 @@ function scMap(){
     (d.blocked?'This file has no email column at all, so none of its '+n(d.rows)+' rows can be imported. Go back and choose a different file, or add an email column to this one.':'Pick the column that holds email addresses.')+'</div></div></div>';
 
   return hd()+steps('map')+'<div class="rule"></div><div class="m-bd">'+(ok?lead:warn)+
-    '<div><div class="hdlbl"><span style="flex:0 0 112px">Fields from file</span><span style="flex:1">First 3 rows</span><span style="flex:0 0 168px;text-align:right">Field</span></div>'+
+    '<div><div class="hdlbl"><span style="flex:0 0 150px">Fields from file</span><span style="flex:1">First 3 rows</span><span style="flex:0 0 190px;text-align:right">Field</span></div>'+
     rows+'</div>'+
     '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
     '<div><strong>Changed here.</strong> Verified live on 8 Sep: today <span class="mono">company_name</span>, <span class="mono">title</span> and <span class="mono">linkedin_url</span> all arrive unmapped, the field list is a long scroll with truncated labels and no working search, and re-importing the identical file a minute later loses every choice you made. Three sample rows instead of one, and <strong>no validity ticks</strong> &ndash; nothing has been checked yet, so nothing claims it has.</div></div>'+
@@ -810,12 +821,34 @@ function scSummary(){
   }
 
   /* ── settings, on a label column so they read as a form and not as more findings ── */
+  /* Verification. The product calls the 15-day rule "Smart Verification" and
+     explains it in grey text under the name. The name is not the point; the
+     rule is, and so is what it saves. Both are stated, and the credit figure
+     moves when the rule is switched off. */
+  var recent = d.recent||0, toVerify = S.smart ? Math.max(0, d.ready-recent) : d.ready;
+  var cb = function(on,fn,label,sub){
+    return '<label class="ck"><input type="checkbox"'+(on?' checked':'')+' onchange="'+fn+'">'+
+      '<span><span class="t">'+label+'</span>'+(sub?'<span class="sb">'+sub+'</span>':'')+'</span></label>';
+  };
   body += '<div class="rule"></div>'+
     '<div class="setr"><div class="k">Tags</div><div class="v">'+
       '<div class="tagin">Add tags to categorize your prospects&hellip;</div></div></div>'+
-    '<div class="setr" style="margin-top:-3px"><div class="k">Verification</div><div class="v"><div class="vrow" style="padding-top:5px">'+
-      '<label><input type="checkbox" checked style="accent-color:var(--blue-700);width:15px;height:15px"> Verify the '+n(d.ready)+' imported emails</label>'+
-      '<span class="cred">'+n(d.ready)+' credits</span></div></div></div>';
+    '<div class="setr" style="margin-top:2px"><div class="k">Verification</div><div class="v">'+
+      cb(S.verify,'S.verify=this.checked;render()','Verify emails after import',
+         'Unverified addresses bounce, and bounces cost you sender reputation.')+
+      (S.verify
+        ? '<div class="sub">'+
+            cb(S.smart,'S.smart=this.checked;render()',
+               'Skip any address already verified in the last 15 days',
+               'Called <em>Smart Verification</em> in settings. <span class="lnk">Change the 15 days</span>')+
+            '<div class="cred'+(S.smart&&recent?' save':'')+'">'+
+              (toVerify===0
+                ? 'Nothing to verify. Every one of these '+n(d.ready)+' was checked in the last 15 days.'
+                : '<strong>'+n(toVerify)+'</strong> of '+n(d.ready)+' will be verified &middot; <strong>'+n(toVerify)+'</strong> credits'+
+                  (S.smart&&recent ? ' &middot; <span class="sv">'+n(recent)+' saved</span>' : ''))+
+            '</div></div>'
+        : '<div class="sub"><div class="cred">No credits will be used. You can verify them later from the prospect list.</div></div>')+
+    '</div></div>';
 
   body += '<div class="bn bn-blu xnote">'+
     ic('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>','#1E3A8A',17)+
@@ -825,7 +858,6 @@ function scSummary(){
     '<button class="btn btn-s" type="button" onclick="go(\'map\')">'+
     ic('<path d="m15 18-6-6 6-6"/>','currentColor',13)+'Back to mapping</button>'+
     '<span class="sp"></span>'+
-    '<button class="btn btn-g" type="button" onclick="closeWizard()">Cancel</button>'+
     '<button class="btn btn-p" type="button" onclick="doImport()">Import '+n(d.ready)+' rows</button></div>';
 
   return hd()+steps('review')+'<div class="rule"></div><div class="m-bd">'+body+'</div><div class="rule"></div>'+ft;
