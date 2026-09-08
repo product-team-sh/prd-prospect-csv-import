@@ -207,6 +207,20 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 .tally .r+.r{border-top:1px solid var(--g-200)}
 .tally .n{flex:0 0 54px;text-align:right;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
 
+/* ══ the result strip: what an import leaves behind ══ */
+#strip{flex:0 0 auto}
+.strip{display:flex;align-items:center;gap:13px;padding:11px 20px;border-bottom:1px solid var(--g-200);font-size:13.5px}
+.strip.run{background:var(--blue-50);color:var(--blue-900);border-bottom-color:var(--blue-200)}
+.strip.todo{background:var(--yel-50);color:var(--yel-900);border-bottom-color:var(--yel-200)}
+.strip .msg{flex:1;line-height:1.45;min-width:0}
+.strip .ct{font-variant-numeric:tabular-nums;opacity:.75;white-space:nowrap}
+.strip .x{border:0;background:transparent;color:inherit;opacity:.5;padding:5px;border-radius:var(--r-input);display:flex;flex:0 0 auto}
+.strip .x:hover{opacity:1;background:rgba(0,0,0,.06)}
+.sbar{width:140px;height:5px;border-radius:9999px;background:var(--blue-200);overflow:hidden;flex:0 0 auto}
+.sbar>i{display:block;height:5px;border-radius:9999px;background:var(--blue-700);width:0;transition:width .2s linear}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1.1s linear infinite;flex:0 0 auto}
+
 /* toast + notification */
 #toast{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:150;max-width:640px;width:calc(100% - 40px);display:none}
 #toast.show{display:block}
@@ -260,6 +274,7 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
       </div>
     </div>
     <div id="tabs"><span class="on">All Prospects</span><span>Unverified Prospects</span><span>Prospects Created</span><span>View List</span></div>
+    <div id="strip"></div>
     <div id="tblwrap">
       <table class="crm">
         <thead><tr><th>Name</th><th>Email</th><th>Job Title</th><th>Latest Status</th><th>Sequence</th><th>Company</th></tr></thead>
@@ -401,7 +416,7 @@ var FILES = {
 
 /* ═══════════════════ state ═══════════════════ */
 var S = { screen:'entry', file:null, map:{}, auto:{}, touched:{}, restored:null,
-          pick:null, q:'', reason:null, prog:0, timer:null, imported:false };
+          pick:null, q:'', reason:null, prog:0, timer:null, jt:null, job:null, imported:false };
 
 /* Mapping memory, keyed on the file's header row. Survives one import to the
    next; only "Start over" clears it. */
@@ -461,8 +476,10 @@ function showIntro(){ document.getElementById('intro').classList.remove('hide');
 function startWith(k){ closeIntro(); openWizard(); pickFile(k); }
 function reset(){
   if(S.timer){clearInterval(S.timer);S.timer=null;}
+  if(S.jt){clearInterval(S.jt);S.jt=null;}
+  $('strip').innerHTML='';
   S={screen:'entry',file:null,map:{},auto:{},touched:{},restored:null,pick:null,q:'',
-     reason:null,prog:0,timer:null,imported:false};
+     reason:null,prog:0,timer:null,jt:null,job:null,imported:false};
   MEM={};
   $('scrim').classList.remove('show'); $('toast').classList.remove('show');
   $('notif').classList.remove('show'); $('notifdot').style.display='none';
@@ -472,7 +489,8 @@ function reset(){
 }
 function openWizard(){ $('addmenu').style.display='none'; S.file=null; S.map={};
   S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q=''; go('upload'); }
-function closeWizard(){ if(S.timer){clearInterval(S.timer);S.timer=null;} $('scrim').classList.remove('show'); $('pstep').textContent='entry'; }
+function closeWizard(){ if(S.timer){clearInterval(S.timer);S.timer=null;} S.screen='entry';
+  $('scrim').classList.remove('show'); $('pstep').textContent='entry'; }
 
 function pickFile(k){
   S.file=k; S.map={}; S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q='';
@@ -506,9 +524,9 @@ function todoCols(){ return f().cols_list.filter(function(c){ return unset(c) &&
 /* The download is the loop-closer, so the prototype hands back a real file:
    row_number, the user's own columns untouched, and a how_to_fix column. */
 function csvCell(v){ v=String(v==null?'':v); return /[",\r\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
-function dl(){
-  var d=f(), cols=d.cols_list, rows=[], seen={};
-  groups().forEach(function(g){
+function dl(key){
+  var d=FILES[key||S.file], cols=d.cols_list, rows=[], seen={};
+  d.groups.map(function(k){return G[k];}).forEach(function(g){
     for(var i=0;i<g.count;i++){
       var src=g.rows[i%g.rows.length], rn=src.n+i;
       while(seen[rn]) rn++;
@@ -539,26 +557,84 @@ function startCheck(){
     var lb=$('pcount'); if(lb){ lb.textContent=n(Math.round(f().rows*Math.min(S.prog,100)/100))+' of '+n(f().rows)+' rows'; }
   },190);
 }
+/* ── the result strip ─────────────────────────────────────────────
+   Step 4 used to be a screen. It restated step 3's three numbers in the
+   past tense and offered four buttons. The import is not news: every row
+   was checked before the user committed. So the wizard closes on Import
+   and the list itself is the confirmation. The only thing that has to
+   outlive the dialog is the work that is left, and that lives here. */
+function drawStrip(){
+  var j=S.job, el=$('strip');
+  if(!j){ el.innerHTML=''; return; }
+
+  if(j.running){
+    var pct = Math.min(100, Math.round(j.done/j.ready*100));
+    el.innerHTML = '<div class="strip run">'+
+      '<svg class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>'+
+      '<div class="msg">Importing <strong>'+n(j.ready)+'</strong> prospects from '+esc(j.name)+'. You can carry on working.</div>'+
+      '<span class="ct">'+n(j.done)+' of '+n(j.ready)+'</span>'+
+      '<div class="sbar"><i style="width:'+pct+'%"></i></div></div>';
+    return;
+  }
+
+  var note = '<div class="bn bn-blu xnote" style="margin:12px 20px">'+
+    '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
+    '<div><strong>Changed here.</strong> There is no fourth step any more. The old one restated Review&rsquo;s three numbers in the past tense and offered four buttons. The import is not news: every row was checked before you committed, so the dialog closes and the list itself is the confirmation. Only the unfinished work outlives the dialog, and it sits here until you deal with it or dismiss it. The bell keeps the record either way.</div></div>';
+
+  if(!j.left){ el.innerHTML=note; return; }   // nothing left over, nothing to say
+
+  el.innerHTML = '<div class="strip todo">'+
+    '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'+
+    '<div class="msg"><strong>'+n(j.left)+' rows from '+esc(j.name)+' did not import.</strong> '+
+      (j.fix? n(j.fix)+' need fixing':'')+(j.fix&&j.skip? ', ':'')+(j.skip? n(j.skip)+' were already on file':'')+
+      '. Fix them and bring the same file back; the mapping is remembered.</div>'+
+    '<button class="btn btn-s" type="button" onclick="dl(\''+j.key+'\')">Download '+n(j.left)+' rows</button>'+
+    '<button class="btn btn-p" type="button" onclick="reupload()">Upload the fixed file</button>'+
+    '<button class="x" type="button" onclick="S.job=null;drawStrip()" aria-label="Dismiss">'+
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>'+note;
+}
+
 function doImport(){
+  var d=f(), fx=sum(fixG()), sk=sum(skipG());
   S.imported=true;
-  var d=f();
   MEM[shapeKey(d.cols_list)] = { map: JSON.parse(JSON.stringify(S.map)), when: 'a moment ago' };
+  S.job = { key:S.file, name:d.name, rows:d.rows, ready:d.ready,
+            fix:fx, skip:sk, left:fx+sk, done:0, running:true };
+  closeWizard();
+  drawStrip();
+
+  if(S.jt) clearInterval(S.jt);
+  S.jt = setInterval(function(){
+    S.job.done = Math.min(S.job.ready, S.job.done + Math.ceil(S.job.ready/9));
+    if(S.job.done >= S.job.ready){ clearInterval(S.jt); S.jt=null; finishImport(); }
+    drawStrip();
+  }, 320);
+}
+
+function finishImport(){
+  var j=S.job;
+  j.running=false;
   drawCRM([['Barbara Liskov','barbara@mit.test','Professor','Active','–','MIT'],
            ['Adele Goldberg','adele@parc.test','Researcher','Active','–','Xerox PARC']]);
+  drawStrip();
+
+  /* The bell is the durable record, and the only place the outcome survives
+     once the strip is dismissed. */
   $('notifdot').style.display='block';
-  var fx=sum(fixG()), sk=sum(skipG());
   $('notifbody').innerHTML =
-    '<div class="dot" style="background:'+(fx?'var(--yel-50)':'var(--grn-50)')+'">'+
-    (fx?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
-       :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>')+'</div>'+
-    '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+esc(d.name)+': '+n(d.ready)+' of '+n(d.rows)+' imported</div>'+
-    (fx? '<div class="muted" style="margin-top:3px">'+n(fx)+' rows need fixing'+(sk?', '+n(sk)+' were already on file':'')+'.</div>'+
-         '<div style="display:flex;gap:14px;margin-top:6px"><span class="btn-l" style="font-size:12px">View the '+n(fx+sk)+' rows</span><span class="btn-l" style="font-size:12px">Download</span></div>'
-       : '<div class="muted" style="margin-top:3px">Nothing needed attention.</div>')+
+    '<div class="dot" style="background:'+(j.left?'var(--yel-50)':'var(--grn-50)')+'">'+
+    (j.left?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
+            :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>')+'</div>'+
+    '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+esc(j.name)+': '+n(j.ready)+' of '+n(j.rows)+' imported</div>'+
+    (j.left? '<div class="muted" style="margin-top:3px">'+n(j.fix)+' rows need fixing'+(j.skip?', '+n(j.skip)+' were already on file':'')+'.</div>'+
+             '<div style="display:flex;gap:14px;margin-top:6px"><button class="btn btn-l" type="button" style="font-size:12px;padding:0" onclick="dl(\''+j.key+'\')">Download the '+n(j.left)+'</button></div>'
+           : '<div class="muted" style="margin-top:3px">Nothing needed attention.</div>')+
     '<div class="muted" style="margin-top:5px;font-size:11px">Just now</div></div>';
-  if(fx) toast('amber','<strong>'+n(d.ready)+' of '+n(d.rows)+' prospects imported.</strong> '+n(fx)+' rows need fixing.<br><span style="font-size:12.5px">Download them, or open them from the notification.</span>');
-  else   toast('green','<strong>All '+n(d.ready)+' prospects imported.</strong> Nothing needed attention.');
-  go('done');
+
+  /* Success is news, so it is a toast. What is left over is a standing job,
+     so it is the strip. One or the other, never both saying the same thing. */
+  toast('green','<strong>'+n(j.ready)+' prospect'+(j.ready===1?'':'s')+' imported</strong> from '+esc(j.name)+'.');
+  setTimeout(function(){ $('toast').classList.remove('show'); }, 4500);
 }
 
 /* ═══════════════════ screens ═══════════════════ */
@@ -755,37 +831,6 @@ function scSummary(){
   return hd()+steps('review')+'<div class="rule"></div><div class="m-bd">'+body+'</div><div class="rule"></div>'+ft;
 }
 
-function scDone(){
-  var d=f(), tfx=sum(fixG()), tsk=sum(skipG());
-  var tally='<div class="tally"><div class="r"><span class="n" style="color:var(--grn-700)">'+n(d.ready)+'</span><span style="flex:1;font-size:13.5px;color:var(--g-700)">Imported</span></div>'+
-    (tfx?'<div class="r"><span class="n" style="color:var(--red-700)">'+n(tfx)+'</span><span style="flex:1;font-size:13.5px;color:var(--g-700)">Need fixing, not imported</span></div>':'')+
-    (tsk?'<div class="r"><span class="n" style="color:var(--g-600)">'+n(tsk)+'</span><span style="flex:1;font-size:13.5px;color:var(--g-700)">Skipped, already on file</span></div>':'')+'</div>';
-
-  return '<div class="m-bd" style="padding:30px 26px 24px;gap:19px">'+
-    '<div style="display:flex;align-items:center;gap:13px"><div class="tick">'+
-    '<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>'+
-    '<div><div style="font-size:20px;font-weight:700;line-height:1.25">'+n(d.ready)+' prospect'+(d.ready===1?'':'s')+' imported</div>'+
-    '<div class="muted" style="margin-top:2px">from '+esc(d.name)+', '+n(d.rows)+' rows</div></div></div>'+
-    tally+
-    (tfx||tsk
-      ? '<div class="muted">Every row is accounted for in one of these buckets, and they sum to the '+n(d.rows)+' read at upload. Email verification has started on the '+n(d.ready)+' imported prospects.</div>'
-      : '<div class="muted">Nothing needed your attention. Email verification has started.</div>')+
-    (tfx+tsk?
-      '<div style="background:var(--blue-50);border:1px solid var(--blue-200);border-radius:var(--r-btn);padding:14px 16px;display:flex;flex-direction:column;gap:11px">'+
-      '<div style="font-size:13.5px;line-height:19px;color:var(--blue-900)"><strong>Finish the '+n(tfx+tsk)+' that did not import.</strong> Download them, fix them in Excel, and bring the same file straight back &ndash; the mapping is remembered.</div>'+
-      '<div style="display:flex;gap:10px;flex-wrap:wrap">'+
-      '<button class="btn btn-s" type="button" onclick="dl()">Download '+n(tfx+tsk)+' rows</button>'+
-      '<button class="btn btn-p" type="button" onclick="reupload()">Upload the fixed file</button>'+
-      '</div></div>' : '')+
-    '<div style="display:flex;gap:10px;flex-wrap:wrap">'+
-    '<button class="btn btn-'+(tfx+tsk?'s':'p')+'" type="button" onclick="closeWizard()">View imported prospects</button>'+
-    '<button class="btn btn-s" type="button" onclick="openWizard()">Import another file</button>'+
-    '</div>'+
-    '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-    '<div><strong>This screen holds no new information.</strong> That is the payoff of checking everything first &ndash; it confirms the numbers you already agreed to. Today the equivalent is a green &ldquo;successfully&rdquo; toast whatever happened, with the truth buried in the bell.</div></div>'+
-    '</div>';
-}
-
 function render(){
   var m=$('modal'), sc=$('scrim');
   if(S.screen==='entry'){ sc.classList.remove('show'); return; }
@@ -795,7 +840,6 @@ function render(){
   if(S.screen==='map')      m.innerHTML=scMap();
   if(S.screen==='checking') m.innerHTML=scChecking();
   if(S.screen==='summary')  m.innerHTML=scSummary();
-  if(S.screen==='done')     m.innerHTML=scDone();
   $('pstep').textContent=S.screen;
 }
 
