@@ -427,7 +427,7 @@ var FILES = {
 
 /* ═══════════════════ state ═══════════════════ */
 var S = { screen:'entry', file:null, map:{}, auto:{}, touched:{}, restored:null,
-          pick:null, q:'', verify:true, smart:true, reason:null, prog:0, timer:null, jt:null, job:null, imported:false };
+          pick:null, q:'', verify:true, reason:null, prog:0, timer:null, jt:null, job:null, imported:false };
 
 /* Mapping memory, keyed on the file's header row. Survives one import to the
    next; only "Start over" clears it. */
@@ -490,7 +490,7 @@ function reset(){
   if(S.jt){clearInterval(S.jt);S.jt=null;}
   $('strip').innerHTML='';
   S={screen:'entry',file:null,map:{},auto:{},touched:{},restored:null,pick:null,q:'',
-     verify:true,smart:true,reason:null,prog:0,timer:null,jt:null,job:null,imported:false};
+     verify:true,reason:null,prog:0,timer:null,jt:null,job:null,imported:false};
   MEM={};
   $('scrim').classList.remove('show'); $('toast').classList.remove('show');
   $('notif').classList.remove('show'); $('notifdot').style.display='none';
@@ -825,29 +825,27 @@ function scSummary(){
      explains it in grey text under the name. The name is not the point; the
      rule is, and so is what it saves. Both are stated, and the credit figure
      moves when the rule is switched off. */
-  var recent = d.recent||0, toVerify = S.smart ? Math.max(0, d.ready-recent) : d.ready;
-  var cb = function(on,fn,label,sub){
-    return '<label class="ck"><input type="checkbox"'+(on?' checked':'')+' onchange="'+fn+'">'+
-      '<span><span class="t">'+label+'</span>'+(sub?'<span class="sb">'+sub+'</span>':'')+'</span></label>';
-  };
+  /* Verification. Skipping addresses verified in the last 15 days is not a
+     choice on this screen, it is just what verification does. Nobody has a
+     reason to pay twice for the same address inside a fortnight, so the rule
+     is stated and the window is changed in settings, not here. */
+  var recent = Math.min(d.recent||0, d.ready), toVerify = Math.max(0, d.ready-recent);
   body += '<div class="rule"></div>'+
     '<div class="setr"><div class="k">Tags</div><div class="v">'+
       '<div class="tagin">Add tags to categorize your prospects&hellip;</div></div></div>'+
     '<div class="setr" style="margin-top:2px"><div class="k">Verification</div><div class="v">'+
-      cb(S.verify,'S.verify=this.checked;render()','Verify emails after import',
-         'Unverified addresses bounce, and bounces cost you sender reputation.')+
+      '<label class="ck"><input type="checkbox"'+(S.verify?' checked':'')+' onchange="S.verify=this.checked;render()">'+
+      '<span><span class="t">Verify emails after import</span>'+
+      '<span class="sb">Addresses already verified in the last 15 days are skipped. '+
+      '<span class="lnk">Change the 15 days</span></span></span></label>'+
       (S.verify
-        ? '<div class="sub">'+
-            cb(S.smart,'S.smart=this.checked;render()',
-               'Skip any address already verified in the last 15 days',
-               'Called <em>Smart Verification</em> in settings. <span class="lnk">Change the 15 days</span>')+
-            '<div class="cred'+(S.smart&&recent?' save':'')+'">'+
-              (toVerify===0
-                ? 'Nothing to verify. Every one of these '+n(d.ready)+' was checked in the last 15 days.'
-                : '<strong>'+n(toVerify)+'</strong> of '+n(d.ready)+' will be verified &middot; <strong>'+n(toVerify)+'</strong> credits'+
-                  (S.smart&&recent ? ' &middot; <span class="sv">'+n(recent)+' saved</span>' : ''))+
-            '</div></div>'
-        : '<div class="sub"><div class="cred">No credits will be used. You can verify them later from the prospect list.</div></div>')+
+        ? '<div class="sub"><div class="cred">'+
+            (toVerify===0
+              ? 'Nothing to verify, and nothing to pay. All '+n(d.ready)+' were checked in the last 15 days.'
+              : '<strong>'+n(toVerify)+'</strong> of '+n(d.ready)+' will be verified &middot; <strong>'+n(toVerify)+'</strong> credits'+
+                (recent ? ' &middot; <span class="sv">'+n(recent)+' skipped</span>' : ''))+
+          '</div></div>'
+        : '<div class="sub"><div class="cred">No credits will be used. You can verify these from the prospect list later.</div></div>')+
     '</div></div>';
 
   body += '<div class="bn bn-blu xnote">'+
