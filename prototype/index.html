@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prospect CSV Import — Clickable Prototype</title>
+<title>Prospect CSV Import · Clickable Prototype</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
-/* ══ Saleshandy Design System v3 — tokens from ~/SD (1).html ══ */
+/* ══ Saleshandy Design System v3 – tokens from ~/SD (1).html ══ */
 :root{
   --blue-900:#1E3A8A;--blue-800:#1E40AF;--blue-700:#1D4ED8;--blue-600:#2563EB;
   --blue-200:#BFDBFE;--blue-100:#DBEAFE;--blue-50:#EFF6FF;
@@ -121,6 +121,23 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 .maprow select.err{border-color:var(--red-700);color:var(--red-700)}
 .hdlbl{display:flex;gap:10px;padding-bottom:8px;font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--g-500)}
 
+/* ══ step 2: the field picker ══ */
+.fpick{position:relative;flex:0 0 168px}
+.fpick>button{width:100%;display:flex;align-items:center;gap:6px;text-align:left;font-size:12.5px;padding:7px 9px;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-900)}
+.fpick>button .v{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fpick>button svg{flex:0 0 auto;opacity:.6}
+.fpick.set>button{border-color:var(--blue-700);color:var(--blue-700);font-weight:500}
+.fpick.err>button{border-color:var(--red-700);color:var(--red-700)}
+.fmenu{position:absolute;z-index:30;top:calc(100% + 4px);right:0;width:256px;background:#fff;border:1px solid var(--g-200);border-radius:var(--r-btn);box-shadow:var(--sh-lg);overflow:hidden}
+.fmenu input{display:block;width:100%;border:0;border-bottom:1px solid var(--g-200);padding:9px 11px;font-family:inherit;font-size:12.5px;color:var(--g-900);outline:none}
+.fmenu .list{max-height:208px;overflow:auto;padding:4px}
+.fmenu .opt{display:block;width:100%;text-align:left;border:0;background:transparent;padding:7px 9px;border-radius:var(--r-input);font-size:12.5px;line-height:1.35;color:var(--g-800);white-space:normal}
+.fmenu .opt:hover{background:var(--blue-50);color:var(--blue-800)}
+.fmenu .opt.on{background:var(--blue-50);color:var(--blue-800);font-weight:600}
+.fmenu .none{padding:12px 11px;font-size:12.5px;color:var(--g-500)}
+.maprow.todo{background:var(--yel-50);margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:var(--r-input);border-top-color:transparent}
+.maprow.todo .f{color:var(--yel-900)}
+
 /* progress */
 .bar{height:6px;border-radius:9999px;background:var(--g-200);overflow:hidden}
 .bar>i{display:block;height:6px;border-radius:9999px;background:var(--blue-700);width:0;transition:width .18s linear}
@@ -209,7 +226,7 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 
 <div id="pbar">
   <span class="tag">Prototype</span>
-  <span>Prospect CSV import &mdash; revamped, end to end</span>
+  <span>Prospect CSV import &ndash; revamped, end to end</span>
   <span class="sp"></span>
   <span class="step" id="pstep">entry</span>
   <button type="button" id="noteBtn" onclick="toggleNotes()">Show what changed</button>
@@ -263,7 +280,7 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
   <div id="icard">
     <div class="eb">Saleshandy &middot; prospect CSV import</div>
     <h1>What changes when an import goes wrong</h1>
-    <p>Today the import accepts whatever you upload and tells you nothing until it is over &mdash; and what comes back cannot be matched to the file it came from. This walks the revamped flow end to end, in the real product.</p>
+    <p>Today the import accepts whatever you upload and tells you nothing until it is over &ndash; and what comes back cannot be matched to the file it came from. This walks the revamped flow end to end, in the real product.</p>
     <div class="lbl">Pick a file to start</div>
     <div style="display:flex;flex-direction:column;gap:9px">
       <button class="fopt" type="button" onclick="startWith('messy')">
@@ -289,7 +306,36 @@ table.crm td{padding:10px 14px;border-bottom:1px solid var(--g-100);color:var(--
 <script>
 /* ═══════════════════ prototype data ═══════════════════ */
 var COLS = ['First Name','Last Name','Email','Company','Job Title','Country'];
-var FIELDS = ['— Do not import —','First Name','Last Name','Email','Company','Job Title','Country','Phone Number','LinkedIn'];
+/* Field catalogue, read off the live Map Fields dropdown on 8 Sep 2026.
+   Only labels that rendered in full are listed; the real list is longer and
+   several of its labels are truncated in the product today. */
+var FIELDS = ['Don’t import','First Name','Last Name','Email','Phone Number',
+  'Profile Headline','LinkedIn Profile','Job Title','Department','Industry','Experience',
+  "Person's Seniority",'Decision Role','Projected Salary','Twitter','Facebook','Website',
+  'City','State','Country','Company','Company Website','Company Industry','Is B2B',
+  'Company Size','Company Phone'];
+
+/* What a column header is understood to mean. Today the product matches a
+   narrower set and misses company_name, title and linkedin_url. */
+var SYN = {
+  firstname:'First Name', fname:'First Name', givenname:'First Name',
+  lastname:'Last Name', lname:'Last Name', surname:'Last Name', familyname:'Last Name',
+  email:'Email', emailaddress:'Email', workemail:'Email', mail:'Email', primaryemail:'Email',
+  phone:'Phone Number', phonenumber:'Phone Number', mobile:'Phone Number', tel:'Phone Number',
+  title:'Job Title', jobtitle:'Job Title', position:'Job Title', role:'Job Title', roletitle:'Job Title',
+  company:'Company', companyname:'Company', organisation:'Company', organization:'Company', employer:'Company',
+  linkedin:'LinkedIn Profile', linkedinurl:'LinkedIn Profile', linkedinprofile:'LinkedIn Profile',
+  headline:'Profile Headline', profileheadline:'Profile Headline',
+  department:'Department', industry:'Industry', website:'Website', url:'Website',
+  city:'City', state:'State', region:'State', country:'Country'
+};
+function norm(h){ return String(h).toLowerCase().replace(/[^a-z0-9]/g,''); }
+function autoField(header){
+  var k=norm(header);
+  if(SYN[k]) return SYN[k];
+  for(var i=0;i<FIELDS.length;i++) if(norm(FIELDS[i])===k) return FIELDS[i];
+  return null;
+}
 
 function row(n, cells, badIdx){ return {n:n, cells:cells, bad:badIdx}; }
 
@@ -319,7 +365,7 @@ var G = {
                row(431,['Karen','Sparck Jones','karen@cam.test / ksj@cl.test','Cambridge','Professor','United Kingdom'],2) ] },
   db:  { key:'db', sev:'skip', count:160, label:'Already in your prospect list',
         title:'160 rows already in your prospect list',
-        hint:'No action needed. These are skipped so nothing is overwritten — your existing records keep their data.',
+        hint:'No action needed. These are skipped so nothing is overwritten. Your existing records keep their data.',
         rows:[ row(12,['Ada','Lovelace','ada@analyticalengine.test','Analytical Engine','Mathematician','United Kingdom'],-1),
                row(96,['Grace','Hopper','grace@cobol.test','COBOL Inc','Rear Admiral','United States'],-1),
                row(240,['Alan','Turing','alan@bletchley.test','Bletchley Park','Cryptanalyst','United Kingdom'],-1) ] },
@@ -332,7 +378,8 @@ var G = {
 };
 
 var FILES = {
-  messy: { name:'prospects-q3-outbound.csv', rows:4000, cols:6, cols_list:COLS,
+  messy: { name:'prospects-q3-outbound.csv', rows:4000, cols:6,
+           cols_list:['First Name','Last Name','Work Email','Account Name','Job Role','Country'],
            samples:[['Ada','Grace','Alan'],['Lovelace','Hopper','Turing'],
                     ['ada@analyticalengine.test','adaexample.com','grace@cobol.test'],
                     ['Analytical Engine','Acme','COBOL Inc'],['Mathematician','VP','Rear Admiral'],
@@ -353,7 +400,13 @@ var FILES = {
 };
 
 /* ═══════════════════ state ═══════════════════ */
-var S = { screen:'entry', file:null, map:{}, reason:null, prog:0, timer:null, imported:false };
+var S = { screen:'entry', file:null, map:{}, auto:{}, touched:{}, restored:null,
+          pick:null, q:'', reason:null, prog:0, timer:null, imported:false };
+
+/* Mapping memory, keyed on the file's header row. Survives one import to the
+   next; only "Start over" clears it. */
+var MEM = {};
+function shapeKey(cols){ return cols.join('\u0001'); }
 
 function $(id){ return document.getElementById(id); }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -367,11 +420,11 @@ function mappedTo(field){ for(var c in S.map){ if(S.map[c]===field) return c; } 
 function emailMapped(){ return !!mappedTo('Email'); }
 
 /* ═══════════════════ chrome ═══════════════════ */
-// Sample rows only. Every address is a reserved .test domain — no real prospect data.
+// Sample rows only. Every address is a reserved .test domain. No real prospect data.
 var CRM = [
   ['Ada Lovelace','ada@analyticalengine.test','Mathematician','Completed','Intro Task','Analytical Engine'],
-  ['Grace Hopper','grace@cobol.test','Rear Admiral','Inactive','—','COBOL Inc'],
-  ['Alan Turing','alan@bletchley.test','Cryptanalyst','Inactive','—','Bletchley Park'],
+  ['Grace Hopper','grace@cobol.test','Rear Admiral','Inactive','–','COBOL Inc'],
+  ['Alan Turing','alan@bletchley.test','Cryptanalyst','Inactive','–','Bletchley Park'],
   ['Katherine Johnson','katherine@nasa.test','Mathematician','Completed','New Sequence','NASA'],
   ['Margaret Hamilton','margaret@mit.test','Director of Software','Completed','Intro Task','MIT'],
   ['Radia Perlman','radia@sun.test','Engineer','Active','Intro Task','Sun Microsystems']
@@ -379,7 +432,7 @@ var CRM = [
 function drawCRM(extra){
   var out='';
   (extra||[]).forEach(function(r){
-    out+='<tr style="background:var(--blue-50)"><td><strong>'+esc(r[0])+'</strong></td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td><span class="bdg act">Active</span></td><td>—</td><td>'+esc(r[5])+'</td></tr>';
+    out+='<tr style="background:var(--blue-50)"><td><strong>'+esc(r[0])+'</strong></td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td><span class="bdg act">Active</span></td><td>–</td><td>'+esc(r[5])+'</td></tr>';
   });
   CRM.forEach(function(r){
     out+='<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td><span class="bdg">'+esc(r[3])+'</span></td><td>'+esc(r[4])+'</td><td>'+esc(r[5])+'</td></tr>';
@@ -408,21 +461,47 @@ function showIntro(){ document.getElementById('intro').classList.remove('hide');
 function startWith(k){ closeIntro(); openWizard(); pickFile(k); }
 function reset(){
   if(S.timer){clearInterval(S.timer);S.timer=null;}
-  S={screen:'entry',file:null,map:{},reason:null,prog:0,timer:null,imported:false};
+  S={screen:'entry',file:null,map:{},auto:{},touched:{},restored:null,pick:null,q:'',
+     reason:null,prog:0,timer:null,imported:false};
+  MEM={};
   $('scrim').classList.remove('show'); $('toast').classList.remove('show');
   $('notif').classList.remove('show'); $('notifdot').style.display='none';
   $('notifbody').innerHTML='<span class="muted">Nothing yet. Run an import.</span>';
   $('addmenu').style.display='none'; $('pstep').textContent='entry';
   drawCRM(); showIntro();
 }
-function openWizard(){ $('addmenu').style.display='none'; S.file=null; S.map={}; go('upload'); }
+function openWizard(){ $('addmenu').style.display='none'; S.file=null; S.map={};
+  S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q=''; go('upload'); }
 function closeWizard(){ if(S.timer){clearInterval(S.timer);S.timer=null;} $('scrim').classList.remove('show'); $('pstep').textContent='entry'; }
 
 function pickFile(k){
-  S.file=k; S.map={};
-  f().cols_list.forEach(function(c){ S.map[c] = FIELDS.indexOf(c)>-1 ? c : '— Do not import —'; });
+  S.file=k; S.map={}; S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q='';
+  var cols=f().cols_list, remembered=MEM[shapeKey(cols)];
+  if(remembered){
+    cols.forEach(function(c){ S.map[c]=remembered.map[c] || 'Don’t import'; });
+    S.restored = remembered.when;
+  } else {
+    cols.forEach(function(c){
+      var m=autoField(c);
+      S.map[c] = m || 'Don’t import';
+      if(m) S.auto[c]=true;
+    });
+  }
   render();
 }
+/* Same shape of file, so pickFile finds the mapping in MEM and restores it. */
+function reupload(){ openWizard(); }
+
+function setField(col,val){ S.map[col]=val; S.touched[col]=true; S.pick=null; S.q=''; render(); }
+function openPick(col){ S.pick = (S.pick===col?null:col); S.q=''; render();
+  var el=document.getElementById('fq'); if(el) el.focus(); }
+function clearMapping(){
+  S.restored=null; S.auto={}; S.touched={};
+  f().cols_list.forEach(function(c){ var m=autoField(c); S.map[c]=m||'Don’t import'; if(m) S.auto[c]=true; });
+  render();
+}
+function unset(c){ return S.map[c]==='Don’t import'; }
+function todoCols(){ return f().cols_list.filter(function(c){ return unset(c) && !S.touched[c]; }); }
 
 /* The download is the loop-closer, so the prototype hands back a real file:
    row_number, the user's own columns untouched, and a how_to_fix column. */
@@ -463,8 +542,9 @@ function startCheck(){
 function doImport(){
   S.imported=true;
   var d=f();
-  drawCRM([['Barbara Liskov','barbara@mit.test','Professor','Active','—','MIT'],
-           ['Adele Goldberg','adele@parc.test','Researcher','Active','—','Xerox PARC']]);
+  MEM[shapeKey(d.cols_list)] = { map: JSON.parse(JSON.stringify(S.map)), when: 'a moment ago' };
+  drawCRM([['Barbara Liskov','barbara@mit.test','Professor','Active','–','MIT'],
+           ['Adele Goldberg','adele@parc.test','Researcher','Active','–','Xerox PARC']]);
   $('notifdot').style.display='block';
   var fx=sum(fixG()), sk=sum(skipG());
   $('notifbody').innerHTML =
@@ -503,7 +583,7 @@ function scUpload(){
       '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/><path d="M20 16.7A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 14.9"/></svg>'+
       '<div style="font-size:14px;color:var(--g-600)">Drag &amp; drop your CSV with prospect details</div></div>'+
       '<div class="bn bn-blu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-      '<div><strong>Prototype</strong> &mdash; choose a sample file to continue.'+
+      '<div><strong>Prototype</strong> &ndash; choose a sample file to continue.'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:11px">'+
       Object.keys(FILES).map(function(k){ return '<button class="chip" type="button" onclick="pickFile(\''+k+'\')">'+esc(FILES[k].name)+'</button>'; }).join('')+
       '</div></div></div>';
@@ -524,34 +604,71 @@ function scUpload(){
     '<button class="btn btn-p" type="button" '+(S.file?'onclick="go(\'map\')"':'disabled')+'>Next</button></div>';
 }
 
+function fpick(col){
+  var cur = S.map[col], open = S.pick===col, set = !unset(col);
+  var q = norm(S.q||''), list = FIELDS.filter(function(fl){ return !q || norm(fl).indexOf(q)>-1; });
+  var cid = col.replace(/'/g,"\\'");
+  var out = '<div class="fpick'+(set?' set':'')+'">'+
+    '<button type="button" onclick="openPick(\''+cid+'\')">'+
+    '<span class="v">'+esc(set?cur:'Select field')+'</span>'+
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>';
+  if(open){
+    out += '<div class="fmenu">'+
+      '<input id="fq" type="text" placeholder="Search '+FIELDS.length+' fields…" value="'+esc(S.q)+'" '+
+      'oninput="S.q=this.value;render()" onclick="event.stopPropagation()">'+
+      '<div class="list">'+
+      (list.length
+        ? list.map(function(fl){
+            return '<button type="button" class="opt'+(fl===cur?' on':'')+'" onclick="setField(\''+cid+'\',this.textContent)">'+esc(fl)+'</button>';
+          }).join('')
+        : '<div class="none">No field matches “'+esc(S.q)+'”. You can create a custom field instead.</div>')+
+      '</div></div>';
+  }
+  return out+'</div>';
+}
+
 function scMap(){
-  var d=f(), ok=emailMapped();
-  var rows = d.cols_list.map(function(c,i){
+  var d=f(), ok=emailMapped(), cols=d.cols_list, todo=todoCols(),
+      matched = cols.length - todo.length;
+
+  var rows = cols.map(function(c,i){
     var isEmail = S.map[c]==='Email';
-    var cls = 'maprow'+(isEmail?' req':'');
-    var sel = '<select onchange="S.map[\''+c.replace(/'/g,"\\'")+'\']=this.value;render()" class="'+(S.map[c]!=='— Do not import —'?'set':'')+'">'+
-      FIELDS.map(function(fl){ return '<option'+(S.map[c]===fl?' selected':'')+'>'+esc(fl)+'</option>'; }).join('')+'</select>';
+    var cls = 'maprow'+(isEmail?' req':(todo.indexOf(c)>-1?' todo':''));
     return '<div class="'+cls+'"><span class="f">'+esc(c)+(isEmail?' <span style="color:var(--red-700)">*</span>':'')+'</span>'+
-      '<span class="s">'+d.samples[i].map(esc).join(' &middot; ')+'</span>'+sel+'</div>';
+      '<span class="s">'+d.samples[i].map(esc).join(' &middot; ')+'</span>'+fpick(c)+'</div>';
   }).join('');
+
+  /* The header line is the whole point of this step: say how much is already
+     done, so the eye goes straight to what is not. */
+  var lead;
+  if(S.restored){
+    lead = '<div class="bn bn-grn">'+
+      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>'+
+      '<div style="flex:1"><strong>Mapping restored.</strong> You imported a file with these same columns '+esc(S.restored)+
+      ', so all '+cols.length+' are already set the way you set them then.'+
+      '<div style="margin-top:7px"><button class="btn btn-l" type="button" onclick="clearMapping()" style="padding:0;font-size:12.5px">Clear and map again</button></div></div></div>';
+  } else if(todo.length){
+    lead = '<div class="bn bn-amb">'+
+      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
+      '<div><strong>'+matched+' of '+cols.length+' columns matched automatically.</strong> Set the '+
+      (todo.length===1?'one highlighted below':todo.length+' highlighted below')+
+      ', and we will remember all '+cols.length+' for the next file with these columns.</div></div>';
+  } else {
+    lead = '<div class="bn bn-grn">'+
+      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'+
+      '<div>All '+cols.length+' columns matched automatically. Nothing to set.</div></div>';
+  }
 
   var warn = ok ? '' :
     '<div class="bn bn-red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'+
     '<div><strong>Map a column to Email to continue.</strong><div style="margin-top:3px">Email is how Saleshandy identifies a prospect, so every row needs one. '+
     (d.blocked?'This file has no email column at all, so none of its '+n(d.rows)+' rows can be imported. Go back and choose a different file, or add an email column to this one.':'Pick the column that holds email addresses.')+'</div></div></div>';
 
-  var reqrow = ok ? '' :
-    '<div class="maprow bad"><span class="f" style="color:var(--red-900)">Email <span style="color:var(--red-700)">*</span></span>'+
-    '<span class="s" style="color:var(--red-800)">required, not mapped</span>'+
-    '<select class="err" onchange="if(this.value!==\'\'){S.map[this.value]=\'Email\';}render()">'+
-    '<option value="">Choose a column…</option>'+
-    d.cols_list.map(function(c){ return '<option value="'+esc(c)+'">'+esc(c)+'</option>'; }).join('')+'</select></div>';
-
-  return hd()+steps('map')+'<div class="rule"></div><div class="m-bd">'+warn+
-    '<div><div class="hdlbl"><span style="flex:0 0 112px">Fields from file</span><span style="flex:1">First 3 rows</span><span style="flex:0 0 138px;text-align:right">Field</span></div>'+
-    rows+reqrow+'</div>'+
+  return hd()+steps('map')+'<div class="rule"></div><div class="m-bd">'+(ok?lead:warn)+
+    '<div><div class="hdlbl"><span style="flex:0 0 112px">Fields from file</span><span style="flex:1">First 3 rows</span><span style="flex:0 0 168px;text-align:right">Field</span></div>'+
+    rows+'</div>'+
     '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-    '<div><strong>Changed here.</strong> Three sample rows instead of one, and <strong>no validity ticks</strong> &mdash; nothing has been checked yet, so nothing claims it has. Today a green tick sits beside <span class="mono">adaexample.com</span>, which is rejected 90 seconds later.</div></div>'+
+    '<div><strong>Changed here.</strong> Verified live on 8 Sep: today <span class="mono">company_name</span>, <span class="mono">title</span> and <span class="mono">linkedin_url</span> all arrive unmapped, the field list is a long scroll with truncated labels and no working search, and re-importing the identical file a minute later loses every choice you made. Three sample rows instead of one, and <strong>no validity ticks</strong> &ndash; nothing has been checked yet, so nothing claims it has.</div></div>'+
     '</div><div class="rule"></div>'+
     '<div class="m-ft"><span class="sp"></span>'+
     '<button class="btn btn-g" type="button" onclick="go(\'upload\')">Back</button>'+
@@ -626,7 +743,7 @@ function scSummary(){
 
   body += '<div class="bn bn-blu xnote">'+
     ic('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>','#1E3A8A',17)+
-    '<div><strong>Changed here.</strong> Today this step is called Review and Import and contains no review &mdash; a tag box and two checkboxes. It now leads with the outcome: one number, the proportion of the file it represents, and the exceptions sitting next to the download that resolves them. The rows themselves are never rendered, which is what keeps this a dialog at any file size.</div></div>';
+    '<div><strong>Changed here.</strong> Today this step is called Review and Import and contains no review &ndash; a tag box and two checkboxes. It now leads with the outcome: one number, the proportion of the file it represents, and the exceptions sitting next to the download that resolves them. The rows themselves are never rendered, which is what keeps this a dialog at any file size.</div></div>';
 
   var ft = '<div class="m-ft">'+
     '<button class="btn btn-s" type="button" onclick="go(\'map\')">'+
@@ -655,7 +772,7 @@ function scDone(){
       : '<div class="muted">Nothing needed your attention. Email verification has started.</div>')+
     (tfx+tsk?
       '<div style="background:var(--blue-50);border:1px solid var(--blue-200);border-radius:var(--r-btn);padding:14px 16px;display:flex;flex-direction:column;gap:11px">'+
-      '<div style="font-size:13.5px;line-height:19px;color:var(--blue-900)"><strong>Finish the '+n(tfx+tsk)+' that did not import.</strong> Download them, fix them in Excel, and bring the same file straight back &mdash; the mapping is remembered.</div>'+
+      '<div style="font-size:13.5px;line-height:19px;color:var(--blue-900)"><strong>Finish the '+n(tfx+tsk)+' that did not import.</strong> Download them, fix them in Excel, and bring the same file straight back &ndash; the mapping is remembered.</div>'+
       '<div style="display:flex;gap:10px;flex-wrap:wrap">'+
       '<button class="btn btn-s" type="button" onclick="dl()">Download '+n(tfx+tsk)+' rows</button>'+
       '<button class="btn btn-p" type="button" onclick="reupload()">Upload the fixed file</button>'+
@@ -665,7 +782,7 @@ function scDone(){
     '<button class="btn btn-s" type="button" onclick="openWizard()">Import another file</button>'+
     '</div>'+
     '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-    '<div><strong>This screen holds no new information.</strong> That is the payoff of checking everything first &mdash; it confirms the numbers you already agreed to. Today the equivalent is a green &ldquo;successfully&rdquo; toast whatever happened, with the truth buried in the bell.</div></div>'+
+    '<div><strong>This screen holds no new information.</strong> That is the payoff of checking everything first &ndash; it confirms the numbers you already agreed to. Today the equivalent is a green &ldquo;successfully&rdquo; toast whatever happened, with the truth buried in the bell.</div></div>'+
     '</div>';
 }
 
@@ -683,6 +800,7 @@ function render(){
 }
 
 document.addEventListener('click',function(e){
+  if(S.pick && !e.target.closest('.fpick')){ S.pick=null; S.q=''; render(); }
   if(!e.target.closest('#addmenu') && !e.target.closest('#hdr .btn-p')) $('addmenu').style.display='none';
   if(!e.target.closest('#notif') && !e.target.closest('#hdr .btn-s')) $('notif').classList.remove('show');
 });
