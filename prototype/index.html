@@ -696,6 +696,21 @@ function clearMapping(){
 }
 function unset(c){ return S.map[c]==='Don’t import'; }
 /* Nothing for Map Fields to ask: restored, every column decided, Email mapped. */
+/* Sequence import, Map Fields: fields the sequence's steps need that no column is mapped to.
+   Prospects move through every step, so this covers all steps, not only the one picked on Review.
+   A warning: Next stays enabled (D11). Moved here from Review on Hitesh's call, 6 Nov. */
+function seqNeedsBanner(){
+  if(!isSeq()) return '';
+  var miss=SEQ.steps.filter(function(x){ return x.need && !mappedTo(x.need.field); });
+  if(!miss.length) return '';
+  var fields=miss.map(function(x){return x.need.field;}).join(' or ');
+  var steps=miss.map(function(x){return (x.need.task==='call'?'a call step':'a '+x.need.task+' step')+' (Step '+x.n+')';}).join(' and ');
+  var verbs=miss.map(function(x){return x.need.verb;}).join(' or ');
+  var one=miss.length===1;
+  return '<div class="bn bn-amb" role="status"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'+
+    '<div><strong>No column is mapped to '+fields+'.</strong> '+esc(SEQ.name)+' has '+steps+', so '+(one?'its '+miss[0].need.task+' tasks':'those tasks')+' will have nothing to '+verbs+'. '+
+    'If your file has '+(one? miss[0].need.what+'s' : 'them')+', set '+(one?'that column':'those columns')+' above. You can still import without '+(one?'it':'them')+'.</div></div>';
+}
 function quick(){ return !!(S.file && f() && !f().reject && S.restored && emailMapped() && todoCols().length===0); }
 function todoCols(){ return f().cols_list.filter(function(c){ return unset(c) && !S.touched[c]; }); }
 
@@ -1029,6 +1044,7 @@ function scMap(){
     rows+'</div>'+
     /* After Import: kept from production (6 Nov). The option's own text is shown
        under the select instead of only on hover. */
+    seqNeedsBanner()+
     '<div class="cfg"><label class="k" for="cafield">After Import</label><div class="v">'+
       '<select id="cafield" onchange="S.ca=this.value;render()">'+
       CA.map(function(o){ return '<option value="'+o.k+'"'+(o.k===S.ca?' selected':'')+'>'+o.label+'</option>'; }).join('')+
@@ -1110,13 +1126,11 @@ function scSummary(){
 
   var rows=[], row=function(kind,html,btn){ return {k:kind, h:'<div class="row'+(kind?' '+kind:'')+'"><div class="tx">'+html+'</div>'+(btn||'')+'</div>'}; };
   /* What the chosen step needs from each prospect: a warning, the rows still import. */
-  if(isSeq() && st.need && added){
-    var has=!!mappedTo(st.need.field), miss=has? Math.round(added*0.3) : added;
-    rows.push(row('w', has
-      ? '<b>'+n(miss)+' have no '+st.need.what+'</b><span class="s">Their '+st.need.task+' task will have nothing to '+st.need.verb+'. They still import, and the download lists them.</span>'
-      : '<b>No '+st.need.what+'s for the '+st.need.task+' step</b><span class="s">No column is mapped to '+st.need.field+', so all '+n(added)+' '+st.need.task+' tasks will have nothing to '+st.need.verb+'.</span>',
-      has? '' : '<button class="btn btn-s" type="button" onclick="go(\'map\')">Map a '+st.need.col+' column</button>'));
-  }
+  /* Some rows lack what a step ahead needs. Unmapped fields are flagged on Map Fields instead. */
+  if(isSeq() && added) SEQ.steps.slice(S.step||0).forEach(function(x){
+    if(!x.need || !mappedTo(x.need.field)) return;
+    rows.push(row('w', '<b>'+n(Math.round(added*0.3))+' have no '+x.need.what+'</b><span class="s">Their '+x.need.task+' task (Step '+x.n+') will have nothing to '+x.need.verb+'. They still import, and the download lists them.</span>'));
+  });
   /* Plan limit: only new prospects count (catalogue G03-066, G03-078). */
   if(ov) rows.push(row('', full
       ? '<b>Your plan has no room for new prospects</b><span class="s">Upgrade, or delete prospects you no longer need, then import again.</span>'

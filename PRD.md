@@ -57,7 +57,7 @@ Not claimed: fewer tickets or failed imports. Neither has a baseline.
 | D8 | One release | Nothing lands early; carries D1's risk |
 | D9 | Mapping remembered by header set, ignoring our three columns; account-wide | Teammates with identical headers share it (§12 Q4) |
 | D10 | Sequence import: the step is picked on Review, not Map Fields (reverses production) | Map Fields no longer shows the destination |
-| D11 | Rows missing what the step needs (phone, LinkedIn) are warned about, not held back | Email-only prospects still land in call steps, as today, but the user is told |
+| D11 | Missing step needs are warned about, not held back: an unmapped field (phone, LinkedIn) on Map Fields, covering every step; rows with empty cells on Review | Email-only prospects still land in call steps, as today, but the user is told |
 | D12 | A fully restored mapping skips Map Fields | Changing a column means Review mapping or Back |
 
 ## 6. Surfaces
@@ -84,7 +84,7 @@ Exact copy for every state below: [COPY.md](COPY.md), same section numbers; ever
 - Quote any cell with `,` `"` `;` tab or line break (LibreOffice and European Excel split on `;`, reproduced 6 Nov). UTF-8 with BOM. `{name}-rows-to-fix.csv`.
 - Delete the unused reasons `NoUpdate`, `NoOverwrite`, `ProspectInCallDNC`, `ContactInDncList`.
 
-**6.8 Import into a sequence.** Same dialog. Entry blocked if the sequence has no steps. Review starts with "Import into [Step · type]"; the headline counts prospects added to the step (new plus existing, as production). Lines for existing prospects added, and those turned away (another sequence per the admin setting, already in this sequence, bounced or unsubscribed). Step-needs warning in the box. Button "Add {n} to Step {k}".
+**6.8 Import into a sequence.** Same dialog. Entry blocked if the sequence has no steps. Review starts with "Import into [Step · type]"; the headline counts prospects added to the step (new plus existing, as production). Lines for existing prospects added, and those turned away (another sequence per the admin setting, already in this sequence, bounced or unsubscribed). Map Fields warns when no column is mapped to a field the sequence's steps need (every step, not only the one picked). Review's box warns only about rows with that field empty. Button "Add {n} to Step {k}".
 
 **6.9 Bringing a file back.** Headers match a confirmed mapping, every column decided, Email mapped: Upload says "Mapping restored" and Next becomes "Check {rows} rows", skipping Map Fields.
 
@@ -111,7 +111,7 @@ Exact copy for every state below: [COPY.md](COPY.md), same section numbers; ever
 | A17 | 390px wide | Map rows stack; no sideways scroll; footer buttons full width, primary last; toast never covers the footer | P1 |
 | A18 | Every footer at 1440px | Gray secondary left of primary, 16px apart; Back on Map and Review, Cancel on Upload | P2 |
 | A19 | Map two columns to Email | Second pick moves it and says so | P1 |
-| A20 | Sequence import, step changed Email to Call, no phone column | Headline, lines, button update at once; warning offers Map a phone column | P1 |
+| A20 | Sequence import with a call and a LinkedIn step, no phone or LinkedIn column | Map Fields warns naming both fields and steps; Next stays enabled; mapping a phone column drops the call step from the warning; Review shows no unmapped-field row | P1 |
 | A21 | Sequence import, prospects in another sequence, admin setting off | Counted on Review before Import; "In another sequence" in the file; toast counts only those added | P0 |
 | A22 | Upload the fixed file from A5 | "Mapping restored"; "Check {rows} rows" lands on Review without Map Fields | P1 |
 
