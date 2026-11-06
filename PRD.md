@@ -1,6 +1,6 @@
 # PRD: Prospect CSV import errors users can understand and fix
 
-**Design of record:** [prototype](https://product-team-sh.github.io/prd-prospect-csv-import/prototype/) (commit [`998e84b`](https://github.com/product-team-sh/prd-prospect-csv-import/commit/998e84b)) · **Copy:** [COPY.md](COPY.md) · **Status:** Draft, design sign-off pending
+**Design of record:** [prototype](https://product-team-sh.github.io/prd-prospect-csv-import/prototype/) (commit [`998e84b`](https://github.com/product-team-sh/prd-prospect-csv-import/commit/998e84b)) · **Copy:** [COPY.md](COPY.md), rendered in [copy.html](https://product-team-sh.github.io/prd-prospect-csv-import/copy.html) · **Status:** Draft, design sign-off pending
 
 Card: [Self-Understandable / Self-Diagnosable Error Message for PROSPECT CSV upload Module](https://app.basecamp.com/4378325/buckets/22269754/card_tables/cards/10153297291). Code read 6 Nov 2026: webui `f9425f2`, edge `23c74c8`, background-jobs `7d18274`.
 
@@ -62,7 +62,7 @@ Not claimed: fewer tickets or failed imports. Neither has a baseline.
 
 ## 6. Surfaces
 
-Exact copy for every state below: [COPY.md](COPY.md), same section numbers.
+Exact copy for every state below: [COPY.md](COPY.md), same section numbers; every string rendered on its surface in [copy.html](https://product-team-sh.github.io/prd-prospect-csv-import/copy.html).
 
 **6.1 Upload.** Reject a bad file in the drop zone with its name, reason and fix; Next stays disabled; no toasts or "Oops!". Every check that today fails only after Import (duplicate headers, mixed separators, leading empty line, upper-case `.CSV`) runs here.
 
@@ -70,7 +70,7 @@ Exact copy for every state below: [COPY.md](COPY.md), same section numbers.
 
 **6.3 Checking.** Progress in rows; "Nothing has been imported yet"; one Cancel.
 
-**6.4 Review.** The number first, then plain grey lines for what Import will do. Below, one box with only what needs the user, one row each with its action: step-needs warning, over the plan limit, rows to fix. Clean file: no box. No bar, no coloured dots. States: plan limit, plan full, credits short, another import running (known on arrival, Import disabled), Import failed (dialog stays, "Import again"), every row fails (Download is primary, Upload fixed file on the left; a dominant reason suggests checking the Email mapping).
+**6.4 Review.** The number first, then plain grey lines for what Import will do. Below, one box with only what needs the user, one row each with its action: step-needs warning, over the plan limit, rows to fix. Clean file: no box. No bar, no coloured dots. States: plan limit, plan full, credits short, another import running (known on arrival, Import disabled), Import failed (dialog stays, "Import again"), every row fails (Download is primary, Upload fixed file on the left; a dominant reason suggests checking the Email mapping). When the download holds more than the rows to fix, the fix row says what else is in it.
 
 **6.5 After Import.** Production's progress card, closed when finished (today it then claims every row imported). Toast for what was added; strip on the list for what's left, with Download and Upload fixed rows; bell keeps both. Counts come from the import.
 

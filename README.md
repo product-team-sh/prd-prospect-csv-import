@@ -4,10 +4,10 @@ Backlog P0 card: [Self-Understandable / Self-Diagnosable Error Message for PROSP
 
 | | |
 |---|---|
-| **[Clickable prototype](https://product-team-sh.github.io/prd-prospect-csv-import/prototype/)** | The revamped module end to end. List import, sequence import, and every failure state |
-| **[PRD](PRD.md)** | Draft, design sign-off pending: problem, 12 decisions, what each screen must do, 22 acceptance criteria, measurement, open questions |
-| **[Copy spec](COPY.md)** | Every string that ships, the rows-to-fix file rules, and all 19 errors with their code sites |
-| **[Design canvas](https://product-team-sh.github.io/prd-prospect-csv-import/)** | 13 artboards (8 Sep): every screen, the reason taxonomy, and how this reconciles with the brief |
+| **[PRD](https://product-team-sh.github.io/prd-prospect-csv-import/)** | The site's front page: requirements and the copy spec in one document. Draft, design sign-off pending. Source: [PRD.md](PRD.md) and [COPY.md](COPY.md) |
+| **[Clickable prototype](https://product-team-sh.github.io/prd-prospect-csv-import/prototype/)** | List import, sequence import, and every failure state |
+| **[Copy deck](https://product-team-sh.github.io/prd-prospect-csv-import/copy.html)** | Every message rendered on its real surface, built from the prototype's styles |
+| **[Design canvas](https://product-team-sh.github.io/prd-prospect-csv-import/canvas/)** | 13 artboards (8 Sep), moved from the site root on 6 Nov |
 
 Scope: before anything is imported, the user sees what Import will do and, in one box, only the rows that need them, each with its action. Rows that need fixing come back as the user's own file: `row_number`, `error`, `how_to_fix`, then their columns, filterable by error. The fixed file comes straight back with its mapping restored.
 

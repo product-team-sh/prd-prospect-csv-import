@@ -1,6 +1,6 @@
 # Copy spec: Prospect CSV import errors
 
-Companion to [PRD.md](PRD.md). Every string here ships as written; `{…}` are values. Section numbers match the PRD's §6. Code links: webui `f9425f2`, edge `23c74c8`, background-jobs `7d18274` (read 6 Nov 2026).
+Companion to [PRD.md](PRD.md). **See every string rendered on its surface: [copy.html](copy.html)** (built from the prototype's styles). Every string here ships as written; `{…}` are values. Section numbers match the PRD's §6. Code links: webui `f9425f2`, edge `23c74c8`, background-jobs `7d18274` (read 6 Nov 2026).
 
 ### 6.1 Upload file
 
@@ -36,29 +36,24 @@ Every check that today runs only after Import (duplicate headers, mixed separato
 
 ### 6.4 Review and Import
 
-**Layout (Hitesh, 6 Nov):** the number first, then plain grey lines for what Import will do (rows already in the list, repeats, and in a sequence import the rows turned away). Below them, one box holding only what needs the user, one row each with its own action: step-needs warning (amber), over the plan limit [Upgrade plan], rows to fix [Download]. A clean file has no box. No progress bar, no coloured dots, no note under the download. Colour appears only inside the box.
+The number first, then plain grey lines for what Import will do. Below, one box with only what needs the user, one row each with its action. A clean file has no box. No bar, no coloured dots. See it rendered: [copy.html §6.4](copy.html#s6-4).
 
-| Line | Copy |
+| Element | Copy |
 |---|---|
-| Headline | {n} new prospects will be added, from {rows} rows |
-| Already in list | {n} already in your list {outcome}. After Import: {option}. Change. Outcomes: Add Missing Fields "will get their empty fields filled from your file"; Update All Fields "will be updated from your file. A blank cell clears the existing value"; Overwrite "will have their filled-in fields updated from your file"; Skip Existing "will be left unchanged" |
-| Repeated | {n} repeated in this file. Only the first of each will be imported. |
-| Over limit | {n} new prospects are over your plan's prospect limit and won't be added. |
-| Need fixing | {n} need fixing: {count} {error name} · … (§6.7 names, lower case) [Download {n} rows] |
-| Clean file | Nothing needs your attention. |
-
-| State | When | Copy and behaviour |
-|---|---|---|
-| Plan limit | New prospects exceed room | Row in the box: **{over} new prospects are over your plan's limit.** Your plan has room for {room} more; rows already in your list don't count. Upgrade to add all {n}, or import now and bring the other {over} back later. [Upgrade plan] |
-| Plan full | Room is 0 | Headline in neutral grey, not green. "Your plan has no room for new prospects. Upgrade, or delete prospects you no longer need, then import again." Import disabled unless there are rows to update |
-| Credits short | Verification on, credits < new prospects | You need up to {n} credits and have {have}. Add credits, or untick this to import now and verify later. [Add credits]. Import disabled, as today |
-| Another import running | Known when Review opens | **Another import is still running: {file}, {pct}% done.** Only one import runs at a time. You can import this file when it finishes; your file and mapping stay here. [Check again]. Import disabled |
-| Import failed | Connection drops or server error after Import | **The import didn't start. The connection dropped.** Nothing was imported. Your file and mapping are kept here. Check your connection and click Import again. Button becomes "Import again" |
-| Quota used meanwhile | Room hit 0 after Review loaded | Your plan's prospect limit was reached while you were importing. Nothing was imported. Upgrade, or delete prospects you no longer need, then click Import again. |
-| Every row fails | 0 rows importable | "0 of {rows} rows can be imported. Every row needs fixing." Footer: Upload fixed file (left link), Back, Download {n} rows (primary) |
-| One reason dominates | Every row fails and over 50% share one error | Inside the fix row: {n} of {rows} have the same problem, which often means the wrong column is mapped to Email. [Check the mapping] |
-
-Button: "Import {n} new prospects"; "Update {n} prospects" when there are no new ones; "Importing…" while sending. Failure messages sit above the footer; the dialog never closes on failure. Verification always shows the credit balance. "Change the 15 days" for admins only; others see "Ask your account owner to change this."
+| Headline | {n} new prospects will be added |
+| Already in list | {n} already in your list {outcome}. [Change]. Outcomes: Add Missing Fields "will get their empty fields filled from your file"; Update All Fields "will be updated from your file. A blank cell clears the existing value"; Overwrite "will have their filled-in fields updated from your file"; Skip Existing Prospects "will be left unchanged" |
+| Repeated | {n} repeated rows: only the first of each is imported. |
+| Clean file | Every row is ready. |
+| Box row: rows to fix | **{n} rows need fixing** / {count} {error name} · … (§6.7 names, lower case) [Download {n} rows]. When the file holds more: "The download also lists the {m} over your plan's limit." or "…the {m} not added to the step." |
+| Box row: over the limit | **{over} new prospects are over your plan's limit** / Your plan has room for {room} more; rows already in your list don't count. Upgrade to add all {n}, or import now and bring the other {over} back later. [Upgrade plan] |
+| Box row: plan full | Headline in grey. **Your plan has no room for new prospects** / Upgrade, or delete prospects you no longer need, then import again. [Upgrade plan]. Import disabled unless rows can be updated |
+| Every row fails | Headline "0" in red, "of {rows} rows can be imported". Box row **{n} rows need fixing** with reasons; when one reason covers over half: "{n} of {rows} have the same problem, which often means the wrong column is mapped to Email." [Check the mapping] |
+| Credits short | You need up to {n} credits and have {have}. Add credits, or untick this to import now and verify later. [Add credits]. Import disabled |
+| Another import running | **Another import is still running: {file}, {pct}% done.** Only one import runs at a time. You can import this file when it finishes; your file and mapping stay here. [Check again]. Import disabled |
+| Import failed | **The import didn't start. The connection dropped.** Nothing was imported. Your file and mapping are kept here. Check your connection and click Import again. Button becomes "Import again" |
+| Limit reached meanwhile | **Your plan's prospect limit was reached while you were importing.** Nothing was imported. Upgrade, or delete prospects you no longer need, then click Import again. |
+| Verification | "Change the 15 days" for admins; others see "Ask your account owner to change this." The credit balance always shows |
+| Buttons | "Import {n} new prospects"; "Update {n} prospects" when none are new; "Importing…" while sending |
 
 ### 6.5 After Import
 
@@ -127,8 +122,9 @@ Same dialog, Upload and Map Fields as the list import ([sequence path today](htt
 | Entry | Sequence with no steps: blocked before the dialog opens, "Add at least one step to this sequence before adding prospects." [Go to Steps] |
 | Map Fields | No step picker (production has one here; it moves to Review) |
 | Review, first row | "Import into [Step 1 · Email ▾]", in Review's settings layout. Options name the step type ("Step 2 · LinkedIn connection request"). Default: the lowest step number, as production ([map-fields.tsx L92-L99](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/map-fields.tsx#L92-L99)). Changing it updates every line below at once |
-| Headline | "{n} prospects will be added to Step {k}, from {rows} rows". Counts new plus existing, because production adds existing prospects to the step under every After Import option |
-| Lines | "{n} already in your list will be added too, and {outcome}." · Step needs (amber): "{n} have no phone number, so their call task will have nothing to dial. They still import; the download lists them." When no column is mapped to the field: "{n} have no phone number: no column is mapped to Phone Number, so every call task will have nothing to dial." [Map a phone column] or pick another step. Same for LinkedIn steps (LinkedIn profile URL, "nothing to open") · "{n} are in another sequence and won't be added. Your admin setting allows one sequence per prospect." [Change setting], admins only · "{n} are already in this sequence and won't be added again." · "{n} bounced or unsubscribed before and won't be added." · Repeated and need fixing as the list import |
+| Headline | "{n} prospects will be added to Step {k}". Counts new plus existing, because production adds existing prospects to the step under every After Import option |
+| Lines | "{n} of them are already in your list; they {outcome}." [Change] · "{n} already in your list won't be added: {a} are in another sequence, {b} are in this one, {c} bounced or unsubscribed." [Admin setting] · repeated, as the list import |
+| Box row: step needs (amber) | No column mapped: **No phone numbers for the call step** / No column is mapped to Phone Number, so all {n} call tasks will have nothing to dial. [Map a phone column]. Some missing: **{n} have no phone number** / Their call task will have nothing to dial. They still import, and the download lists them. LinkedIn steps: "LinkedIn profile URLs", "LinkedIn tasks", "nothing to open", [Map a LinkedIn column] |
 | Button | "Add {n} to Step {k}" |
 | Download | Includes the rows not added (errors 13 to 17) and, when only some rows lack it, the step-needs warnings "No phone for call step", "No LinkedIn URL for LinkedIn step" |
 | After | Toast "{n} added to Step {k} of {sequence} from {file}." Strip on the sequence's Prospects tab, adding "The download also lists the {n} saved but not added to Step {k}." Bell "{file}: {n} added to Step {k} of {sequence}, {m} not added". Email subject "Import finished: {file} into {sequence}" |

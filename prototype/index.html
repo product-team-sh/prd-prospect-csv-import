@@ -1126,7 +1126,9 @@ function scSummary(){
   if(tfx){
     /* One reason behind most rows usually means the wrong column is mapped to Email. */
     var big=fixG().slice().sort(function(x,y){return y.count-x.count;})[0], dom=none && big && big.count/d.rows>0.5;
+    var more=[ov&&!full? n(ov)+' over your plan’s limit':'', so.all? n(so.all)+' not added to the step':''].filter(Boolean).join(' and ');
     rows.push(row('', '<b>'+n(tfx)+' rows need fixing</b><span class="s">'+reasons+'</span>'+
+      (more && !none? '<span class="s">The download also lists the '+more+'.</span>' : '')+
       (dom? '<span class="s hint">'+n(big.count)+' of '+n(d.rows)+' have the same problem, which often means the wrong column is mapped to Email. <button class="lnkb" type="button" onclick="go(\'map\')">Check the mapping</button></span>' : ''),
       none? '' : dlB(dln)));
   }
