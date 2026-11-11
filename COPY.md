@@ -10,7 +10,8 @@ A rejected file (Hitesh, 11 Nov): centred in the drop zone like the other Upload
 
 | State | Check knows | Title | Fix |
 |---|---|---|---|
-| Accepted | Rows and columns parsed | {file} · {rows} rows · {columns} columns | |
+| Accepted | Rows and columns parsed | {file}, then "{rows} rows · {columns} columns" | |
+| Preview caption | First 3 rows parsed | "First 3 of {rows} rows"; 3 rows or fewer: "All {rows} rows" ("1 row"). Adds " · scroll sideways for all {columns} columns" only when the table is wider than the dialog | |
 | Excel file | Extension .xlsx or .xls | Excel files can't be imported | In Excel, choose **File › Save As** and pick **CSV UTF-8 (Comma delimited)**. |
 | Other type, or no extension | Any other extension | This file type can't be imported | Only CSV files can be imported. Save or export it as a CSV. |
 | Too large | Over 95 MB | This file is over 95 MB | Split it into smaller files, or remove columns you don't need. |

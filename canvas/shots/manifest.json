@@ -12,7 +12,7 @@
   "sec": "Upload",
   "id": "u02",
   "title": "File accepted",
-  "cap": "Rows and columns stated; Next enabled",
+  "cap": "One file line, then its first 3 rows as read; Next enabled",
   "file": "u02.png",
   "phone": false,
   "page": false
@@ -110,7 +110,7 @@
  {
   "sec": "Upload: rejected files",
   "id": "u13",
-  "title": "Can\u2019t be read",
+  "title": "Can’t be read",
   "cap": "Says only what the check knows; the drop zone stays live",
   "file": "u13.png",
   "phone": false,
@@ -147,7 +147,7 @@
   "sec": "Map Fields",
   "id": "m03",
   "title": "Mapping restored",
-  "cap": "Same columns as last time; our three columns set to Don\u2019t import",
+  "cap": "Same columns as last time; our three columns set to Don’t import",
   "file": "m03.png",
   "phone": false,
   "page": false
@@ -326,7 +326,7 @@
  {
   "sec": "Review and Import",
   "id": "r10",
-  "title": "Importing\u2026",
+  "title": "Importing…",
   "cap": "The button while the file is sent",
   "file": "r10.png",
   "phone": false,
@@ -372,7 +372,7 @@
   "sec": "Import into a sequence",
   "id": "s01",
   "title": "Into an email step",
-  "cap": "Step picked on Review; who won\u2019t be added and why",
+  "cap": "Step picked on Review; who won’t be added and why",
   "file": "s01.png",
   "phone": false,
   "page": false
@@ -408,7 +408,7 @@
   "sec": "Import into a sequence",
   "id": "s05",
   "title": "After a sequence import",
-  "cap": "Strip on the sequence\u2019s Prospects tab",
+  "cap": "Strip on the sequence’s Prospects tab",
   "file": "s05.png",
   "phone": false,
   "page": true
@@ -417,7 +417,7 @@
   "sec": "Import into a sequence",
   "id": "s06",
   "title": "Notifications after a sequence import",
-  "cap": "Added to the step, and how many weren\u2019t",
+  "cap": "Added to the step, and how many weren’t",
   "file": "s06.png",
   "phone": false,
   "page": true
@@ -426,7 +426,7 @@
   "sec": "After Import",
   "id": "a01",
   "title": "Importing",
-  "cap": "Production\u2019s progress card, top right on every page",
+  "cap": "Production’s progress card, top right on every page",
   "file": "a01.png",
   "phone": false,
   "page": true
@@ -489,7 +489,7 @@
   "sec": "Email and the file",
   "id": "e02",
   "title": "Email: every row failed",
-  "cap": "Never \u201cCongratulations\u201d",
+  "cap": "Never “Congratulations”",
   "file": "e02.png",
   "phone": false,
   "page": false
@@ -507,7 +507,7 @@
   "sec": "Email and the file",
   "id": "f01",
   "title": "The rows-to-fix file",
-  "cap": "row_number, error, how_to_fix, then the user\u2019s own columns",
+  "cap": "row_number, error, how_to_fix, then the user’s own columns",
   "file": "f01.png",
   "phone": false,
   "page": false
