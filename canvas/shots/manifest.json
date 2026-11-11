@@ -246,7 +246,7 @@
   "sec": "Review and Import",
   "id": "r01",
   "title": "Review",
-  "cap": "What Import will do, then one box with what needs you",
+  "cap": "One row per outcome; colour and a button only on rows that need you",
   "file": "r01.png",
   "phone": false,
   "page": false
@@ -255,7 +255,7 @@
   "sec": "Review and Import",
   "id": "r02",
   "title": "Clean file",
-  "cap": "No box at all",
+  "cap": "One row: every row is ready",
   "file": "r02.png",
   "phone": false,
   "page": false

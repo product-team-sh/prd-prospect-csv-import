@@ -42,18 +42,18 @@ Every check that today runs only after Import (duplicate headers, mixed separato
 
 ### 5.4 Review and Import
 
-The number first, then plain grey lines for what Import will do. Below, one box with only what needs the user, one row each with its action. A clean file has no box. No bar, no coloured dots. See it rendered: [copy.html §5.4](copy.html#s5-4).
+Every outcome is one row: grey icon, number, sentence. Colour and a button only on rows that need the user: red to fix, amber for the plan limit or a step's needs. No boxes, no bar. Tags and Verification below, unchanged. See it rendered: [copy.html §5.4](copy.html#s5-4).
 
 | Element | Copy |
 |---|---|
-| Headline | {n} new prospects will be added |
-| Already in list | {n} already in your list {outcome}. [Change]. Outcomes: Add Missing Fields "will get their empty fields filled from your file"; Update All Fields "will be updated from your file. A blank cell clears the existing value"; Overwrite "will have their filled-in fields updated from your file"; Skip Existing Prospects "will be left unchanged" |
+| First row | **{n}** new prospects will be added / {rows} rows checked in {file} |
+| Already in list | {n} already in your list {outcome}. [Change]. Outcomes: Add Missing Fields "will get their empty fields filled"; Update All Fields "will be updated. A blank cell clears the existing value"; Overwrite "will have their filled-in fields updated"; Skip Existing Prospects "will be left unchanged" |
 | Repeated | {n} repeated rows: only the first of each is imported. |
-| Clean file | Every row is ready. |
-| Box row: rows to fix | **{n} rows need fixing** / {count} {error name} · … (§5.7 names, lower case) [Download {n} rows]. When the file holds more: "The download also lists the {m} over your plan's limit." or "…the {m} not added to the step." |
-| Box row: over the limit (amber: the account, not the file) | **{over} new prospects are over your plan's limit** / Your plan has room for {room} more; rows already in your list don't count. Upgrade to add all {n}, or import now and bring the other {over} back later. [Upgrade plan] |
-| Box row: plan full (amber) | Headline in grey. **Your plan has no room for new prospects** / Upgrade, or delete prospects you no longer need, then import again. [Upgrade plan]. Import disabled unless rows can be updated |
-| Every row fails | Headline "0" in red, "of {rows} rows can be imported". Box row **{n} rows need fixing** with reasons; when one reason covers over half: "{n} of {rows} have the same problem, which often means the wrong column is mapped to Email." [Check the mapping] |
+| Clean file | The first row only; its second line ends "Every row is ready." |
+| Red row: rows to fix | **{n} rows need fixing** / {count} {error name} · … (§5.7 names, lower case) [Download {n} rows]. When the file holds more: "The download also lists the {m} over your plan's limit." or "…the {m} not added to the step." |
+| Amber row: over the limit (the account, not the file) | **{over} new prospects are over your plan's limit** / Your plan has room for {room} more; rows already in your list don't count. [Upgrade plan] |
+| Amber row: plan full | First row: "No new prospects will be added". **Your plan has no room for new prospects** / Upgrade, or delete prospects you no longer need, then import again. [Upgrade plan]. Import disabled unless rows can be updated |
+| Every row fails | First row "**0** of {rows} rows can be imported", grey. Red row **{n} rows need fixing** with reasons; when one reason covers over half: "{n} of {rows} have the same problem, which often means the wrong column is mapped to Email." [Check the mapping] |
 | Credits short | You need up to {n} credits and have {have}. Add credits, or untick this to import now and verify later. [Add credits]. Import disabled |
 | Another import running | **Another import is still running: {file}, {pct}% done.** Only one import runs at a time. You can import this file when it finishes; your file and mapping stay here. [Check again]. Import disabled |
 | Import failed | **The import didn't start. The connection dropped.** Nothing was imported. Your file and mapping are kept here. Check your connection and click Import again. Button becomes "Import again" |
@@ -128,9 +128,9 @@ Same dialog, Upload and Map Fields as the list import ([sequence path today](htt
 | Entry | Sequence with no steps: blocked before the dialog opens, "Add at least one step to this sequence before adding prospects." [Go to Steps] |
 | Map Fields | No step picker (production has one here; it moves to Review) |
 | Review, first row | "Import into [Step 1 · Email ▾]", in Review's settings layout. Options name the step type ("Step 2 · LinkedIn connection request"). Default: the lowest step number, as production ([map-fields.tsx L92-L99](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/map-fields.tsx#L92-L99)). Changing it updates every line below at once |
-| Headline | "{n} prospects will be added to Step {k}". Counts new plus existing, because production adds existing prospects to the step under every After Import option |
-| Lines | "{n} of them are already in your list; they {outcome}." [Change] · "{n} already in your list won't be added: {a} are in another sequence, {b} are in this one, {c} bounced or unsubscribed." [Admin setting] · repeated, as the list import |
-| Box row: step needs (amber) | Only when the field is mapped but some rows are empty: **{n} have no phone number** / Their call task (Step {k}) will have nothing to dial. They still import, and the download lists them. Same for LinkedIn ("LinkedIn profile URL", "LinkedIn task", "nothing to open"). Covers every step from the chosen one on |
+| First row | "**{n}** prospects will be added to Step {k}". Counts new plus existing, because production adds existing prospects to the step under every After Import option |
+| Rows | "{n} of them are already in your list and {outcome}." [Change] · grey row "**{n}** already in your list won't be added" / {a} are in another sequence, {b} are in this one, {c} bounced or unsubscribed. [Admin setting] · repeated, as the list import |
+| Amber row: step needs | Only when the field is mapped but some rows are empty: **{n} have no phone number** / Their call task (Step {k}) will have nothing to dial. They still import, and the download lists them. Same for LinkedIn ("LinkedIn profile URL", "LinkedIn task", "nothing to open"). Covers every step from the chosen one on |
 | Map Fields: step needs (amber, Hitesh 6 Nov) | When no column is mapped to a field a step needs, above After Import: **No column is mapped to {fields}.** {sequence} has {a call step (Step 3) and a LinkedIn step (Step 2)}, so {its call tasks / those tasks} will have nothing to {dial / open}. If your file has {phone numbers / them}, set {that column / those columns} above. You can still import without {it / them}. Covers every step in the sequence; Next stays enabled |
 | Button | "Add {n} to Step {k}" |
 | Download | Includes the rows not added (errors 13 to 17) and, when only some rows lack it, the step-needs warnings "No phone for call step", "No LinkedIn URL for LinkedIn step" |

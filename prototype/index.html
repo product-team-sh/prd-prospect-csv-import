@@ -284,6 +284,20 @@ body.mopen #toast{bottom:auto;top:50px}
 #async .v{font-size:12px;font-weight:500;line-height:16px;color:var(--blue-700);background:none;border:0;padding:0;text-align:left;cursor:pointer;align-self:flex-start}
 #async .v[disabled]{color:var(--g-500);cursor:default}
 #async .x{border:0;background:none;padding:0;color:var(--g-500);display:flex;align-self:flex-start;cursor:pointer}
+/* Review verdict, icon list (11 Nov, direction E) */
+.rv-l{display:flex;flex-direction:column}
+.rv-l .it{display:flex;gap:12px;align-items:flex-start;padding:11px 0;font-size:13.5px;line-height:20px;color:var(--g-700)}
+.rv-l .it+.it{border-top:1px solid var(--g-100)}
+.rv-l .it.lead{padding-top:0}.rv-l .it.lead b{font-size:15px}
+.rv-l .ic{width:20px;height:20px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;background:var(--g-100)}
+.rv-l .tx{flex:1;min-width:0}.rv-l .tx .s{display:block;font-size:12.5px;line-height:18px;color:var(--g-500);margin-top:2px}
+.rv-l .tx .s .s.hint,.rv-l .tx .s.hint{display:block;margin-top:6px}
+.rv-l .it b{font-weight:600;color:var(--g-900);font-variant-numeric:tabular-nums}
+.rv-l .it.fx .ic{background:var(--red-100)}.rv-l .it.fx b{color:var(--red-800)}.rv-l .it.fx .tx .s{color:var(--red-800)}
+.rv-l .it.ov .ic{background:#FEF3C7}.rv-l .it.ov b{color:var(--yel-900)}.rv-l .it.ov .tx .s{color:var(--yel-900)}
+.rv-l .it .btn{flex:0 0 auto;align-self:center}
+.rv-l .tx .lnkb{font-size:inherit}
+@media(max-width:720px){.rv-l .it{flex-wrap:wrap;row-gap:10px}.rv-l .it .tx{flex:1 1 calc(100% - 32px)}.rv-l .it .btn{margin-left:32px}}
 /* File preview on Upload (11 Nov, direction A) */
 .pvf{display:flex;align-items:center;gap:12px}
 .pvf .ic{flex:0 0 auto;width:36px;height:36px;border-radius:var(--r-btn);background:var(--grn-50);border:1px solid var(--grn-200);display:grid;place-items:center}
@@ -1151,64 +1165,56 @@ function scSummary(){
   var so = seqOut(), exIn = ex - so.all;  // sequence: existing prospects turned away, and those added
   var added = fit + (isSeq()? exIn : 0), st = stp(), dln = act + so.all;
 
-  body += '<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">'+
-          '<span style="font-size:13px;font-weight:600;color:var(--g-700)">'+esc(d.name)+'</span>'+
-          '<span class="muted">'+n(d.rows)+' rows checked</span></div>';
   /* Sequence: the step comes first, because every number below depends on it. */
   if(isSeq() && !none) body += '<div class="setr"><label class="k" for="stepsel" style="padding-top:7px">Import into</label><div class="v">'+
       '<select id="stepsel" onchange="S.step=+this.value;render()" style="min-width:260px">'+
       SEQ.steps.map(function(x,i){ return '<option value="'+i+'"'+(i===(S.step||0)?' selected':'')+'>Step '+x.n+' · '+x.type+'</option>'; }).join('')+
       '</select></div></div>';
 
-  /* ── The verdict (direction B, Hitesh 6 Nov): what Import will do, in plain grey
-     lines, then one box holding only what needs the user, each row with its action.
-     Colour appears only in that box. A clean file has no box. ── */
   var DLP='<path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>';
   var dlB=function(cnt){ return '<button class="btn btn-s" type="button" onclick="dl()">'+ic(DLP,'currentColor',14)+'Download '+n(cnt)+' rows</button>'; };
-  var head = none
-    ? '<div class="hd"><span class="n" style="color:var(--red-700)">0</span><span class="t">of '+n(d.rows)+' rows can be imported</span></div>'
-    : isSeq()
-      ? '<div class="hd"><span class="n"'+(added?'':' style="color:var(--g-700)"')+'>'+n(added)+'</span><span class="t">prospect'+(added===1?'':'s')+' will be added to Step '+st.n+'</span></div>'
-      : '<div class="hd"><span class="n"'+(fit?'':' style="color:var(--g-700)"')+'>'+n(fit)+'</span><span class="t">new prospect'+(fit===1?'':'s')+' will be added</span></div>';
-
+  /* ── The verdict, icon list (Hitesh, 11 Nov, direction E): one row pattern for every outcome,
+     grey icon, number, sentence. Colour and a button appear only on rows that need the user:
+     red to fix, amber for the plan limit or a step's needs. Tags and Verification below, unchanged. ── */
+  var IC={ok:'<path d="M20 6 9 17l-5-5"/>', upd:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+          skip:'<path d="M5 12h14"/>', away:'<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>', alert:'<path d="M12 7v6"/><path d="M12 16.5h.01"/>'};
   var reasons = fixG().map(function(g){ return n(g.count)+' '+(SHORT[g.key]||g.label.toLowerCase()); }).join(' · ');
-  var chg=' <button class="lnkb" type="button" onclick="go(\'map\')">Change</button>', also=[];
-  if(isSeq()){
-    if(exIn) also.push('<b>'+n(exIn)+'</b> of them are already in your list; they '+ca().fut+'.'+chg);
-    if(so.all) also.push('<b>'+n(so.all)+'</b> already in your list won’t be added: '+
-      [so.other? so.other+' are in another sequence':'', so.same? so.same+' are in this one':'', so.bounce? so.bounce+' bounced or unsubscribed':''].filter(Boolean).join(', ')+'.'+
-      ' <button class="lnkb" type="button" onclick="elsewhere(\'Settings › Admin Settings › Prospects (admins only)\')">Admin setting</button>');
-  } else if(ex) also.push('<b>'+n(ex)+'</b> already in your list '+ca().fut+'.'+chg);
-  if(du) also.push('<b>'+n(du)+'</b> repeated rows: only the first of each is imported.');
-  if(!none && !also.length && !act && !(isSeq() && st.need)) also.push('Every row is ready.');
-
-  var rows=[], row=function(kind,html,btn){ return {k:kind, h:'<div class="row'+(kind?' '+kind:'')+'"><div class="tx">'+html+'</div>'+(btn||'')+'</div>'}; };
-  /* What the chosen step needs from each prospect: a warning, the rows still import. */
-  /* Some rows lack what a step ahead needs. Unmapped fields are flagged on Map Fields instead. */
+  var chg=' <button class="lnkb" type="button" onclick="go(\'map\')">Change</button>';
+  var rows=[], it=function(kind,icon,html,sub,btn){
+    var col = kind==='fx'?'#B91C1C':kind==='ov'?'#92400E':'var(--g-600)';
+    rows.push('<div class="it'+(kind?' '+kind:'')+'"><span class="ic">'+ic(IC[icon],col,12)+'</span><div class="tx">'+html+(sub?'<span class="s">'+sub+'</span>':'')+'</div>'+(btn||'')+'</div>'); };
+  var lead = none ? '<b>0</b> of '+n(d.rows)+' rows can be imported'
+    : isSeq() ? '<b>'+n(added)+'</b> prospect'+(added===1?'':'s')+' will be added to Step '+st.n
+    : fit ? '<b>'+n(fit)+'</b> new prospect'+(fit===1?'':'s')+' will be added' : 'No new prospects will be added';
+  var clean = !none && !ex && !du && !act && !so.all && !(isSeq() && st.need);
+  it('lead', none?'away':'ok', lead, n(d.rows)+' rows checked in '+esc(d.name)+(clean?'. Every row is ready.':''));
+  if(isSeq()){ if(exIn) it('','upd','<b>'+n(exIn)+'</b> of them are already in your list and '+ca().fut.replace(' from your file','')+'.'+chg); }
+  else if(ex) it('','upd','<b>'+n(ex)+'</b> already in your list '+ca().fut.replace(' from your file','')+'.'+chg);
+  if(du) it('','skip','<b>'+n(du)+'</b> repeated rows: only the first of each is imported');
+  /* Sequence: prospects already in the list that the step turns away. Grey: nothing is wrong with them. */
+  if(isSeq() && so.all) it('','away','<b>'+n(so.all)+'</b> already in your list won’t be added',
+      [so.other? so.other+' are in another sequence':'', so.same? so.same+' are in this one':'', so.bounce? so.bounce+' bounced or unsubscribed':''].filter(Boolean).join(', ')+
+      '. <button class="lnkb" type="button" onclick="elsewhere(\'Settings › Admin Settings › Prospects (admins only)\')">Admin setting</button>');
+  /* What a step ahead needs: the rows still import. Unmapped fields are flagged on Map Fields instead. */
   if(isSeq() && added) SEQ.steps.slice(S.step||0).forEach(function(x){
     if(!x.need || !mappedTo(x.need.field)) return;
-    rows.push(row('w', '<b>'+n(Math.round(added*0.3))+' have no '+x.need.what+'</b><span class="s">Their '+x.need.task+' task (Step '+x.n+') will have nothing to '+x.need.verb+'. They still import, and the download lists them.</span>'));
+    it('ov','alert','<b>'+n(Math.round(added*0.3))+'</b> have no '+x.need.what,'Their '+x.need.task+' task (Step '+x.n+') will have nothing to '+x.need.verb+'. They still import, and the download lists them.');
   });
-  /* Plan limit: only new prospects count (catalogue G03-066, G03-078). */
-  /* A plan limit is about the account, not the file: amber, like the step-needs warning; red stays for rows to fix. */
-  if(ov) rows.push(row('w', full
-      ? '<b>Your plan has no room for new prospects</b><span class="s">Upgrade, or delete prospects you no longer need, then import again.</span>'
-      : '<b>'+n(ov)+' new prospects are over your plan’s limit</b><span class="s">Your plan has room for '+n(S.room)+' more; rows already in your list don’t count. Upgrade to add all '+n(fit+ov)+', or import now and bring the other '+n(ov)+' back later.'+
-        (tfx? '' : ' <button class="lnkb" type="button" onclick="dl()">Download the '+n(dln)+' rows</button>')+'</span>',
-      '<button class="btn btn-s" type="button" onclick="elsewhere(\'Settings › Billing › Upgrade plan\')">Upgrade plan</button>'));
+  /* Plan limit: only new prospects count (catalogue G03-066, G03-078). Amber: about the account, not the file. */
+  var upB='<button class="btn btn-s" type="button" onclick="elsewhere(\'Settings › Billing › Upgrade plan\')">Upgrade plan</button>';
+  if(ov) it('ov','alert', full ? 'Your plan has no room for new prospects' : '<b>'+n(ov)+'</b> new prospects are over your plan’s limit',
+      full ? 'Upgrade, or delete prospects you no longer need, then import again.'
+           : 'Your plan has room for '+n(S.room)+' more; rows already in your list don’t count.'+(tfx? '' : ' <button class="lnkb" type="button" onclick="dl()">Download the '+n(dln)+' rows</button>'), upB);
   if(tfx){
     /* One reason behind most rows usually means the wrong column is mapped to Email. */
     var big=fixG().slice().sort(function(x,y){return y.count-x.count;})[0], dom=none && big && big.count/d.rows>0.5;
     var more=[ov&&!full? n(ov)+' over your plan’s limit':'', so.all? n(so.all)+' not added to the step':''].filter(Boolean).join(' and ');
-    rows.push(row('', '<b>'+n(tfx)+' rows need fixing</b><span class="s">'+reasons+'</span>'+
-      (more && !none? '<span class="s">The download also lists the '+more+'.</span>' : '')+
+    it('fx','alert','<b>'+n(tfx)+'</b> rows need fixing', reasons+
+      (more && !none? '. The download also lists the '+more+'.' : '')+
       (dom? '<span class="s hint">'+n(big.count)+' of '+n(d.rows)+' have the same problem, which often means the wrong column is mapped to Email. <button class="lnkb" type="button" onclick="go(\'map\')">Check the mapping</button></span>' : ''),
-      none? '' : dlB(dln)));
+      none? '' : dlB(dln));
   }
-  var kinds=rows.map(function(r){return r.k;}), box='';
-  if(rows.length) box='<div class="nd'+(kinds.indexOf('w')<0? '' : (kinds.indexOf('')<0? ' warn' : ' mixed'))+'">'+rows.map(function(r){return r.h;}).join('')+'</div>';
-
-  body += '<div class="rd">'+head+(also.length? '<ul class="also">'+also.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>' : '')+'</div>'+box;
+  body += '<div class="rv-l">'+rows.join('')+'</div>';
 
   if(!none && !full){
     body += '<div class="rule"></div>'+
@@ -1244,7 +1250,7 @@ function scSummary(){
 
   body += '<div class="bn bn-blu xnote">'+
     ic('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>','#1E3A8A',17)+
-    '<div><strong>Changed here (6 Nov).</strong> What Import will do comes first, in plain lines. Below it, one box holds only what needs you, each row with its own action; a clean file has no box. Rows already in your list follow the After Import choice. The download holds only rows the user has to act on. Switch the account state in the top bar to see the plan limit, low credits, a failed Import and a second import running; pick webinar-signups.csv for a file where nothing can be imported. Today these end in a stuck “Importing...” button, an empty “Oops!”, or a green toast for an import that never started.</div></div>';
+    '<div><strong>Changed here (11 Nov).</strong> Every outcome is one row in the same pattern: grey icon, number, sentence. Colour and a button appear only on rows that need you: red to fix, amber for the plan limit or what a step needs. Tags and Verification are unchanged, below the rule.</div></div>';
 
   var blocked = creditShort() || S.scen==='busy';
   /* The button names what the headline counts: new prospects. Updates are stated
