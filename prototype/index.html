@@ -269,6 +269,13 @@ body.mopen #toast{bottom:auto;top:50px}
 .fmenu.up{top:auto;bottom:calc(100% + 4px)}
 .restored{display:flex;gap:8px;align-items:flex-start;max-width:470px;font-size:13px;line-height:1.5;color:var(--grn-900);text-align:left}
 .restored svg{flex:0 0 auto;margin-top:2px}
+.rjc{border-style:dashed;border-color:var(--red-200);background:var(--red-50);padding:26px 28px 20px;gap:0}
+.rjc-fn{font-size:13px;color:var(--g-600);margin-top:10px}
+.rjc-t{font-size:15px;font-weight:600;line-height:22px;color:var(--red-900);margin-top:4px;text-wrap:balance}
+.rjc-fix{font-size:13.5px;line-height:21px;color:var(--g-800);max-width:440px;margin-top:6px;text-wrap:balance}
+.rjc-fix b{font-weight:600;color:var(--g-900)}
+.rjc-sep{width:100%;max-width:440px;height:1px;background:var(--red-200);margin:18px 0 14px}
+.rjc-drop{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 8px;align-items:center;text-align:center;font-size:13.5px;color:var(--g-600)}.rjc-drop svg{flex:0 0 auto}
 .fmenu .opt .uc{color:var(--g-500);font-weight:400}
 #async{position:absolute;top:74px;right:24px;z-index:90;width:250px}
 #async .card{display:flex;align-items:center;gap:8px;padding:12px;background:#fff;border:1px solid var(--g-100);border-radius:4px;box-shadow:2px 2px 16px -3px rgba(4,21,76,.16)}
@@ -293,6 +300,7 @@ body.mopen #toast{bottom:auto;top:50px}
       <option value="credits">1,000 verification credits left</option>
       <option value="fail">Import fails (connection drops)</option>
       <option value="busy">Another import is running</option>
+      <option value="quota">Limit reached during import</option>
     </select></label>
   <span class="step" id="pstep">entry</span>
   <button type="button" id="noteBtn" onclick="toggleNotes()">Show what changed</button>
@@ -509,6 +517,16 @@ var FILES = {
   /* Rejected on Upload. Copy from the error catalogue rows G03-059 and G03-060. */
   xlsx:  { name:'contacts-export.xlsx', reject:'xlsx' },
   dupehdr:{ name:'event-leads.csv', reject:'dupe' },
+  /* The other Upload rejections (COPY.md §6.1), reachable from "Other rejected files" on Upload. */
+  r_type:{ name:'leads.numbers', reject:'type', more:1 },
+  r_size:{ name:'crm-export.csv', reject:'size', more:1 },
+  r_rows:{ name:'all-leads-2026.csv', reject:'rows', more:1 },
+  r_cols:{ name:'hubspot-export.csv', reject:'cols', more:1 },
+  r_empty:{ name:'template.csv', reject:'empty', more:1 },
+  r_blank:{ name:'event-leads.csv', reject:'blank', more:1 },
+  r_sep:{ name:'leads-eu.csv', reject:'sep', more:1 },
+  r_utf:{ name:'kontakte.csv', reject:'utf', more:1 },
+  r_read:{ name:'q4-leads.csv', reject:'read', more:1 },
   allbad:{ name:'webinar-signups.csv', rows:500, cols:4, cols_list:['First Name','Last Name','Email','Company'],
            samples:[['Ada','Grace','Alan'],['Lovelace','Hopper','Turing'],['adaexample.com','(empty)','gracehopper.test'],['Analytical Engine','COBOL Inc','Bletchley Park']],
            groups:['at2','empty2'], ready:0 }
@@ -852,20 +870,22 @@ function drawStrip(){
 var IERR = {
   fail:{ t:'The import didn’t start. The connection dropped.',
          b:'Nothing was imported. Your file and mapping are kept here. Check your connection and click Import again.' },
+  quota:{ t:'Your plan’s prospect limit was reached while you were importing.',
+         b:'Nothing was imported. Upgrade, or delete prospects you no longer need, then click Import again.' },
   busy:{ t:'Another import is still running: leads-october.csv, 62% done.',
          b:'Only one import runs at a time. You can import this file when it finishes; your file and mapping stay here.' }
 };
 function doImport(){
   if(S.importing) return;
   if(S.scen==='busy') return;
-  if(S.scen==='fail' && !S.ierr){
+  if((S.scen==='fail'||S.scen==='quota') && !S.ierr){
     S.importing=true; render();
     setTimeout(function(){ S.importing=false; S.ierr=S.scen; render(); }, 1100);
     return;
   }
   var d=f(), fx=sum(fixG()), ov=overN(), fit=fitN();
   S.imported=true; S.ierr=null;
-  if(S.scen==='fail'){ S.scen='normal'; $('scen').value='normal'; }   // the retry goes through
+  if(S.scen==='fail'||S.scen==='quota'){ S.scen='normal'; $('scen').value='normal'; }   // the retry goes through
   MEM[shapeKey(d.cols_list)] = { map: JSON.parse(JSON.stringify(S.map)), when: 'a moment ago', ca:S.ca, confirmed:true };
   if(limited()) S.room = Math.max(0, S.room-fit);
   var so=seqOut();
@@ -938,22 +958,38 @@ function scUpload(){
       '<div class="bn bn-blu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
       '<div><strong>Prototype</strong> &ndash; choose a sample file to continue.'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:11px">'+
-      Object.keys(FILES).filter(function(k){return k!=='fixed';}).map(function(k){ return '<button class="chip" type="button" onclick="pickFile(\''+k+'\')">'+esc(FILES[k].name)+'</button>'; }).join('')+
+      Object.keys(FILES).filter(function(k){return k!=='fixed' && !FILES[k].more;}).map(function(k){ return '<button class="chip" type="button" onclick="pickFile(\''+k+'\')">'+esc(FILES[k].name)+'</button>'; }).join('')+
+      '<select class="chip" aria-label="Other rejected files" onchange="if(this.value)pickFile(this.value)"><option value="">Other rejected files…</option>'+
+      Object.keys(FILES).filter(function(k){return FILES[k].more;}).map(function(k){ return '<option value="'+k+'">'+({type:'Wrong file type',size:'Over 95 MB',rows:'Over 100,000 rows',cols:'Over 120 columns',empty:'No prospects',blank:'Columns with no name',sep:'Mixed separators',utf:'Not UTF-8',read:'Can’t be read'})[FILES[k].reject]+'</option>'; }).join('')+'</select>'+
       '</div></div></div>';
   } else if(f().reject){
-    /* Rejected on Upload: said in the drop zone, with the file's own facts and the way out. No toast. */
-    var R = f().reject==='xlsx'
-      ? {t:'This is an Excel file (.xlsx), so it can’t be imported as it is.',
-         b:'In Excel, choose File › Save As › CSV UTF‑8 (Comma delimited), then upload that file.'}
-      : {t:'This file can’t be used yet: two columns are both named “Email” (columns C and F).',
-         b:'Rename or delete one of them, save the file, and upload it again.'};
-    body = '<div class="drop bad" role="alert">'+
-      '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9.5 12.5 5 5"/><path d="m14.5 12.5-5 5"/></svg>'+
-      '<div style="font-size:14px;font-weight:600">'+esc(f().name)+'</div>'+
-      '<div style="font-size:13.5px;line-height:1.5;color:var(--red-900);max-width:470px;text-wrap:balance"><strong>'+R.t+'</strong> '+R.b+'</div>'+
-      '<button class="btn btn-s" type="button" onclick="S.file=null;render()">Choose another file</button></div>'+
+    /* Rejected on Upload (Hitesh, 11 Nov): centred like every other Upload state, and the drop zone
+       stays live for the fixed file. Copy says only what the check knows: pre-select.tsx knows the
+       extension and limits, select-file.tsx only that headers repeat, never which or where. */
+    var XL='In Excel, choose <b>File › Save As</b> and pick <b>CSV UTF‑8 (Comma delimited)</b>.';
+    var R = {
+      xlsx:{t:'Excel files can’t be imported', fix:XL},
+      type:{t:'This file type can’t be imported', fix:'Only CSV files can be imported. Save or export it as a CSV.'},
+      size:{t:'This file is over 95 MB', fix:'Split it into smaller files, or remove columns you don’t need.'},
+      rows:{t:'This file has more than 100,000 rows', fix:'Split it into files of 100,000 rows or fewer, and upload them one at a time.'},
+      cols:{t:'This file has more than 120 columns', fix:'Remove the columns you don’t need.'},
+      empty:{t:'This file has no prospects', fix:'It has column names but no rows. Add the prospects under the header row.'},
+      dupe:{t:'Some columns have the same name', fix:'Each column needs its own name so we know where it goes. Rename or delete the repeated columns, then save the file.'},
+      blank:{t:'Some columns have no name', fix:'Every column needs a name in the first row. Name the empty ones, or delete those columns.'},
+      sep:{t:'The header row mixes separators', fix:'Use one separator throughout, or put quotes around headers that contain a comma.'},
+      utf:{t:'This file isn’t saved as UTF‑8', fix:XL},
+      read:{t:'We couldn’t read this file', fix:'If it’s open in Excel or still syncing, close it or wait, then try again.'}
+    }[f().reject];
+    body = '<div class="drop rjc" role="alert">'+
+      '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9.5 12.5 5 5"/><path d="m14.5 12.5-5 5"/></svg>'+
+      '<div class="rjc-fn">'+esc(f().name)+'</div>'+
+      '<div class="rjc-t">'+R.t+'</div>'+
+      '<div class="rjc-fix">'+R.fix+'</div>'+
+      '<div class="rjc-sep"></div>'+
+      '<div class="rjc-drop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/><path d="M20 16.7A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 14.9"/></svg>'+
+      '<span>Drop the fixed file here, or <button class="lnkb" type="button" onclick="S.file=null;render()">choose a file</button></span></div></div>'+
       '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-      '<div><strong>Changed here (6 Nov).</strong> Today a rejected file gets a 3-second toast ("The file type you are trying to upload is not supported." or "Import prospect CSV failed") and, for some checks, an empty "Oops!" as well. The reason now stays in the drop zone with the fix. Catalogue G03-059, G03-060.</div></div>';
+      '<div><strong>Changed here (6 Nov).</strong> Today a rejected file gets a 3-second toast ("The file type you are trying to upload is not supported." or "Import prospect CSV failed") and, for some checks, an empty "Oops!" as well. The reason and the fix now sit in the drop zone, centred like the other Upload states, and the zone stays live for the fixed file. Catalogue G03-059, G03-060.</div></div>';
   } else {
     var d=f();
     body = '<div class="drop ok">'+
@@ -1132,7 +1168,8 @@ function scSummary(){
     rows.push(row('w', '<b>'+n(Math.round(added*0.3))+' have no '+x.need.what+'</b><span class="s">Their '+x.need.task+' task (Step '+x.n+') will have nothing to '+x.need.verb+'. They still import, and the download lists them.</span>'));
   });
   /* Plan limit: only new prospects count (catalogue G03-066, G03-078). */
-  if(ov) rows.push(row('', full
+  /* A plan limit is about the account, not the file: amber, like the step-needs warning; red stays for rows to fix. */
+  if(ov) rows.push(row('w', full
       ? '<b>Your plan has no room for new prospects</b><span class="s">Upgrade, or delete prospects you no longer need, then import again.</span>'
       : '<b>'+n(ov)+' new prospects are over your plan’s limit</b><span class="s">Your plan has room for '+n(S.room)+' more; rows already in your list don’t count. Upgrade to add all '+n(fit+ov)+', or import now and bring the other '+n(ov)+' back later.'+
         (tfx? '' : ' <button class="lnkb" type="button" onclick="dl()">Download the '+n(dln)+' rows</button>')+'</span>',
@@ -1158,8 +1195,7 @@ function scSummary(){
       '<div class="setr" style="margin-top:2px"><div class="k">Verification</div><div class="v">'+
         '<label class="ck"><input type="checkbox" id="vfy"'+(S.verify?' checked':'')+' onchange="S.verify=this.checked;render()">'+
         '<span><span class="t">Verify emails after import</span>'+
-        '<span class="sb">Addresses already verified in the last 15 days are skipped. '+
-        '<button class="lnkb" type="button" onclick="elsewhere(\'Settings › Smart Verification (account owner and admins only)\')">Change the 15 days</button></span></span></label>'+
+        '<span class="sb">Addresses already verified in the last 15 days are skipped.</span></span></label>'+
         (!S.verify
           ? '<div class="sub"><div class="cred">No credits will be used. You can verify these from the prospect list later.</div></div>'
           : creditShort()

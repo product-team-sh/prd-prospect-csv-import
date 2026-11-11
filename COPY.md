@@ -4,19 +4,24 @@ Companion to [PRD.md](PRD.md). **See every string rendered on its surface: [copy
 
 ### 6.1 Upload file
 
-Reject a bad file **in the drop zone**: file name, reason, fix, and "Choose another file". Next stays disabled. No toast and no "Oops!" anywhere in this flow.
+A rejected file (Hitesh, 11 Nov): centred in the drop zone like the other Upload states. File icon and file name, a **title**, one sentence on the fix, a rule, then "Drop the fixed file here, or choose a file". The zone stays live, so the fixed file goes straight back in. Next stays disabled. No toast and no "Oops!" anywhere in this flow. See it: [copy.html §6.1](copy.html#s6-1).
 
-| State | When | Copy |
-|---|---|---|
-| Accepted | All checks pass | {file} · {rows} rows · {columns} columns |
-| Excel file | .xlsx or .xls ([pre-select.tsx L53](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/select-file/components/pre-select/pre-select.tsx#L53)) | This is an Excel file (.xlsx), so it can't be imported as it is. In Excel, choose File › Save As › CSV UTF-8 (Comma delimited), then upload that file. |
-| Other type | Not .csv, or no extension | {file} can't be imported. Upload a CSV file. |
-| Too large | Over 95 MB, 100,000 rows or 120 columns (today's limits) | Your file has {n} rows; the limit is 100,000. Split it into two files. (Same pattern for MB and columns) |
-| Header only | No data rows | Your file has column names but no rows. |
-| Duplicate headers | Two columns share a name | This file can't be used yet: two columns are both named "{header}" (columns {C} and {F}). Rename or delete one of them, save the file, and upload it again. |
-| Mixed separators | More than one of `, ; | tab` in the header ([edge L1380](https://github.com/saleshandy/saleshandy-edge/blob/23c74c892b99392f27f5fb81bd5e3d610d1f4c11/src/common/response/messages/api-errors.ts#L1380-L1382)) | Your header row mixes commas and semicolons (in "{header}"). Remove the extra character or wrap the header in quotes, then upload again. |
-| Not UTF-8 | | This file isn't saved in UTF-8 format. In Excel, choose File › Save As › CSV UTF-8, then upload it again. |
-| Unreadable | Locked or syncing | We couldn't read this file. If it's open in Excel or still syncing, close it and try again. |
+**Only what the check knows.** Each message is limited to facts its check already has ([pre-select.tsx L41-L86](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/select-file/components/pre-select/pre-select.tsx#L41-L86), [select-file.tsx L49-L95](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/select-file/select-file.tsx#L49-L95)): the file name, the extension, and whether a limit was crossed. No row totals (parsing stops at the limit), no header names or column positions (the duplicate and blank checks return yes or no).
+
+| State | Check knows | Title | Fix |
+|---|---|---|---|
+| Accepted | Rows and columns parsed | {file} · {rows} rows · {columns} columns | |
+| Excel file | Extension .xlsx or .xls | Excel files can't be imported | In Excel, choose **File › Save As** and pick **CSV UTF-8 (Comma delimited)**. |
+| Other type, or no extension | Any other extension | This file type can't be imported | Only CSV files can be imported. Save or export it as a CSV. |
+| Too large | Over 95 MB | This file is over 95 MB | Split it into smaller files, or remove columns you don't need. |
+| Too many rows | Past 100,000 rows (no total) | This file has more than 100,000 rows | Split it into files of 100,000 rows or fewer, and upload them one at a time. |
+| Too many columns | Over 120 columns | This file has more than 120 columns | Remove the columns you don't need. |
+| No prospects | No data row | This file has no prospects | It has column names but no rows. Add the prospects under the header row. |
+| Repeated column names | Two or more headers match (yes or no) | Some columns have the same name | Each column needs its own name so we know where it goes. Rename or delete the repeated columns, then save the file. |
+| Columns with no name | Two or more blank headers (yes or no) | Some columns have no name | Every column needs a name in the first row. Name the empty ones, or delete those columns. |
+| Mixed separators | Header uses more than one of `, ; | tab` (moves from the server, [edge L1380](https://github.com/saleshandy/saleshandy-edge/blob/23c74c892b99392f27f5fb81bd5e3d610d1f4c11/src/common/response/messages/api-errors.ts#L1380-L1382)) | The header row mixes separators | Use one separator throughout, or put quotes around headers that contain a comma. |
+| Not UTF-8 | Unreadable bytes (existing `is-utf8-file` util) | This file isn't saved as UTF-8 | In Excel, choose **File › Save As** and pick **CSV UTF-8 (Comma delimited)**. |
+| Unreadable | Browser read error | We couldn't read this file | If it's open in Excel or still syncing, close it or wait, then try again. |
 
 Every check that today runs only after Import (duplicate headers, mixed separators, leading empty line, upper-case `.CSV`) runs here, so Import never fails for a reason the file already showed.
 
@@ -45,14 +50,14 @@ The number first, then plain grey lines for what Import will do. Below, one box 
 | Repeated | {n} repeated rows: only the first of each is imported. |
 | Clean file | Every row is ready. |
 | Box row: rows to fix | **{n} rows need fixing** / {count} {error name} · … (§6.7 names, lower case) [Download {n} rows]. When the file holds more: "The download also lists the {m} over your plan's limit." or "…the {m} not added to the step." |
-| Box row: over the limit | **{over} new prospects are over your plan's limit** / Your plan has room for {room} more; rows already in your list don't count. Upgrade to add all {n}, or import now and bring the other {over} back later. [Upgrade plan] |
-| Box row: plan full | Headline in grey. **Your plan has no room for new prospects** / Upgrade, or delete prospects you no longer need, then import again. [Upgrade plan]. Import disabled unless rows can be updated |
+| Box row: over the limit (amber: the account, not the file) | **{over} new prospects are over your plan's limit** / Your plan has room for {room} more; rows already in your list don't count. Upgrade to add all {n}, or import now and bring the other {over} back later. [Upgrade plan] |
+| Box row: plan full (amber) | Headline in grey. **Your plan has no room for new prospects** / Upgrade, or delete prospects you no longer need, then import again. [Upgrade plan]. Import disabled unless rows can be updated |
 | Every row fails | Headline "0" in red, "of {rows} rows can be imported". Box row **{n} rows need fixing** with reasons; when one reason covers over half: "{n} of {rows} have the same problem, which often means the wrong column is mapped to Email." [Check the mapping] |
 | Credits short | You need up to {n} credits and have {have}. Add credits, or untick this to import now and verify later. [Add credits]. Import disabled |
 | Another import running | **Another import is still running: {file}, {pct}% done.** Only one import runs at a time. You can import this file when it finishes; your file and mapping stay here. [Check again]. Import disabled |
 | Import failed | **The import didn't start. The connection dropped.** Nothing was imported. Your file and mapping are kept here. Check your connection and click Import again. Button becomes "Import again" |
 | Limit reached meanwhile | **Your plan's prospect limit was reached while you were importing.** Nothing was imported. Upgrade, or delete prospects you no longer need, then click Import again. |
-| Verification | "Change the 15 days" for admins; others see "Ask your account owner to change this." The credit balance always shows |
+| Verification | "Addresses already verified in the last 15 days are skipped." The 15 days is a fixed default: no link to change it. The credit balance always shows |
 | Buttons | "Import {n} new prospects"; "Update {n} prospects" when none are new; "Importing…" while sending |
 
 ### 6.5 After Import

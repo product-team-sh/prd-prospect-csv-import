@@ -1,0 +1,578 @@
+[
+ {
+  "sec": "Upload",
+  "id": "u01",
+  "title": "Upload",
+  "cap": "Drop zone; Try sample file in the footer",
+  "file": "u01.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload",
+  "id": "u02",
+  "title": "File accepted",
+  "cap": "Rows and columns stated; Next enabled",
+  "file": "u02.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload: rejected files",
+  "id": "u03",
+  "title": "Excel file",
+  "cap": "Says only what the check knows; the drop zone stays live",
+  "file": "u03.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload: rejected files",
+  "id": "u04",
+  "title": "Wrong file type",
+  "cap": "Says only what the check knows; the drop zone stays live",
+  "file": "u04.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload: rejected files",
+  "id": "u05",
+  "title": "Over 95 MB",
+  "cap": "Says only what the check knows; the drop zone stays live",
+  "file": "u05.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload: rejected files",
+  "id": "u06",
+  "title": "Over 100,000 rows",
+  "cap": "Says only what the check knows; the drop zone stays live",
+  "file": "u06.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload: rejected files",
+  "id": "u07",
+  "title": "Over 120 columns",
+  "cap": "Says only what the check knows; the drop zone stays live",
+  "file": "u07.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload: rejected files",
+  "id": "u08",
+  "title": "No prospects",
+  "cap": "Says only what the check knows; the drop zone stays live",
+  "file": "u08.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload: rejected files",
+  "id": "u09",
+  "title": "Repeated column names",
+  "cap": "Says only what the check knows; the drop zone stays live",
+  "file": "u09.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload: rejected files",
+  "id": "u10",
+  "title": "Columns with no name",
+  "cap": "Says only what the check knows; the drop zone stays live",
+  "file": "u10.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload: rejected files",
+  "id": "u11",
+  "title": "Mixed separators",
+  "cap": "Says only what the check knows; the drop zone stays live",
+  "file": "u11.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload: rejected files",
+  "id": "u12",
+  "title": "Not UTF-8",
+  "cap": "Says only what the check knows; the drop zone stays live",
+  "file": "u12.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload: rejected files",
+  "id": "u13",
+  "title": "Can’t be read",
+  "cap": "Says only what the check knows; the drop zone stays live",
+  "file": "u13.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Upload",
+  "id": "u14",
+  "title": "Fixed file brought back",
+  "cap": "Mapping restored; Check 280 rows skips Map Fields",
+  "file": "u14.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m01",
+  "title": "Columns to set",
+  "cap": "Two columns highlighted; After Import below",
+  "file": "m01.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m02",
+  "title": "Everything matched",
+  "cap": "Nothing to set",
+  "file": "m02.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m03",
+  "title": "Mapping restored",
+  "cap": "Same columns as last time; our three columns set to Don’t import",
+  "file": "m03.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m04",
+  "title": "Field picker",
+  "cap": "Search, and fields already used by another column",
+  "file": "m04.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m05",
+  "title": "A field moved",
+  "cap": "One column per field: the earlier column is set aside, and the screen says so",
+  "file": "m05.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m06",
+  "title": "Email not mapped",
+  "cap": "Next disabled until a column is set to Email",
+  "file": "m06.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m07",
+  "title": "No email column",
+  "cap": "Said plainly; Next disabled",
+  "file": "m07.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m08",
+  "title": "After Import: Update All Fields",
+  "cap": "Production label and text, shown under the select",
+  "file": "m08.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m09",
+  "title": "After Import: Overwrite",
+  "cap": "Production label and text, shown under the select",
+  "file": "m09.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m010",
+  "title": "After Import: Skip Existing Prospects",
+  "cap": "Production label and text, shown under the select",
+  "file": "m010.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m11",
+  "title": "Sequence: no phone or LinkedIn column",
+  "cap": "Warned while mapping, for every step; Next stays enabled",
+  "file": "m11.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m12",
+  "title": "Sequence: phone mapped, LinkedIn missing",
+  "cap": "The warning names only what is still missing",
+  "file": "m12.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Checking",
+  "id": "c01",
+  "title": "Checking every row",
+  "cap": "Nothing imported yet; one Cancel",
+  "file": "c01.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r01",
+  "title": "Review",
+  "cap": "What Import will do, then one box with what needs you",
+  "file": "r01.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r02",
+  "title": "Clean file",
+  "cap": "No box at all",
+  "file": "r02.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r03",
+  "title": "Already in your list: Update All Fields",
+  "cap": "The line says what this option does to them",
+  "file": "r03.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r04",
+  "title": "Already in your list: Overwrite",
+  "cap": "The line says what this option does to them",
+  "file": "r04.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r05",
+  "title": "Already in your list: Skip Existing Prospects",
+  "cap": "The line says what this option does to them",
+  "file": "r05.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r06",
+  "title": "Over the plan limit",
+  "cap": "Amber: the account needs room; red stays for rows to fix",
+  "file": "r06.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r07",
+  "title": "Plan full",
+  "cap": "Grey headline; only rows already in the list can be updated",
+  "file": "r07.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r08",
+  "title": "Not enough credits",
+  "cap": "Credits needed and held; Import disabled",
+  "file": "r08.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r09",
+  "title": "Another import running",
+  "cap": "Known on arrival; Import disabled",
+  "file": "r09.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r10",
+  "title": "Importing…",
+  "cap": "The button while the file is sent",
+  "file": "r10.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r11",
+  "title": "Import failed",
+  "cap": "Dialog stays; Import again",
+  "file": "r11.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r12",
+  "title": "Limit reached during import",
+  "cap": "Nothing imported; file and mapping kept",
+  "file": "r12.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r13",
+  "title": "Every row fails",
+  "cap": "Download is primary; Upload fixed file; check the mapping",
+  "file": "r13.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Review and Import",
+  "id": "r14",
+  "title": "Download toast",
+  "cap": "What the file holds, right after Download",
+  "file": "r14.png",
+  "phone": false,
+  "page": true
+ },
+ {
+  "sec": "Import into a sequence",
+  "id": "s01",
+  "title": "Into an email step",
+  "cap": "Step picked on Review; who won’t be added and why",
+  "file": "s01.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Import into a sequence",
+  "id": "s02",
+  "title": "Into a call step, some phones empty",
+  "cap": "Phone mapped; the rows without one are counted",
+  "file": "s02.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Import into a sequence",
+  "id": "s03",
+  "title": "Into a LinkedIn step, some URLs empty",
+  "cap": "Same warning for LinkedIn profile URLs",
+  "file": "s03.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Import into a sequence",
+  "id": "s04",
+  "title": "Sequence with no steps",
+  "cap": "Blocked before the dialog opens",
+  "file": "s04.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Import into a sequence",
+  "id": "s05",
+  "title": "After a sequence import",
+  "cap": "Strip on the sequence’s Prospects tab",
+  "file": "s05.png",
+  "phone": false,
+  "page": true
+ },
+ {
+  "sec": "Import into a sequence",
+  "id": "s06",
+  "title": "Notifications after a sequence import",
+  "cap": "Added to the step, and how many weren’t",
+  "file": "s06.png",
+  "phone": false,
+  "page": true
+ },
+ {
+  "sec": "After Import",
+  "id": "a01",
+  "title": "Importing",
+  "cap": "Production’s progress card, top right on every page",
+  "file": "a01.png",
+  "phone": false,
+  "page": true
+ },
+ {
+  "sec": "After Import",
+  "id": "a02",
+  "title": "Finished, rows to fix",
+  "cap": "Toast for what was added; strip for what is left",
+  "file": "a02.png",
+  "phone": false,
+  "page": true
+ },
+ {
+  "sec": "After Import",
+  "id": "a03",
+  "title": "Finished, over the limit only",
+  "cap": "Nothing wrong with the rows; the plan needs room",
+  "file": "a03.png",
+  "phone": false,
+  "page": true
+ },
+ {
+  "sec": "After Import",
+  "id": "a04",
+  "title": "Finished, both",
+  "cap": "Rows to fix and rows over the limit in one strip",
+  "file": "a04.png",
+  "phone": false,
+  "page": true
+ },
+ {
+  "sec": "After Import",
+  "id": "a05",
+  "title": "Finished, nothing left",
+  "cap": "Toast only; no strip",
+  "file": "a05.png",
+  "phone": false,
+  "page": true
+ },
+ {
+  "sec": "After Import",
+  "id": "a06",
+  "title": "Notifications",
+  "cap": "The bell keeps the record",
+  "file": "a06.png",
+  "phone": false,
+  "page": true
+ },
+ {
+  "sec": "Email and the file",
+  "id": "e01",
+  "title": "Email: rows to fix",
+  "cap": "Real counts and the top errors",
+  "file": "e01.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Email and the file",
+  "id": "e02",
+  "title": "Email: every row failed",
+  "cap": "Never “Congratulations”",
+  "file": "e02.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Email and the file",
+  "id": "e03",
+  "title": "Email: sequence import",
+  "cap": "Names the sequence and the step",
+  "file": "e03.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Email and the file",
+  "id": "f01",
+  "title": "The rows-to-fix file",
+  "cap": "row_number, error, how_to_fix, then the user’s own columns",
+  "file": "f01.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Email and the file",
+  "id": "f02",
+  "title": "Filtered by error",
+  "cap": "Fix one kind at a time",
+  "file": "f02.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Email and the file",
+  "id": "f03",
+  "title": "Expired download link",
+  "cap": "Plain page instead of raw JSON",
+  "file": "f03.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Phone (390px)",
+  "id": "p01",
+  "title": "Rejected file",
+  "cap": "Centred; drop line wraps as one",
+  "file": "p01.png",
+  "phone": true,
+  "page": false
+ },
+ {
+  "sec": "Phone (390px)",
+  "id": "p02",
+  "title": "Map Fields",
+  "cap": "Rows stack; picker under each column name",
+  "file": "p02.png",
+  "phone": true,
+  "page": false
+ },
+ {
+  "sec": "Phone (390px)",
+  "id": "p03",
+  "title": "Review",
+  "cap": "Box rows stack; footer buttons full width",
+  "file": "p03.png",
+  "phone": true,
+  "page": false
+ },
+ {
+  "sec": "Phone (390px)",
+  "id": "p04",
+  "title": "Sequence Review",
+  "cap": "Step picker above the numbers",
+  "file": "p04.png",
+  "phone": true,
+  "page": false
+ },
+ {
+  "sec": "Phone (390px)",
+  "id": "p05",
+  "title": "Strip",
+  "cap": "Buttons wrap below the message",
+  "file": "p05.png",
+  "phone": true,
+  "page": false
+ }
+]

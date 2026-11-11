@@ -1,8 +1,8 @@
 # PRD: Prospect CSV import errors users can understand and fix
 
-**Design of record:** [prototype](https://product-team-sh.github.io/prd-prospect-csv-import/prototype/) (commit [`998e84b`](https://github.com/product-team-sh/prd-prospect-csv-import/commit/998e84b)) · **Copy:** [COPY.md](COPY.md), rendered in [copy.html](https://product-team-sh.github.io/prd-prospect-csv-import/copy.html) · **Status:** Draft, design sign-off pending
+**Design of record:** [prototype](https://product-team-sh.github.io/prd-prospect-csv-import/prototype/), every state captured on [the canvas](https://product-team-sh.github.io/prd-prospect-csv-import/canvas/) · **Copy:** [COPY.md](COPY.md), rendered in [copy.html](https://product-team-sh.github.io/prd-prospect-csv-import/copy.html) · **Status:** Draft, design sign-off pending
 
-Card: [Self-Understandable / Self-Diagnosable Error Message for PROSPECT CSV upload Module](https://app.basecamp.com/4378325/buckets/22269754/card_tables/cards/10153297291). Code read 6 Nov 2026: webui `f9425f2`, edge `23c74c8`, background-jobs `7d18274`.
+Card: [Self-Understandable / Self-Diagnosable Error Message for PROSPECT CSV upload Module](https://app.basecamp.com/4378325/buckets/22269754/card_tables/cards/10153297291). Code read 6 Nov 2026 (Upload checks re-read 11 Nov): webui `f9425f2`, edge `23c74c8`, background-jobs `7d18274`.
 
 ---
 
@@ -64,13 +64,13 @@ Not claimed: fewer tickets or failed imports. Neither has a baseline.
 
 Exact copy for every state below: [COPY.md](COPY.md), same section numbers; every string rendered on its surface in [copy.html](https://product-team-sh.github.io/prd-prospect-csv-import/copy.html).
 
-**6.1 Upload.** Reject a bad file in the drop zone with its name, reason and fix; Next stays disabled; no toasts or "Oops!". Every check that today fails only after Import (duplicate headers, mixed separators, leading empty line, upper-case `.CSV`) runs here.
+**6.1 Upload.** A rejected file shows, centred in the drop zone, the file name, what is wrong and one sentence on the fix; the zone stays live for the fixed file (Hitesh, 11 Nov). Eleven kinds: Excel, other type or no extension, over 95 MB, over 100,000 rows, over 120 columns, no prospects, repeated column names, columns with no name, mixed separators, not UTF-8, unreadable. Messages carry only what the check knows: no row totals, header names or column positions. Next stays disabled; no toasts or "Oops!". The checks that today fail only after Import (mixed separators, leading empty line, upper-case `.CSV`) move here.
 
 **6.2 Map Fields.** Email required; if unmapped, say so and disable Next. After Import below the fields, production's four options verbatim. One column per field (picking a used field moves it and says so). Cancel, Esc or close keeps the mapping. Our three columns come back as Don't import.
 
 **6.3 Checking.** Progress in rows; "Nothing has been imported yet"; one Cancel.
 
-**6.4 Review.** The number first, then plain grey lines for what Import will do. Below, one box with only what needs the user, one row each with its action: step-needs warning, over the plan limit, rows to fix. Clean file: no box. No bar, no coloured dots. States: plan limit, plan full, credits short, another import running (known on arrival, Import disabled), Import failed (dialog stays, "Import again"), every row fails (Download is primary, Upload fixed file on the left; a dominant reason suggests checking the Email mapping). When the download holds more than the rows to fix, the fix row says what else is in it.
+**6.4 Review.** The number first, then plain grey lines for what Import will do. Below, one box with only what needs the user, one row each with its action: step-needs warning and over the plan limit in amber (nothing is wrong in the file), rows to fix in red. Clean file: no box. No bar, no coloured dots. States: plan limit, plan full (only rows already in the list can be updated), credits short, another import running (known on arrival, Import disabled), "Importing…" while sending, Import failed and limit reached during import (dialog stays, "Import again", file and mapping kept), every row fails (Download is primary, Upload fixed file on the left; a dominant reason suggests checking the Email mapping). When the download holds more than the rows to fix, the fix row says what else is in it. Verification says the 15-day skip; it is a fixed default, with no link to change it.
 
 **6.5 After Import.** Production's progress card, closed when finished (today it then claims every row imported). Toast for what was added; strip on the list for what's left, with Download and Upload fixed rows; bell keeps both. Counts come from the import.
 
@@ -92,17 +92,17 @@ Exact copy for every state below: [COPY.md](COPY.md), same section numbers; ever
 
 | ID | Case | Expected | P |
 |---|---|---|---|
-| A1 | Upload .xlsx, header-only, duplicate headers, mixed separators | Rejected in the drop zone with COPY.md §6.1 copy; Next disabled; no toast | P0 |
+| A1 | Upload each of the 11 rejected kinds in COPY.md §6.1 | Rejected in the drop zone with its §6.1 title and fix; no row total, header name or column letter appears; the zone accepts the next file; Next disabled; no toast | P0 |
 | A2 | No column mapped to Email; a file with no email column | §6.2 message; Next disabled | P0 |
 | A3 | 4,000 rows: 220 no @, 40 blank, 20 two emails, 160 existing, 20 repeated | Review: 3,540 new; 160 existing with the option's outcome; 20 repeated; box "280 rows need fixing" with three reasons; button "Import 3,540 new prospects" | P0 |
 | A4 | A3 under each After Import option | Review, toast and bell use that option's words; 3 of the 160 read back in the list match it | P0 |
 | A5 | Download from A3 | 280 lines; header `row_number,error,how_to_fix,` + original headers; only the 19 names; blank-email rows present; row numbers match Excel | P0 |
 | A6 | Open A5 in LibreOffice with tab, `;` and `,` separators | Every row has the same column count | P0 |
 | A7 | Upload A5 back, import under a plan limit, download again | Mapping restored; one set of our columns; original row numbers; name not doubled | P0 |
-| A8 | Room for 2,500; A3's file | 2,500 added; 1,040 "Over plan limit" lines, new prospects only, numbers within the file | P1 |
-| A9 | Import fails; another import running | Dialog stays on Review; file and mapping kept; busy known before Import | P0 |
+| A8 | Room for 2,500; A3's file | Review: plan row amber with Upgrade plan, fix row red. Import: 2,500 added; 1,040 "Over plan limit" lines, new prospects only, numbers within the file | P1 |
+| A9 | Import fails; another import running; plan limit reached between Review and Import | Dialog stays on Review with the matching message; file and mapping kept; busy known before Import; nothing imported | P0 |
 | A10 | Every row fails | "0 of {rows}"; Download primary, Upload fixed file on the left; dominant-reason hint over 50% | P1 |
-| A11 | Credits short | Credit message with numbers; Import disabled until unticked or topped up | P1 |
+| A11 | Credits short | Credit message with numbers; Import disabled until unticked or topped up; no link to change the 15 days | P1 |
 | A12 | Force a batch to fail mid-import | Its rows in the file as "Didn't finish"; strip, bell and email count them | P0, **sign off by name: Rajat** |
 | A13 | Invalid phone on a new prospect | Imported, phone blank, "Phone not valid" line | P1 |
 | A14 | Sequence import: other sequence, bounced, unsubscribed, DNC | Each in the file under errors 13 to 18 | P1 |
@@ -137,7 +137,8 @@ Exact copy for every state below: [COPY.md](COPY.md), same section numbers; ever
 | Footer as production's import dialog: 20/24 padding, 16px gap, link left, gray secondary then primary right; full width below 720px | |
 | Dialog semantics, Tab trapped, Esc closes a list then the dialog, focus kept on re-render, failures `role="alert"` | |
 | Contrast at least 4.5:1; no functional text under 11px | |
-| Upgrade plan, Add credits and Change the 15 days open Billing, the credits checkout and Smart Verification settings; the last is admins only | |
+| Upgrade plan and Add credits open Billing and the credits checkout. The 15-day verification window is a fixed default, with no link to change it | |
+| Colour: red for rows to fix and failed imports; amber for needs attention when nothing in the file is wrong (plan limit, step needs); blue for the one action left | |
 | No "Saleshandy" in any message (white-label) | |
 
 ## 9. Implementation notes
@@ -146,6 +147,7 @@ Exact copy for every state below: [COPY.md](COPY.md), same section numbers; ever
 - **Failed-row storage:** one entry per source row with its number and cells, replacing one per (reason, email) via `$addToSet` ([L6717](https://github.com/saleshandy/saleshandy-background-jobs/blob/7d18274f935ac261db9fa538aa3afe3d72d6894c/src/contacts/services/contacts-import.service.ts#L6717)). **Resolve before estimation:** size at 100,000 rows of 120 columns.
 - **All problems per row:** the check chain stops at the first hit today ([L2534-L2563](https://github.com/saleshandy/saleshandy-background-jobs/blob/7d18274f935ac261db9fa538aa3afe3d72d6894c/src/contacts/services/contacts-import.service.ts#L2534-L2563)). If costly, ship the first problem only.
 - **Busy check on Review** needs "is an import running for this user".
+- **Upload checks move to the browser:** mixed separators and a leading empty line are read from the header line the browser already parses ([pre-select.tsx L61](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/select-file/components/pre-select/pre-select.tsx#L61)); not UTF-8 reuses the existing `is-utf8-file` util. The server keeps its checks as a backstop.
 
 ## 10. Measurement
 
@@ -191,7 +193,8 @@ P0 (Backlog). Target not set. Release gate: A1 to A22, A12 signed off by Rajat. 
 
 ## Appendix
 
-- [Prototype](https://product-team-sh.github.io/prd-prospect-csv-import/prototype/): the intro card picks list or sequence import; the Account menu switches failure states. [Design canvas](https://product-team-sh.github.io/prd-prospect-csv-import/) (8 Sep).
+- [Prototype](https://product-team-sh.github.io/prd-prospect-csv-import/prototype/): the intro card picks list or sequence import; the Account menu switches failure states; "Other rejected files" on Upload holds the rest of §6.1.
+- [Every screen](https://product-team-sh.github.io/prd-prospect-csv-import/canvas/): 64 states captured from the prototype. Earlier design: [8 Sep canvas](https://product-team-sh.github.io/prd-prospect-csv-import/canvas/8-sep/).
 - [COPY.md](COPY.md): every string, the file rules and all 19 errors with their code sites.
 - QA: 17 CSV fixtures (malformed emails, ragged rows, separators, encodings, duplicate headers, header-only, LinkedIn-only).
 - Reviews: [7 Sep](https://app.basecamp.com/4378325/buckets/22269754/card_tables/cards/10153297291#__recording_10278488304), [8 Sep](https://app.basecamp.com/4378325/buckets/22269754/card_tables/cards/10153297291#__recording_10280390333).
