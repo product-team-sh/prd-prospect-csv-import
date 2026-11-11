@@ -90,7 +90,7 @@ Subject "Import finished: {file}". Body "{added} added, {existing} {past outcome
 | Quoting | A cell with a comma, double quote, semicolon, tab or line break is quoted; inner quotes doubled. Without the semicolon rule, LibreOffice and European-locale Excel split `a@x.com; b@y.com` and shift the row (reproduced 6 Nov) |
 | Encoding, name | UTF-8 with BOM. `{uploaded name}-rows-to-fix.csv` |
 | Counts | Lines equal the "weren't imported" count on strip, bell and email |
-| Expiry | An expired link says "This file has expired. Files are kept for {n} days. Import your file again to get a new one." Never raw JSON (§11 Q5) |
+| Expiry | An expired link says "This file has expired. Files are kept for {n} days. Import your file again to get a new one." Never raw JSON. {n} is how long the report file is kept |
 
 Error names are fixed text, identical on Review, in the file, strip, bell and email. `{col}` is the user's header; `{value}` the cell.
 

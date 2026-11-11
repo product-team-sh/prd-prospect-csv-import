@@ -51,7 +51,7 @@ Exact copy for every state below: [COPY.md](COPY.md), same section numbers; ever
 
 <table><tr><td valign="top" width="33%"><a href="canvas/shots/u01.png"><img src="canvas/shots/u01.png" width="260"></a><br><sub><b>Upload</b>. Drop zone; Try sample file in the footer</sub></td><td valign="top" width="33%"><a href="canvas/shots/u02.png"><img src="canvas/shots/u02.png" width="260"></a><br><sub><b>File accepted</b>. Rows and columns stated; Next enabled</sub></td><td valign="top" width="33%"><a href="canvas/shots/u03.png"><img src="canvas/shots/u03.png" width="260"></a><br><sub><b>Excel file</b>. Says only what the check knows; the drop zone stays live</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/u04.png"><img src="canvas/shots/u04.png" width="260"></a><br><sub><b>Wrong file type</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u05.png"><img src="canvas/shots/u05.png" width="260"></a><br><sub><b>Over 95 MB</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u06.png"><img src="canvas/shots/u06.png" width="260"></a><br><sub><b>Over 100,000 rows</b>. Says only what the check knows; the drop zone stays live</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/u07.png"><img src="canvas/shots/u07.png" width="260"></a><br><sub><b>Over 120 columns</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u08.png"><img src="canvas/shots/u08.png" width="260"></a><br><sub><b>No prospects</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u09.png"><img src="canvas/shots/u09.png" width="260"></a><br><sub><b>Repeated column names</b>. Says only what the check knows; the drop zone stays live</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/u10.png"><img src="canvas/shots/u10.png" width="260"></a><br><sub><b>Columns with no name</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u11.png"><img src="canvas/shots/u11.png" width="260"></a><br><sub><b>Mixed separators</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u12.png"><img src="canvas/shots/u12.png" width="260"></a><br><sub><b>Not UTF-8</b>. Says only what the check knows; the drop zone stays live</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/u13.png"><img src="canvas/shots/u13.png" width="260"></a><br><sub><b>Can’t be read</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u14.png"><img src="canvas/shots/u14.png" width="260"></a><br><sub><b>Fixed file brought back</b>. Mapping restored; Check 280 rows skips Map Fields</sub></td></tr></table>
 
-**5.2 Map Fields.** Email required; if unmapped, say so and disable Next. After Import below the fields, production's four options verbatim. One column per field (picking a used field moves it and says so). Cancel, Esc or close keeps the mapping. The mapping is remembered by the set of headers, account-wide (§11 Q4). Our three columns come back as Don't import.
+**5.2 Map Fields.** Email required; if unmapped, say so and disable Next. After Import below the fields, production's four options verbatim. One column per field (picking a used field moves it and says so). Cancel, Esc or close keeps the mapping. The mapping is remembered by the set of headers, account-wide. Our three columns come back as Don't import.
 
 <table><tr><td valign="top" width="33%"><a href="canvas/shots/m01.png"><img src="canvas/shots/m01.png" width="260"></a><br><sub><b>Columns to set</b>. Two columns highlighted; After Import below</sub></td><td valign="top" width="33%"><a href="canvas/shots/m02.png"><img src="canvas/shots/m02.png" width="260"></a><br><sub><b>Everything matched</b>. Nothing to set</sub></td><td valign="top" width="33%"><a href="canvas/shots/m03.png"><img src="canvas/shots/m03.png" width="260"></a><br><sub><b>Mapping restored</b>. Same columns as last time; our three columns set to Don’t import</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/m04.png"><img src="canvas/shots/m04.png" width="260"></a><br><sub><b>Field picker</b>. Search, and fields already used by another column</sub></td><td valign="top" width="33%"><a href="canvas/shots/m05.png"><img src="canvas/shots/m05.png" width="260"></a><br><sub><b>A field moved</b>. One column per field: the earlier column is set aside, and the screen says so</sub></td><td valign="top" width="33%"><a href="canvas/shots/m06.png"><img src="canvas/shots/m06.png" width="260"></a><br><sub><b>Email not mapped</b>. Next disabled until a column is set to Email</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/m07.png"><img src="canvas/shots/m07.png" width="260"></a><br><sub><b>No email column</b>. Said plainly; Next disabled</sub></td><td valign="top" width="33%"><a href="canvas/shots/m08.png"><img src="canvas/shots/m08.png" width="260"></a><br><sub><b>After Import: Update All Fields</b>. Production label and text, shown under the select</sub></td><td valign="top" width="33%"><a href="canvas/shots/m09.png"><img src="canvas/shots/m09.png" width="260"></a><br><sub><b>After Import: Overwrite</b>. Production label and text, shown under the select</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/m10.png"><img src="canvas/shots/m10.png" width="260"></a><br><sub><b>After Import: Skip Existing Prospects</b>. Production label and text, shown under the select</sub></td></tr></table>
 
@@ -148,7 +148,7 @@ At 390px:
 
 ## 8. Implementation notes
 
-- **Pre-import check:** row checks plus existing-prospect and sequence-membership lookups over the whole file. **Resolve before estimation:** time on 100,000 rows (§11 Q1).
+- **Pre-import check:** row checks plus existing-prospect and sequence-membership lookups over the whole file. **Resolve before estimation:** time on 100,000 rows.
 - **Failed-row storage:** one entry per source row with its number and cells, replacing one per (reason, email) via `$addToSet` ([L6717](https://github.com/saleshandy/saleshandy-background-jobs/blob/7d18274f935ac261db9fa538aa3afe3d72d6894c/src/contacts/services/contacts-import.service.ts#L6717)). **Resolve before estimation:** size at 100,000 rows of 120 columns.
 - **All problems per row:** the check chain stops at the first hit today ([L2534-L2563](https://github.com/saleshandy/saleshandy-background-jobs/blob/7d18274f935ac261db9fa538aa3afe3d72d6894c/src/contacts/services/contacts-import.service.ts#L2534-L2563)). If costly, ship the first problem only.
 - **Busy check on Review** needs "is an import running for this user".
@@ -170,31 +170,7 @@ At 390px:
 | `csv_import_reuploaded` | A file with our columns comes back | `mapping_restored`, `round` |
 
 - **Most important signal:** fix loop closed, imports with rows to fix followed by a re-upload within 7 days. Target set at day 14 (no baseline).
-- **Guardrails:** Checking median over 30 s for files under 10,000 rows (target, Rajat to confirm), put the check behind its fallback. Any import whose `not_imported` exceeds its file's lines, halt.
-
-## 10. Rollout
-
-| Stage | Who | Gate |
-|---|---|---|
-| 1 | Internal accounts | A1 to A22 pass on the 17 QA fixtures; events fire |
-| 2 | 10% of accounts (blast radius, not an A/B test) | One week; Review and import counts within 1%; Checking guardrail holds |
-| 3 | Everyone | Stage 2 held |
-
-## 11. Open questions
-
-| # | Question | Recommendation |
-|---|---|---|
-| Q1 | **Blocking:** can the full check run on 100,000 rows in time? | Rajat sizes it. Fallback: check the first 10,000, say so, let the import report the rest |
-| Q2 | Can the job report progress to the card? | Batches done over total |
-| Q3 | Should the required field follow the channel? (Dhruv) | Ship with Email required; decide separately |
-| Q4 | Per-user remembered mappings? (Hemanshu) | Keep account-wide |
-| Q5 | How long is the report file kept? | Find the S3 rule; if none, 30 days |
-| Q6 | Are DNC-flagged prospects truly never emailed? | Rajat confirms before copy freeze |
-| Q7 | Show the owner's name in "Owned by a teammate"? | Yes; same account |
-
-## 12. Priority and owners
-
-P0 (Backlog). One release. Target not set. Release gate: A1 to A22, A12 signed off by Rajat. **Owners needed:** backend (Rajat to name), frontend, QA.
+- **Guardrails:** Checking median over 30 s for files under 10,000 rows (target, Rajat to confirm): rethink the pre-import check before release. Any import whose `not_imported` exceeds its file's lines: stop and fix.
 
 ## Appendix
 
