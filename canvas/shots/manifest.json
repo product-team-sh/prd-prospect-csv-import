@@ -390,7 +390,7 @@
   "sec": "Import into a sequence",
   "id": "s05",
   "title": "After a sequence import",
-  "cap": "Strip on the sequence’s Prospects tab",
+  "cap": "The Prospects tab refreshed and says so; amber toast with the download",
   "file": "s05.png",
   "phone": false,
   "page": true
@@ -417,7 +417,7 @@
   "sec": "After Import",
   "id": "a02",
   "title": "Finished, rows to fix",
-  "cap": "One amber toast: what was added, what wasn’t, and the download",
+  "cap": "The list refreshed and says so; one amber toast with the download",
   "file": "a02.png",
   "phone": false,
   "page": true
@@ -444,7 +444,7 @@
   "sec": "After Import",
   "id": "a05",
   "title": "Finished, nothing left",
-  "cap": "Green toast only",
+  "cap": "The list refreshed and says so; green toast",
   "file": "a05.png",
   "phone": false,
   "page": true
@@ -542,8 +542,8 @@
  {
   "sec": "Phone (390px)",
   "id": "p05",
-  "title": "Strip",
-  "cap": "Buttons wrap below the message",
+  "title": "After import",
+  "cap": "List line wraps; its link drops below the sentence",
   "file": "p05.png",
   "phone": true,
   "page": false
