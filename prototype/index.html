@@ -120,7 +120,7 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .maprow.bad{background:var(--red-50);margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:var(--r-input);border-top-color:transparent}
 .maprow .f{flex:0 0 150px;font-size:13px;font-weight:600}
 .maprow .s{flex:1;min-width:0;display:flex;font-size:12px;color:var(--g-600);line-height:1.45;white-space:nowrap}
-/* Long sample values (Hitesh, 11 Nov): one line per row; each value truncates on its own, values of 14 characters or fewer are never cut; full value on hover. */
+/* Long sample values: one line per row; each value truncates on its own, values of 14 characters or fewer are never cut; full value on hover. */
 .maprow .s .v{flex:0 1 auto;min-width:0;max-width:55%;overflow:hidden;text-overflow:ellipsis}.maprow .s .v.k{flex-shrink:0}
 .maprow .s .d{flex:0 0 auto;padding:0 5px;color:var(--g-400)}
 .maprow select{flex:0 0 138px;font-family:inherit;font-size:12.5px;padding:7px 8px;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-900)}
@@ -750,7 +750,7 @@ function unset(c){ return S.map[c]==='Don’t import'; }
 /* Nothing for Map Fields to ask: restored, every column decided, Email mapped. */
 /* Sequence import, Map Fields: fields the sequence's steps need that no column is mapped to.
    Prospects move through every step, so this covers all steps, not only the one picked on Review.
-   A warning: Next stays enabled (D11). Moved here from Review on Hitesh's call, 6 Nov. */
+   A warning: Next stays enabled (D11). Moved here from Review. */
 function seqNeedsBanner(){
   if(!isSeq()) return '';
   var miss=SEQ.steps.filter(function(x){ return x.need && !mappedTo(x.need.field); });
@@ -997,7 +997,7 @@ function scUpload(){
       Object.keys(FILES).filter(function(k){return FILES[k].more;}).map(function(k){ return '<option value="'+k+'">'+({type:'Wrong file type',size:'Over 95 MB',rows:'Over 100,000 rows',cols:'Over 120 columns',empty:'No prospects',blank:'Columns with no name',sep:'Mixed separators',utf:'Not UTF-8',read:'Can’t be read'})[FILES[k].reject]+'</option>'; }).join('')+'</select>'+
       '</div></div></div>';
   } else if(f().reject){
-    /* Rejected on Upload (Hitesh, 11 Nov): centred like every other Upload state, and the drop zone
+    /* Rejected on Upload: centred like every other Upload state, and the drop zone
        stays live for the fixed file. Copy says only what the check knows: pre-select.tsx knows the
        extension and limits, select-file.tsx only that headers repeat, never which or where. */
     var XL='In Excel, choose <b>File › Save As</b> and pick <b>CSV UTF‑8 (Comma delimited)</b>.';
@@ -1023,10 +1023,10 @@ function scUpload(){
       '<div class="rjc-drop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/><path d="M20 16.7A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 14.9"/></svg>'+
       '<span>Drop the fixed file here, or <button class="lnkb" type="button" onclick="S.file=null;render()">choose a file</button></span></div></div>'+
       '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-      '<div><strong>Changed here (6 Nov).</strong> Today a rejected file gets a 3-second toast ("The file type you are trying to upload is not supported." or "Import prospect CSV failed") and, for some checks, an empty "Oops!" as well. The reason and the fix now sit in the drop zone, centred like the other Upload states, and the zone stays live for the fixed file. Catalogue G03-059, G03-060.</div></div>';
+      '<div><strong>Changed here.</strong> Today a rejected file gets a 3-second toast ("The file type you are trying to upload is not supported." or "Import prospect CSV failed") and, for some checks, an empty "Oops!" as well. The reason and the fix now sit in the drop zone, centred like the other Upload states, and the zone stays live for the fixed file. Catalogue G03-059, G03-060.</div></div>';
   } else {
     var d=f();
-    /* File preview (Hitesh, 11 Nov, direction A): the file is one line and its first rows sit under it,
+    /* File preview: the file is one line and its first rows sit under it,
        as read, so a wrong file or a bad parse shows before any mapping. Same 3 rows Map Fields samples. */
     var pr=[0,1,2].slice(0,Math.min(3,d.rows)).map(function(k){ return d.samples.map(function(c){ return c[k]==null?'':c[k]; }); });
     body = '<div class="pvf"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M14 13h2"/><path d="M8 17h2"/><path d="M14 17h2"/></svg></div>'+
@@ -1176,7 +1176,7 @@ function scSummary(){
 
   var DLP='<path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>';
   var dlB=function(cnt){ return '<button class="btn btn-s" type="button" onclick="dl()">'+ic(DLP,'currentColor',14)+'Download '+n(cnt)+' rows</button>'; };
-  /* ── The verdict, icon list (Hitesh, 11 Nov, direction E): one row pattern for every outcome,
+  /* ── The verdict, icon list: one row pattern for every outcome,
      grey icon, number, sentence. Colour and a button appear only on rows that need the user:
      red to fix, amber for the plan limit or a step's needs. Tags and Verification below, unchanged. ── */
   var IC={ok:'<path d="M20 6 9 17l-5-5"/>', upd:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
@@ -1253,7 +1253,7 @@ function scSummary(){
 
   body += '<div class="bn bn-blu xnote">'+
     ic('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>','#1E3A8A',17)+
-    '<div><strong>Changed here (11 Nov).</strong> Every outcome is one row in the same pattern: grey icon, number, sentence. Colour and a button appear only on rows that need you: red to fix, amber for the plan limit or what a step needs. Tags and Verification are unchanged, below the rule.</div></div>';
+    '<div><strong>Changed here.</strong> Every outcome is one row in the same pattern: grey icon, number, sentence. Colour and a button appear only on rows that need you: red to fix, amber for the plan limit or what a step needs. Tags and Verification are unchanged, below the rule.</div></div>';
 
   var blocked = creditShort() || S.scen==='busy';
   /* The button names what the headline counts: new prospects. Updates are stated

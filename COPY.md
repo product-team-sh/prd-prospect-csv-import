@@ -1,10 +1,10 @@
 # Copy spec: Prospect CSV import errors
 
-Companion to [PRD.md](PRD.md). **See every string rendered on its surface: [copy.html](copy.html)** (built from the prototype's styles). Every string here ships as written; `{…}` are values. Section numbers match the PRD's §5. Code links: webui `f9425f2`, edge `23c74c8`, background-jobs `7d18274` (read 6 Nov 2026).
+Companion to [PRD.md](PRD.md). **See every string rendered on its surface: [copy.html](copy.html)** (built from the prototype's styles). Every string here ships as written; `{…}` are values. Section numbers match the PRD's §5. Code links: webui `f9425f2`, edge `23c74c8`, background-jobs `7d18274`.
 
 ### 5.1 Upload file
 
-A rejected file (Hitesh, 11 Nov): centred in the drop zone like the other Upload states. File icon and file name, a **title**, one sentence on the fix, a rule, then "Drop the fixed file here, or choose a file". The zone stays live, so the fixed file goes straight back in. Next stays disabled. No toast and no "Oops!" anywhere in this flow. See it: [copy.html §5.1](copy.html#s5-1).
+A rejected file: centred in the drop zone like the other Upload states. File icon and file name, a **title**, one sentence on the fix, a rule, then "Drop the fixed file here, or choose a file". The zone stays live, so the fixed file goes straight back in. Next stays disabled. No toast and no "Oops!" anywhere in this flow. See it: [copy.html §5.1](copy.html#s5-1).
 
 **Only what the check knows.** Each message is limited to facts its check already has ([pre-select.tsx L41-L86](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/select-file/components/pre-select/pre-select.tsx#L41-L86), [select-file.tsx L49-L95](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/select-file/select-file.tsx#L49-L95)): the file name, the extension, and whether a limit was crossed. No row totals (parsing stops at the limit), no header names or column positions (the duplicate and blank checks return yes or no).
 
@@ -88,7 +88,7 @@ Subject "Import finished: {file}". Body "{added} added, {existing} {past outcome
 | Over-limit rows | The last new prospects in file order. Never rows already in the list |
 | Several problems | `error` names the first in table order; `how_to_fix` covers every problem on the row |
 | Second round | When the uploaded file already has `row_number`, `error`, `how_to_fix`, the new file **replaces** those three columns (never adds a second set) and keeps the original `row_number`. Name stays `{name}-rows-to-fix.csv`, never doubled |
-| Quoting | A cell with a comma, double quote, semicolon, tab or line break is quoted; inner quotes doubled. Without the semicolon rule, LibreOffice and European-locale Excel split `a@x.com; b@y.com` and shift the row (reproduced 6 Nov) |
+| Quoting | A cell with a comma, double quote, semicolon, tab or line break is quoted; inner quotes doubled. Without the semicolon rule, LibreOffice and European-locale Excel split `a@x.com; b@y.com` and shift the row |
 | Encoding, name | UTF-8 with BOM. `{uploaded name}-rows-to-fix.csv` |
 | Counts | Lines equal the "weren't imported" count on strip, bell and email |
 | Expiry | An expired link says "This file has expired. Files are kept for {n} days. Import your file again to get a new one." Never raw JSON. {n} is how long the report file is kept |
@@ -121,7 +121,7 @@ Error names are fixed text, identical on Review, in the file, strip, bell and em
 
 ### 5.8 Import via CSV into a sequence
 
-Same dialog, Upload and Map Fields as the list import ([sequence path today](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/shared/add-to-step-select/add-to-step-select.tsx#L13)). Differences (Hitesh, 6 Nov):
+Same dialog, Upload and Map Fields as the list import ([sequence path today](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/shared/add-to-step-select/add-to-step-select.tsx#L13)). Differences:
 
 | Where | Requirement |
 |---|---|
@@ -131,7 +131,7 @@ Same dialog, Upload and Map Fields as the list import ([sequence path today](htt
 | First row | "**{n}** prospects will be added to Step {k}". Counts new plus existing, because production adds existing prospects to the step under every After Import option |
 | Rows | "{n} of them are already in your list and {outcome}." [Change] · grey row "**{n}** already in your list won't be added" / {a} are in another sequence, {b} are in this one, {c} bounced or unsubscribed. [Admin setting] · repeated, as the list import |
 | Amber row: step needs | Only when the field is mapped but some rows are empty: **{n} have no phone number** / Their call task (Step {k}) will have nothing to dial. They still import, and the download lists them. Same for LinkedIn ("LinkedIn profile URL", "LinkedIn task", "nothing to open"). Covers every step from the chosen one on |
-| Map Fields: step needs (amber, Hitesh 6 Nov) | When no column is mapped to a field a step needs, above After Import: **No column is mapped to {fields}.** {sequence} has {a call step (Step 3) and a LinkedIn step (Step 2)}, so {its call tasks / those tasks} will have nothing to {dial / open}. If your file has {phone numbers / them}, set {that column / those columns} above. You can still import without {it / them}. Covers every step in the sequence; Next stays enabled |
+| Map Fields: step needs (amber) | When no column is mapped to a field a step needs, above After Import: **No column is mapped to {fields}.** {sequence} has {a call step (Step 3) and a LinkedIn step (Step 2)}, so {its call tasks / those tasks} will have nothing to {dial / open}. If your file has {phone numbers / them}, set {that column / those columns} above. You can still import without {it / them}. Covers every step in the sequence; Next stays enabled |
 | Button | "Add {n} to Step {k}" |
 | Download | Includes the rows not added (errors 13 to 17) and, when only some rows lack it, the step-needs warnings "No phone for call step", "No LinkedIn URL for LinkedIn step" |
 | After | Toast "{n} added to Step {k} of {sequence} from {file}." Strip on the sequence's Prospects tab, adding "The download also lists the {n} saved but not added to Step {k}." Bell "{file}: {n} added to Step {k} of {sequence}, {m} not added". Email subject "Import finished: {file} into {sequence}" |
@@ -140,7 +140,7 @@ The admin setting is "Allow adding duplicate prospects in multiple sequences" (S
 
 ### 5.9 Bringing a file back
 
-When a file's headers match a mapping that was used for a check, every column comes back decided. Then Map Fields has nothing to ask, so Upload skips it (Hitesh, 6 Nov):
+When a file's headers match a mapping that was used for a check, every column comes back decided. Then Map Fields has nothing to ask, so Upload skips it:
 
 - Under the file: "**Mapping restored.** You used these same columns {when}, so all {n} are set." [Review mapping]
 - Next becomes "Check {rows} rows" and goes straight to the check; the steps show Map Fields as done, and Back on Review opens it.

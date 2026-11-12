@@ -2,33 +2,40 @@
 
 **Design of record:** [prototype](https://product-team-sh.github.io/prd-prospect-csv-import/prototype/), every state captured on [the canvas](https://product-team-sh.github.io/prd-prospect-csv-import/canvas/) · **Copy:** [COPY.md](COPY.md), rendered in [copy.html](https://product-team-sh.github.io/prd-prospect-csv-import/copy.html) · **Status:** Draft, design sign-off pending
 
-Card: [Self-Understandable / Self-Diagnosable Error Message for PROSPECT CSV upload Module](https://app.basecamp.com/4378325/buckets/22269754/card_tables/cards/10153297291). Code read 6 Nov 2026 (Upload checks re-read 11 Nov): webui `f9425f2`, edge `23c74c8`, background-jobs `7d18274`.
-
 ---
 
 ## 1. Problem
 
-- **Most prospects arrive this way.** 71.0% of prospects created in the 90 days to 8 Sep came from CSV import, from about 1,836 users a week (measured, PostHog `Prospects Added`, `method = csv`).
-- **Nothing is checked before import, and the result is unreadable.** Every outcome ends in a green toast. The report is `email,failed_reason`: one line per email, no row number, none of the user's columns ([writer](https://github.com/saleshandy/saleshandy-background-jobs/blob/7d18274f935ac261db9fa538aa3afe3d72d6894c/src/contacts/services/contacts-import.service.ts#L6838)). Six different email defects all read "Invalid Email" (measured, 5 Sep).
-- **Some failures leave no trace.** Blank-email rows, invalid phones, crashed batches and Do Not Contact matches produce no report line. 0 of 409,820 import events in 90 days recorded a failure, because the only event fires on success (measured, 8 Sep).
+- **Most prospects arrive this way.** 71% of new prospects come from CSV import.
+- **Nothing is checked before import, and the result is unreadable.** Every outcome ends in a green toast. The report is `email,failed_reason`: one line per email, no row number, none of the user's columns. Six different email problems all read "Invalid Email".
+- **Some failures leave no trace.** Blank-email rows, invalid phones, crashed batches and Do Not Contact matches produce no report line. No failure is ever recorded, because the only event fires on success.
 
 ## 2. Why this approach
 
 | Option | Verdict |
 |---|---|
 | Better strings in today's report | Rejected: still no row numbers or user columns, still nothing before commit |
-| A grid of failed rows in the dialog (card's original ask) | Rejected: can't fit a 720px dialog at 40,000 rows; reasons fit in five lines at any size |
+| A grid of failed rows in the dialog | Rejected: can't fit a 720px dialog at 40,000 rows; reasons fit in five lines at any size |
 | **Check before commit, reasons on screen, the user's own rows back with a fix per row** | **Chosen** |
-
-Not claimed: fewer tickets or failed imports. Neither has a baseline.
 
 ## 3. What we're building
 
-1. Every row is checked before anything is imported; Review shows what Import will do and, separately, what needs the user.
-2. Nothing fails silently: every row not fully imported is in a file of the user's own rows, filterable by error, with one fix per row.
-3. The flow is instrumented from day 1.
+**Goals**
 
-**Invariant:** nothing is written until Import is pressed; no failure loses the user's file or mapping.
+1. Before Import, show what will be added, updated, skipped or blocked.
+2. Explain every rejected file and every row problem in plain words, with one concrete fix.
+3. Return every row not fully imported in a file of the user's own columns and row numbers.
+4. Take the fixed file back without mapping again.
+5. Handle plan limits, short credits, a running import and sequence rules without losing the file or mapping.
+6. Instrument every step and outcome from launch.
+
+**Invariants**
+
+- Nothing is written until Import (or "Add {n} to Step {k}") is pressed.
+- No row fails silently. Every row not fully imported is in the rows-to-fix file; only repeated rows and rows skipped under Skip Existing Prospects are counts on Review instead.
+- No blocked or failed import loses the file or its mapping.
+- Each error has one fixed name, the same on Review, in the file, strip, bell and email.
+- No success language for an outcome with failures.
 
 ## 4. User stories
 
@@ -40,30 +47,61 @@ Not claimed: fewer tickets or failed imports. Neither has a baseline.
 | U4 | stay on Review with my file and mapping if Import fails or another import is running |
 | U5 | can import what fits when my plan or credits are short |
 | U6 | pick the sequence step on Review and see who won't be added, and who the step can't work, before importing |
-| U7 | skip Map Fields when a file with the same columns comes back |
+| U7 | skip Map Fields when a file with the same columns comes back, every column decided and Email mapped |
 | U8 | (product team) can read failure rates and reasons from day 1 |
 
 ## 5. Surfaces
 
 Exact copy for every state below: [COPY.md](COPY.md), same section numbers; every string rendered on its surface in [copy.html](https://product-team-sh.github.io/prd-prospect-csv-import/copy.html).
 
-**5.1 Upload.** An accepted file shows as one line (name, rows, columns, Remove file) over its first 3 rows under the file's own headers, exactly as read, so the user sees the wrong file or a bad parse before mapping (Hitesh, 11 Nov). Values wider than a cell truncate, full value on hover; a table wider than the dialog scrolls sideways and the caption says so. A rejected file shows, centred in the drop zone, the file name, what is wrong and one sentence on the fix; the zone stays live for the fixed file (Hitesh, 11 Nov). Eleven kinds: Excel, other type or no extension, over 95 MB, over 100,000 rows, over 120 columns, no prospects, repeated column names, columns with no name, mixed separators, not UTF-8, unreadable. Messages carry only what the check knows: no row totals, header names or column positions. Next stays disabled; no toasts or "Oops!". The checks that today fail only after Import (mixed separators, leading empty line, upper-case `.CSV`) move here.
+**5.1 Upload.**
+- **Accepted file:** one line (name, rows, columns, Remove file) over its first 3 rows under the file's own headers, exactly as read. Values wider than a cell truncate, full value on hover. A table wider than the dialog scrolls sideways and the caption says so. Never more than 3 rows.
+- **Rejected file:** centred in the drop zone: the file name, what is wrong and one sentence on the fix. The zone stays live for the fixed file. Next disabled; no toast, no "Oops!".
+- **Eleven checks, all on Upload:** Excel, other type or no extension, over 95 MB, over 100,000 rows, over 120 columns, no prospects, repeated column names, columns with no name, mixed separators, not UTF-8, unreadable. The ones that today fail only after Import (mixed separators, leading empty line, upper-case `.CSV`) move here; the server keeps its checks as a backstop.
+- **Only what the check knows:** no row totals when parsing stopped at a limit, no header names or column positions from a yes-or-no check.
 
 <table><tr><td valign="top" width="33%"><a href="canvas/shots/u01.png"><img src="canvas/shots/u01.png" width="260"></a><br><sub><b>Upload</b>. Drop zone; Try sample file in the footer</sub></td><td valign="top" width="33%"><a href="canvas/shots/u02.png"><img src="canvas/shots/u02.png" width="260"></a><br><sub><b>File accepted</b>. One file line, then its first 3 rows as read; Next enabled</sub></td><td valign="top" width="33%"><a href="canvas/shots/u03.png"><img src="canvas/shots/u03.png" width="260"></a><br><sub><b>Excel file</b>. Says only what the check knows; the drop zone stays live</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/u04.png"><img src="canvas/shots/u04.png" width="260"></a><br><sub><b>Wrong file type</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u05.png"><img src="canvas/shots/u05.png" width="260"></a><br><sub><b>Over 95 MB</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u06.png"><img src="canvas/shots/u06.png" width="260"></a><br><sub><b>Over 100,000 rows</b>. Says only what the check knows; the drop zone stays live</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/u07.png"><img src="canvas/shots/u07.png" width="260"></a><br><sub><b>Over 120 columns</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u08.png"><img src="canvas/shots/u08.png" width="260"></a><br><sub><b>No prospects</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u09.png"><img src="canvas/shots/u09.png" width="260"></a><br><sub><b>Repeated column names</b>. Says only what the check knows; the drop zone stays live</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/u10.png"><img src="canvas/shots/u10.png" width="260"></a><br><sub><b>Columns with no name</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u11.png"><img src="canvas/shots/u11.png" width="260"></a><br><sub><b>Mixed separators</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u12.png"><img src="canvas/shots/u12.png" width="260"></a><br><sub><b>Not UTF-8</b>. Says only what the check knows; the drop zone stays live</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/u13.png"><img src="canvas/shots/u13.png" width="260"></a><br><sub><b>Can’t be read</b>. Says only what the check knows; the drop zone stays live</sub></td><td valign="top" width="33%"><a href="canvas/shots/u14.png"><img src="canvas/shots/u14.png" width="260"></a><br><sub><b>Fixed file brought back</b>. Mapping restored; Check 280 rows skips Map Fields</sub></td></tr></table>
 
-**5.2 Map Fields.** Email required; if unmapped, say so and disable Next. After Import below the fields, production's four options verbatim. One column per field (picking a used field moves it and says so). Each column shows its first 3 values on one line: a long value truncates on its own, a value of 14 characters or fewer is never cut, and the full value shows on hover (Hitesh, 11 Nov). Cancel, Esc or close keeps the mapping. The mapping is remembered by the set of headers, account-wide. Our three columns come back as Don't import.
+**5.2 Map Fields.**
+- **Email is required.** Unmapped, or no email column in the file: say which, keep Next disabled.
+- **One column per field.** Picking a field another column uses moves it, sets the earlier column to Don't import and says so. The picker searches; arrows move, Enter picks the first match, Esc closes it.
+- **Sample values:** each column shows its first 3 values on one line. A long value truncates on its own, a value of 14 characters or fewer is never cut, the full value shows on hover.
+- **After Import** below the fields: production's four options and descriptions verbatim, Add Missing Fields by default.
+- **Mapping is kept and remembered.** Cancel, Esc or close keeps it. It is remembered account-wide by the set of headers, and our three report columns come back as Don't import.
 
 <table><tr><td valign="top" width="33%"><a href="canvas/shots/m01.png"><img src="canvas/shots/m01.png" width="260"></a><br><sub><b>Columns to set</b>. Two columns highlighted; After Import below</sub></td><td valign="top" width="33%"><a href="canvas/shots/m02.png"><img src="canvas/shots/m02.png" width="260"></a><br><sub><b>Everything matched</b>. Nothing to set</sub></td><td valign="top" width="33%"><a href="canvas/shots/m03.png"><img src="canvas/shots/m03.png" width="260"></a><br><sub><b>Mapping restored</b>. Same columns as last time; our three columns set to Don’t import</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/m04.png"><img src="canvas/shots/m04.png" width="260"></a><br><sub><b>Field picker</b>. Search, and fields already used by another column</sub></td><td valign="top" width="33%"><a href="canvas/shots/m05.png"><img src="canvas/shots/m05.png" width="260"></a><br><sub><b>A field moved</b>. One column per field: the earlier column is set aside, and the screen says so</sub></td><td valign="top" width="33%"><a href="canvas/shots/m06.png"><img src="canvas/shots/m06.png" width="260"></a><br><sub><b>Email not mapped</b>. Next disabled until a column is set to Email</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/m07.png"><img src="canvas/shots/m07.png" width="260"></a><br><sub><b>No email column</b>. Said plainly; Next disabled</sub></td><td valign="top" width="33%"><a href="canvas/shots/m08.png"><img src="canvas/shots/m08.png" width="260"></a><br><sub><b>After Import: Update All Fields</b>. Production label and text, shown under the select</sub></td><td valign="top" width="33%"><a href="canvas/shots/m09.png"><img src="canvas/shots/m09.png" width="260"></a><br><sub><b>After Import: Overwrite</b>. Production label and text, shown under the select</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/m10.png"><img src="canvas/shots/m10.png" width="260"></a><br><sub><b>After Import: Skip Existing Prospects</b>. Production label and text, shown under the select</sub></td></tr></table>
 
-**5.3 Checking.** Progress in rows; "Nothing has been imported yet"; one Cancel.
+**5.3 Checking.** Every row is checked, with the existing-prospect and sequence lookups, before Review. Progress in rows; "Nothing has been imported yet"; one Cancel, which imports nothing.
 
 <table><tr><td valign="top" width="33%"><a href="canvas/shots/c01.png"><img src="canvas/shots/c01.png" width="260"></a><br><sub><b>Checking every row</b>. Nothing imported yet; one Cancel</sub></td></tr></table>
 
-**5.4 Review.** Every outcome is one row in one pattern: grey icon, number, sentence (Hitesh, 11 Nov). First row: new prospects to add, with the rows checked and file name under it. Then rows already in the list (worded by the After Import option, with Change), repeats, and anything that needs the user. Colour and a button appear only on rows that need the user: step-needs and plan limit in amber (nothing is wrong in the file), rows to fix in red. Clean file: one row, "Every row is ready." No boxes, no bar. Tags and Verification stay below a rule, as production. States: plan limit, plan full (only rows already in the list can be updated), credits short, another import running (known on arrival, Import disabled), "Importing…" while sending, Import failed and limit reached during import (dialog stays, "Import again", file and mapping kept), every row fails (Download is primary, Upload fixed file on the left; a dominant reason suggests checking the Email mapping). When the download holds more than the rows to fix, the fix row says what else is in it. The Import button names the new prospects ("Import 3,540 new prospects"); updates are stated on their own line. Verification says the 15-day skip; it is a fixed default, with no link to change it.
+**5.4 Review.**
+- **One pattern:** every outcome is one row: grey icon, number, sentence. First row: new prospects to add, with the rows checked and file name under it. Then rows already in the list (worded by the After Import option, with Change), repeats, and anything that needs the user.
+- **Colour only where the user acts:** red for rows to fix; amber for plan limit and step needs; a button only on those rows. Clean file: one row, "Every row is ready." No boxes, no bar. Tags and Verification stay below a rule, as production.
+- **Rows to fix** list the counts by fixed error name and offer the download. When the download holds more than the rows to fix (over the plan limit, not added to the step), the row says so.
+- **Import button** names the new prospects ("Import 3,540 new prospects"), or "Update {n} prospects" when none are new. Updates are stated on their own line.
+
+**Review states:**
+
+| State | Requirement |
+|---|---|
+| Plan limit | Amber row with the count over and the room left; Upgrade plan. Rows already in the list don't count |
+| Plan full | No new prospects added; Import disabled unless rows already in the list can be updated |
+| Credits short | Credits needed and the balance; Import disabled until credits are added or verification is unticked |
+| Another import running | Known on arrival at Review, not on Import; Import disabled; Check again |
+| Import fails, or the limit is reached between Review and Import | Dialog stays on Review; nothing imported; file and mapping kept; button becomes "Import again" |
+| Every row fails | First row "0 of {rows}"; Download is primary, Upload fixed file on its left; when one reason covers over half the rows, suggest checking the Email mapping |
+
+Verification states the 15-day skip; it is a fixed default, with no link to change it. "Importing…" while the request is sent.
 
 <table><tr><td valign="top" width="33%"><a href="canvas/shots/r01.png"><img src="canvas/shots/r01.png" width="260"></a><br><sub><b>Review</b>. One row per outcome; colour and a button only on rows that need you</sub></td><td valign="top" width="33%"><a href="canvas/shots/r02.png"><img src="canvas/shots/r02.png" width="260"></a><br><sub><b>Clean file</b>. One row: every row is ready</sub></td><td valign="top" width="33%"><a href="canvas/shots/r03.png"><img src="canvas/shots/r03.png" width="260"></a><br><sub><b>Already in your list: Update All Fields</b>. The line says what this option does to them</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/r04.png"><img src="canvas/shots/r04.png" width="260"></a><br><sub><b>Already in your list: Overwrite</b>. The line says what this option does to them</sub></td><td valign="top" width="33%"><a href="canvas/shots/r05.png"><img src="canvas/shots/r05.png" width="260"></a><br><sub><b>Already in your list: Skip Existing Prospects</b>. The line says what this option does to them</sub></td><td valign="top" width="33%"><a href="canvas/shots/r06.png"><img src="canvas/shots/r06.png" width="260"></a><br><sub><b>Over the plan limit</b>. Amber: the account needs room; red stays for rows to fix</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/r07.png"><img src="canvas/shots/r07.png" width="260"></a><br><sub><b>Plan full</b>. Grey headline; only rows already in the list can be updated</sub></td><td valign="top" width="33%"><a href="canvas/shots/r08.png"><img src="canvas/shots/r08.png" width="260"></a><br><sub><b>Not enough credits</b>. Credits needed and held; Import disabled</sub></td><td valign="top" width="33%"><a href="canvas/shots/r09.png"><img src="canvas/shots/r09.png" width="260"></a><br><sub><b>Another import running</b>. Known on arrival; Import disabled</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/r10.png"><img src="canvas/shots/r10.png" width="260"></a><br><sub><b>Importing…</b>. The button while the file is sent</sub></td><td valign="top" width="33%"><a href="canvas/shots/r11.png"><img src="canvas/shots/r11.png" width="260"></a><br><sub><b>Import failed</b>. Dialog stays; Import again</sub></td><td valign="top" width="33%"><a href="canvas/shots/r12.png"><img src="canvas/shots/r12.png" width="260"></a><br><sub><b>Limit reached during import</b>. Nothing imported; file and mapping kept</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/r13.png"><img src="canvas/shots/r13.png" width="260"></a><br><sub><b>Every row fails</b>. Download is primary; Upload fixed file; check the mapping</sub></td><td valign="top" width="33%"><a href="canvas/shots/r14.png"><img src="canvas/shots/r14.png" width="260"></a><br><sub><b>Download toast</b>. What the file holds, right after Download</sub></td></tr></table>
 
-**5.5 After Import.** Production's progress card, closed when finished (today it then claims every row imported). Toast for what was added; strip on the list for what's left, with Download and Upload fixed rows; bell keeps both. Counts come from the import.
+**5.5 After Import.**
+- Production's progress card while it runs, closed when finished.
+- Toast for what was added, worded by the After Import option.
+- Strip on the destination list for what's left, with Download and Upload fixed rows; it stays until dismissed or the fixed file is uploaded.
+- The bell keeps both lines; its unread state has an accessible name, not colour alone.
+- Every count comes from the import job, not the Review estimate. Rows of a failed batch count as not imported and are in the file as "Didn't finish".
 
 <table><tr><td valign="top" width="33%"><a href="canvas/shots/a01.png"><img src="canvas/shots/a01.png" width="260"></a><br><sub><b>Importing</b>. Production’s progress card, top right on every page</sub></td><td valign="top" width="33%"><a href="canvas/shots/a02.png"><img src="canvas/shots/a02.png" width="260"></a><br><sub><b>Finished, rows to fix</b>. Toast for what was added; strip for what is left</sub></td><td valign="top" width="33%"><a href="canvas/shots/a03.png"><img src="canvas/shots/a03.png" width="260"></a><br><sub><b>Finished, over the limit only</b>. Nothing wrong with the rows; the plan needs room</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/a04.png"><img src="canvas/shots/a04.png" width="260"></a><br><sub><b>Finished, both</b>. Rows to fix and rows over the limit in one strip</sub></td><td valign="top" width="33%"><a href="canvas/shots/a05.png"><img src="canvas/shots/a05.png" width="260"></a><br><sub><b>Finished, nothing left</b>. Toast only; no strip</sub></td><td valign="top" width="33%"><a href="canvas/shots/a06.png"><img src="canvas/shots/a06.png" width="260"></a><br><sub><b>Notifications</b>. The bell keeps the record</sub></td></tr></table>
 
@@ -73,19 +111,25 @@ Exact copy for every state below: [COPY.md](COPY.md), same section numbers; ever
 
 **5.7 The rows-to-fix file.**
 - Columns: `row_number` (as a spreadsheet shows it, header is row 1), `error`, `how_to_fix`, then the user's columns untouched.
-- One line per row not fully imported, blank-email rows included. Repeated rows and rows skipped under Skip Existing Prospects are counts on Review, not lines in the file.
-- `error` is one of 19 fixed names, the same words on every surface. `how_to_fix` names the user's column and value.
+- One line per row not fully imported, blank-email rows included. Repeated rows and rows skipped under Skip Existing Prospects are counts on Review, not lines in the file. Over-limit lines are the last new prospects in file order, never rows already in the list.
+- Its line count equals "weren't imported" in the strip, bell and email.
+- `error` is one of 19 fixed names, the same words on every surface. `how_to_fix` names the user's column and value, and covers every problem on the row.
 - Second round: our three columns are replaced, never added again; original `row_number` kept; name never doubled.
-- Quote any cell with `,` `"` `;` tab or line break (LibreOffice and European Excel split on `;`, reproduced 6 Nov). UTF-8 with BOM. `{name}-rows-to-fix.csv`.
+- Quote any cell with `,` `"` `;` tab or line break. UTF-8 with BOM. `{name}-rows-to-fix.csv`.
+- An expired link opens a plain page saying so, never raw JSON.
 - Delete the unused reasons `NoUpdate`, `NoOverwrite`, `ProspectInCallDNC`, `ContactInDncList`.
 
 <table><tr><td valign="top" width="33%"><a href="canvas/shots/f01.png"><img src="canvas/shots/f01.png" width="260"></a><br><sub><b>The rows-to-fix file</b>. row_number, error, how_to_fix, then the user’s own columns</sub></td><td valign="top" width="33%"><a href="canvas/shots/f02.png"><img src="canvas/shots/f02.png" width="260"></a><br><sub><b>Filtered by error</b>. Fix one kind at a time</sub></td><td valign="top" width="33%"><a href="canvas/shots/f03.png"><img src="canvas/shots/f03.png" width="260"></a><br><sub><b>Expired download link</b>. Plain page instead of raw JSON</sub></td></tr></table>
 
-**5.8 Import into a sequence.** Same dialog. Entry blocked if the sequence has no steps. Review starts with "Import into [Step · type]"; the headline counts prospects added to the step (new plus existing, as production). Lines for existing prospects added, and those turned away (another sequence per the admin setting, already in this sequence, bounced or unsubscribed). Map Fields warns when no column is mapped to a field the sequence's steps need (every step, not only the one picked). Review warns, in an amber row, only about rows with that field empty. Button "Add {n} to Step {k}".
+**5.8 Import into a sequence.** Same dialog, with these differences:
+- Entry blocked if the sequence has no steps.
+- **Map Fields** has no step picker. It warns when no column is mapped to a field the sequence's steps need (every step, not only the one picked); Next stays enabled.
+- **Review** starts with "Import into [Step · type]", lowest step by default; changing it updates every count. The first row counts prospects added to the step (new plus existing). Then existing prospects added, and those turned away: another sequence (per the admin setting), already in this sequence, bounced or unsubscribed. An amber row covers rows with a needed field empty, from the picked step onward. Button "Add {n} to Step {k}".
+- **File** includes the rows not added (errors 13 to 17) and the step-needs lines.
 
 <table><tr><td valign="top" width="33%"><a href="canvas/shots/m11.png"><img src="canvas/shots/m11.png" width="260"></a><br><sub><b>Sequence: no phone or LinkedIn column</b>. Warned while mapping, for every step; Next stays enabled</sub></td><td valign="top" width="33%"><a href="canvas/shots/m12.png"><img src="canvas/shots/m12.png" width="260"></a><br><sub><b>Sequence: phone mapped, LinkedIn missing</b>. The warning names only what is still missing</sub></td><td valign="top" width="33%"><a href="canvas/shots/s01.png"><img src="canvas/shots/s01.png" width="260"></a><br><sub><b>Into an email step</b>. Step picked on Review; who won’t be added and why</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/s02.png"><img src="canvas/shots/s02.png" width="260"></a><br><sub><b>Into a call step, some phones empty</b>. Phone mapped; the rows without one are counted</sub></td><td valign="top" width="33%"><a href="canvas/shots/s03.png"><img src="canvas/shots/s03.png" width="260"></a><br><sub><b>Into a LinkedIn step, some URLs empty</b>. Same warning for LinkedIn profile URLs</sub></td><td valign="top" width="33%"><a href="canvas/shots/s04.png"><img src="canvas/shots/s04.png" width="260"></a><br><sub><b>Sequence with no steps</b>. Blocked before the dialog opens</sub></td></tr><tr><td valign="top" width="33%"><a href="canvas/shots/s05.png"><img src="canvas/shots/s05.png" width="260"></a><br><sub><b>After a sequence import</b>. Strip on the sequence’s Prospects tab</sub></td><td valign="top" width="33%"><a href="canvas/shots/s06.png"><img src="canvas/shots/s06.png" width="260"></a><br><sub><b>Notifications after a sequence import</b>. Added to the step, and how many weren’t</sub></td></tr></table>
 
-**5.9 Bringing a file back.** Headers match a confirmed mapping, every column decided, Email mapped: Upload says "Mapping restored" and Next becomes "Check {rows} rows", skipping Map Fields.
+**5.9 Bringing a file back.** Headers match a confirmed mapping, every column decided, Email mapped: Upload says "Mapping restored" and Next becomes "Check {rows} rows", skipping Map Fields. Map Fields shows as done in the steps and Back from Review opens it. Otherwise Map Fields shows as usual.
 
 <table><tr><td valign="top" width="33%"><a href="canvas/shots/u14.png"><img src="canvas/shots/u14.png" width="260"></a><br><sub><b>Fixed file brought back</b>. Mapping restored; Check 280 rows skips Map Fields</sub></td><td valign="top" width="33%"><a href="canvas/shots/m03.png"><img src="canvas/shots/m03.png" width="260"></a><br><sub><b>Mapping restored</b>. Same columns as last time; our three columns set to Don’t import</sub></td></tr></table>
 
@@ -138,7 +182,7 @@ Exact copy for every state below: [COPY.md](COPY.md), same section numbers; ever
 | No "Oops!", raw server text or JSON anywhere in the flow | Release blocker |
 | One name per error, same words on every surface | Release blocker |
 | Footer as production's import dialog: 20/24 padding, 16px gap, link left, gray secondary then primary right; full width below 720px | |
-| Dialog semantics, Tab trapped, Esc closes a list then the dialog, focus kept on re-render, failures `role="alert"` | |
+| Dialog semantics, Tab trapped, Esc closes a list then the dialog, focus kept on re-render, failures `role="alert"`, mapping moves and the strip announced | |
 | Contrast at least 4.5:1; no functional text under 11px | |
 | Upgrade plan and Add credits open Billing and the credits checkout. The 15-day verification window is a fixed default, with no link to change it | |
 | Colour: red for rows to fix and failed imports; amber for needs attention when nothing in the file is wrong (plan limit, step needs); blue for the one action left | |
@@ -177,7 +221,5 @@ At 390px:
 ## Appendix
 
 - [Prototype](https://product-team-sh.github.io/prd-prospect-csv-import/prototype/): the intro card picks list or sequence import; the Account menu switches failure states; "Other rejected files" on Upload holds the rest of §5.1.
-- [Every screen](https://product-team-sh.github.io/prd-prospect-csv-import/canvas/): 64 states captured from the prototype. Earlier design: [8 Sep canvas](https://product-team-sh.github.io/prd-prospect-csv-import/canvas/8-sep/).
+- [Every screen](https://product-team-sh.github.io/prd-prospect-csv-import/canvas/): 64 states captured from the prototype.
 - [COPY.md](COPY.md): every string, the file rules and all 19 errors with their code sites.
-- QA: 17 CSV fixtures (malformed emails, ragged rows, separators, encodings, duplicate headers, header-only, LinkedIn-only).
-- Reviews: [7 Sep](https://app.basecamp.com/4378325/buckets/22269754/card_tables/cards/10153297291#__recording_10278488304), [8 Sep](https://app.basecamp.com/4378325/buckets/22269754/card_tables/cards/10153297291#__recording_10280390333).
