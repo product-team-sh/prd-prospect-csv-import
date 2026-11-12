@@ -506,7 +506,7 @@ var SEQ = { name:'Q4 Outbound', other:'Q2 Webinar follow-up',
 function isSeq(){ return S.path==='seq'; }
 function stp(){ return SEQ.steps[S.step||0]; }
 /* Of the rows already in the list, how many the sequence turns away. Illustrative counts. */
-function seqOut(){ var ex=existN(); return (isSeq() && ex)? {other:40, same:12, bounce:8, all:60} : {other:0,same:0,bounce:0,all:0}; }
+function seqOut(){ var ex=existN(); return (isSeq() && ex)? {other:40, same:12, bounce:5, unsub:3, all:60, file:45} : {other:0,same:0,bounce:0,unsub:0,all:0,file:0}; }
 var SHORT = {at:'email missing @', at2:'email missing @', empty:'email empty', empty2:'email empty', multi:'more than one email'};
 
 /* After Import: production's four options, labels and texts verbatim from
@@ -809,7 +809,6 @@ function dl(key, over){
   /* Sequence: existing prospects the step turned away. Saved, not added. */
   var so=seqOut(), sv = S.ca==='skip' ? ' Its details were left as they were.' : ' Its details were updated from your file.';
   [['other',so.other,function(){ return 'Already in “'+SEQ.other+'”. Your account allows a prospect in one sequence at a time, so it wasn’t added. An admin can change this in Settings.'+sv; }],
-   ['same',so.same,function(){ return 'Already in this sequence (step 2), so it wasn’t added again.'+sv; }],
    ['bounce',so.bounce,function(){ return 'Emails to this address bounced before, so it wasn’t added. Check the address in '+ec+'; if it’s wrong, fix it and upload the row again.'; }]
   ].forEach(function(t){
     for(var i=0, rn=1200+t[0].length*37; i<t[1]; i++){
@@ -912,7 +911,7 @@ function doImport(){
   if(limited()) S.room = Math.max(0, S.room-fit);
   var so=seqOut();
   S.job = { key:S.file, name:d.name, rows:d.rows, ready:fit, upd:existN()-so.all, ca:ca(),
-            seq:isSeq(), step:stp(), notAdded:so.all,
+            seq:isSeq(), step:stp(), notAdded:so.all, inFile:so.file,
             fix:fx, over:ov, left:fx+ov, done:0, running:true };
   closeWizard();
   drawStrip();
@@ -942,7 +941,7 @@ function finishImport(){
       (j.seq ? n(j.ready+j.upd)+' added to Step '+j.step.n+' of '+esc(SEQ.name)+(j.notAdded? ', '+n(j.notAdded)+' not added':'')
              : n(j.ready)+' added'+(j.upd? ', '+n(j.upd)+' '+j.ca.past:''))+'</div>'+
     (j.left? '<div class="muted" style="margin-top:3px">'+leftLine(j)+'</div>'+
-             '<div style="display:flex;gap:14px;margin-top:6px"><button class="btn btn-l" type="button" style="font-size:12px;padding:0" onclick="dl(\''+j.key+'\','+j.over+')">Download the '+n(j.left)+'</button></div>'
+             '<div style="display:flex;gap:14px;margin-top:6px"><button class="btn btn-l" type="button" style="font-size:12px;padding:0" onclick="dl(\''+j.key+'\','+j.over+')">Download the '+n(j.left+(j.inFile||0))+'</button></div>'
            : '<div class="muted" style="margin-top:3px">Nothing needed attention.</div>')+
     '<div class="muted" style="margin-top:5px;font-size:11px">Just now</div></div>';
 
@@ -951,10 +950,10 @@ function finishImport(){
   var said = j.seq
     ? '<strong>'+n(j.ready+j.upd)+' added to Step '+j.step.n+'</strong> of '+esc(SEQ.name)+' from '+esc(j.name)+'.'
     : '<strong>'+n(j.ready)+' prospect'+(j.ready===1?'':'s')+' added</strong>'+(j.upd? ' and '+n(j.upd)+' '+j.ca.past:'')+' from '+esc(j.name)+'.';
-  var dlN = j.left+(j.notAdded||0);
+  var dlN = j.left+(j.inFile||0);
   if(j.left || j.notAdded){
-    toast('amber', said+' '+(j.left? leftLine(j)+(j.notAdded? ' The download also lists the '+n(j.notAdded)+' saved but not added to Step '+j.step.n+'.':'') : n(j.notAdded)+' were saved but not added to Step '+j.step.n+'.')+
-      ' <button class="lnkb" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download '+n(dlN)+' rows</button>');
+    toast('amber', said+' '+(j.left? leftLine(j)+(j.inFile? ' The download also lists the '+n(j.inFile)+' saved but not added to Step '+j.step.n+'.':'') : n(j.notAdded)+' were saved but not added to Step '+j.step.n+'.')+
+      (dlN? ' <button class="lnkb" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download '+n(dlN)+' rows</button>' : ''));
     hideToast(8000);
   } else {
     toast('green', said);
@@ -1155,7 +1154,7 @@ function scSummary(){
   var full = limited() && S.room===0 && !none;
   var act = tfx+ov;                       // rows the user has to act on
   var so = seqOut(), exIn = ex - so.all;  // sequence: existing prospects turned away, and those added
-  var added = fit + (isSeq()? exIn : 0), st = stp(), dln = act + so.all;
+  var added = fit + (isSeq()? exIn : 0), st = stp(), dln = act + so.file;   // the file holds only rows the user can act on
 
   /* Sequence: the step comes first, because every number below depends on it. */
   if(isSeq() && !none) body += '<div class="setr"><label class="k" for="stepsel" style="padding-top:7px">Import into</label><div class="v">'+
@@ -1185,12 +1184,12 @@ function scSummary(){
   if(du) it('','skip','<b>'+n(du)+'</b> repeated rows: only the first of each is imported');
   /* Sequence: prospects already in the list that the step turns away. Grey: nothing is wrong with them. */
   if(isSeq() && so.all) it('','away','<b>'+n(so.all)+'</b> already in your list won’t be added',
-      [so.other? so.other+' are in another sequence':'', so.same? so.same+' are in this one':'', so.bounce? so.bounce+' bounced or unsubscribed':''].filter(Boolean).join(', ')+
+      [so.other? so.other+' are in another sequence':'', so.same? so.same+' are in this one':'', so.bounce? so.bounce+' bounced':'', so.unsub? so.unsub+' unsubscribed':''].filter(Boolean).join(', ')+
       '. <button class="lnkb" type="button" onclick="elsewhere(\'Settings › Admin Settings › Prospects (admins only)\')">Admin setting</button>');
   /* What a step ahead needs: the rows still import. Unmapped fields are flagged on Map Fields instead. */
   if(isSeq() && added) SEQ.steps.slice(S.step||0).forEach(function(x){
     if(!x.need || !mappedTo(x.need.field)) return;
-    it('ov','alert','<b>'+n(Math.round(added*0.3))+'</b> have no '+x.need.what,'Their '+x.need.task+' task (Step '+x.n+') will have nothing to '+x.need.verb+'. They still import, and the download lists them.');
+    it('ov','alert','<b>'+n(Math.round(added*0.3))+'</b> have no '+x.need.what,'Their '+x.need.task+' task (Step '+x.n+') will have nothing to '+x.need.verb+'. They still import.');
   });
   /* Plan limit: only new prospects count (catalogue G03-066, G03-078). Amber: about the account, not the file. */
   var upB='<button class="btn btn-s" type="button" onclick="elsewhere(\'Settings › Billing › Upgrade plan\')">Upgrade plan</button>';
@@ -1200,7 +1199,7 @@ function scSummary(){
   if(tfx){
     /* One reason behind most rows usually means the wrong column is mapped to Email. */
     var big=fixG().slice().sort(function(x,y){return y.count-x.count;})[0], dom=none && big && big.count/d.rows>0.5;
-    var more=[ov&&!full? n(ov)+' over your plan’s limit':'', so.all? n(so.all)+' not added to the step':''].filter(Boolean).join(' and ');
+    var more=[ov&&!full? n(ov)+' over your plan’s limit':'', so.file? n(so.file)+' not added to the step':''].filter(Boolean).join(' and ');
     it('fx','alert','<b>'+n(tfx)+'</b> rows need fixing', reasons+
       (more && !none? '. The download also lists the '+more+'.' : '')+
       (dom? '<span class="s hint">'+n(big.count)+' of '+n(d.rows)+' have the same problem, which often means the wrong column is mapped to Email. <button class="lnkb" type="button" onclick="go(\'map\')">Check the mapping</button></span>' : ''),
