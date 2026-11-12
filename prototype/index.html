@@ -641,7 +641,10 @@ function toggleNotes(){
 }
 function toggleAdd(){ var m=$('addmenu'); m.style.display = m.style.display==='none'?'block':'none'; }
 function toggleNotif(){ var el=$('notif'); el.classList.toggle('show'); }
-function toast(kind,html){
+/* One timer for the one toast, so an earlier toast's timer never hides a newer one. */
+var TT=null;
+function hideToast(ms){ clearTimeout(TT); TT=setTimeout(function(){ $('toast').classList.remove('show'); }, ms); }
+function toast(kind,html){ clearTimeout(TT);
   var c = kind==='amber'?'bn-amb':(kind==='green'?'bn-grn':(kind==='blue'?'bn-blu':'bn-red'));
   var ic = kind==='blue'
     ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'
@@ -653,7 +656,7 @@ function toast(kind,html){
 }
 
 /* Links whose destination is outside this prototype say where they go. */
-function elsewhere(dest){ toast('blue','In the product, this opens '+dest+'.'); setTimeout(function(){ $('toast').classList.remove('show'); },3500); }
+function elsewhere(dest){ toast('blue','In the product, this opens '+dest+'.'); hideToast(3500); }
 /* Production's own sample file: the default columns and two rows. */
 function sampleCsv(){
   var t='\ufeff'+['First Name,Last Name,Email,Company,Job Title,Country','Ada,Lovelace,ada@example.com,Analytical Engine,Mathematician,United Kingdom','Grace,Hopper,grace@example.com,COBOL Inc,Rear Admiral,United States'].join('\r\n');
@@ -691,7 +694,7 @@ function openWizard(){ $('addmenu').style.display='none'; S.file=null; S.map={};
   S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q=''; go('upload'); }
 function closeWizard(){ if(S.timer){clearInterval(S.timer);S.timer=null;}
   if(S.file && f() && !f().reject && (S.screen==='map'||S.screen==='summary'||S.screen==='checking'))
-    (function(k,prev){ MEM[k] = { map: JSON.parse(JSON.stringify(S.map)), when: 'a moment ago', ca:S.ca, confirmed: !!(prev && prev.confirmed) }; })(shapeKey(f().cols_list), MEM[shapeKey(f().cols_list)]);
+    (function(k,prev){ MEM[k] = { map: JSON.parse(JSON.stringify(S.map)), name: f().name, ca:S.ca, confirmed: !!(prev && prev.confirmed) }; })(shapeKey(f().cols_list), MEM[shapeKey(f().cols_list)]);
   S.screen='entry'; S.shown=null;
   document.body.classList.remove('mopen');
   $('scrim').classList.remove('show'); $('pstep').textContent='entry'; }
@@ -699,13 +702,15 @@ function closeWizard(){ if(S.timer){clearInterval(S.timer);S.timer=null;}
 function pickFile(k){
   S.file=k; S.map={}; S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q=''; S.ierr=null;
   if(f().reject){ render(); return; }
-  var cols=f().cols_list, remembered=MEM[shapeKey(cols)];
+  /* Only a rows-to-fix file (it carries our three columns) gets its mapping back,
+     from the import it came from. Other files map as production does. */
+  var cols=f().cols_list, ours=cols.some(function(c){ return OURS.indexOf(c)>-1; }), remembered=ours && MEM[shapeKey(cols)];
   if(remembered){
     cols.forEach(function(c){
       S.map[c]=remembered.map[c] || 'Don’t import';
       if(OURS.indexOf(c)>-1 || remembered.confirmed) S.touched[c]=true;   // decided last time, or our own columns
     });
-    S.restored = remembered.when; S.ca = remembered.ca || S.ca;
+    S.restored = remembered.name || 'your earlier import'; S.ca = remembered.ca || S.ca;
   } else {
     cols.forEach(function(c){
       var m=autoField(c);
@@ -722,8 +727,6 @@ function reupload(){ var j=S.job; openWizard(); if(j){ FILES.fixed=fixedFile(j);
 function uploadFixedNow(){ var k=S.file, left=sum(fixG())+overN(); openWizard(); FILES.fixed=fixedFile({key:k,left:left}); pickFile('fixed'); }
 
 function setField(col,val,ix){
-  S.moved=null;
-  if(val!=='Don’t import') for(var c in S.map){ if(c!==col && S.map[c]===val){ S.map[c]='Don’t import'; S.touched[c]=true; S.moved={field:val,from:c,to:col}; } }
   S.map[col]=val; S.touched[col]=true; S.pick=null; S.q=''; render(); focusId('fp'+ix); }
 function openPick(col,ix){ var was=S.pick===col; S.pick = was?null:col; S.q=''; S.pickIx=ix; render();
   if(was){ focusId('fp'+ix); return; }
@@ -747,7 +750,6 @@ function clearMapping(){
   render();
 }
 function unset(c){ return S.map[c]==='Don’t import'; }
-/* Nothing for Map Fields to ask: restored, every column decided, Email mapped. */
 /* Sequence import, Map Fields: fields the sequence's steps need that no column is mapped to.
    Prospects move through every step, so this covers all steps, not only the one picked on Review.
    A warning: Next stays enabled (D11). Moved here from Review. */
@@ -763,7 +765,6 @@ function seqNeedsBanner(){
     '<div><strong>No column is mapped to '+fields+'.</strong> '+esc(SEQ.name)+' has '+steps+', so '+(one?'its '+miss[0].need.task+' tasks':'those tasks')+' will have nothing to '+verbs+'. '+
     'If your file has '+(one? miss[0].need.what+'s' : 'them')+', set '+(one?'that column':'those columns')+' above. You can still import without '+(one?'it':'them')+'.</div></div>';
 }
-function quick(){ return !!(S.file && f() && !f().reject && S.restored && emailMapped() && todoCols().length===0); }
 function todoCols(){ return f().cols_list.filter(function(c){ return unset(c) && !S.touched[c]; }); }
 
 /* The download is the loop-closer, so the prototype hands back a real file:
@@ -831,13 +832,13 @@ function dl(key, over){
   setTimeout(function(){ URL.revokeObjectURL(url); },1500);
 
   toast('green','<strong>'+n(rows.length)+' rows downloaded.</strong> Each row starts with its row number in your file, the error and how to fix it, then your own columns. Filter by error to fix one kind at a time.');
-  setTimeout(function(){ $('toast').classList.remove('show'); },5000);
+  hideToast(5000);
 }
 
 function startCheck(){
   /* The mapping is remembered once it is used, not only after a successful import,
      so a file where nothing could be imported still comes back mapped. */
-  MEM[shapeKey(f().cols_list)] = { map: JSON.parse(JSON.stringify(S.map)), when: 'a moment ago', ca:S.ca, confirmed:true };
+  MEM[shapeKey(f().cols_list)] = { map: JSON.parse(JSON.stringify(S.map)), name: f().name, ca:S.ca, confirmed:true };
   S.prog=0; go('checking');
   S.timer=setInterval(function(){
     S.prog += Math.random()*11+7;
@@ -869,33 +870,20 @@ function drawAsync(){
     el.innerHTML='';   // finished: the toast says what was added, the strip holds what is left
   }
 }
+/* No strip: the toast says the outcome once, with the download when rows are left,
+   and the bell keeps both. Production has no per-list banner to build on. */
 function drawStrip(){
   var j=S.job, el=$('strip');
-  if(!j){ el.innerHTML=''; drawAsync(); return; }
-
   drawAsync();
-  if(j.running){ el.innerHTML=''; return; }
-
-  var note = '<div class="bn bn-blu xnote" style="margin:12px 24px">'+
+  if(!j || j.running){ el.innerHTML=''; return; }
+  el.innerHTML = '<div class="bn bn-blu xnote" style="margin:12px 24px">'+
     '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-    '<div><strong>Changed here.</strong> There is no fourth step any more. The old one restated Review&rsquo;s three numbers in the past tense and offered four buttons. The import is not news: every row was checked before you committed, so the dialog closes and the list itself is the confirmation. Only the unfinished work outlives the dialog, and it sits here until you deal with it or dismiss it. The bell keeps the record either way.</div></div>';
-
-  if(!j.left){ el.innerHTML=note; return; }   // nothing left over, nothing to say
-
-  var why = (j.fix? n(j.fix)+' need fixing':'')+(j.fix&&j.over? ' and ':'')+
-            (j.over? n(j.over)+' are over your plan’s prospect limit':'');
-  var next = j.fix&&j.over ? ' Download them, fix the rows that need it, make room on your plan, then upload the file here.'
-           : j.fix ? ' Download them, fix them in that file, and upload it here. Your mapping is remembered.'
-           : ' Nothing is wrong with them. Upgrade your plan or delete prospects you no longer need, then upload the downloaded file here.';
-  el.innerHTML = '<div class="strip todo">'+
-    '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'+
-    '<div class="msg"><strong>'+n(j.left)+' rows from '+esc(j.name)+' weren’t imported'+
-      (j.fix&&j.over? ':</strong> '+why : (j.fix? ' because they need fixing.</strong>' : ' because they are over your plan’s prospect limit.</strong>'))+
-      (j.fix&&j.over? '.':'')+next+(j.notAdded? ' The download also lists the '+n(j.notAdded)+' saved but not added to Step '+j.step.n+'.':'')+'</div>'+
-    '<button class="btn btn-s" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download '+n(j.left+(j.notAdded||0))+' rows</button>'+
-    '<button class="btn btn-p" type="button" onclick="reupload()">Upload fixed rows</button>'+
-    '<button class="x" type="button" onclick="S.job=null;drawStrip()" aria-label="Dismiss">'+
-    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>'+note;
+    '<div><strong>Changed here.</strong> There is no fourth step any more. The old one restated Review&rsquo;s three numbers in the past tense and offered four buttons. Every row was checked before you committed, so the dialog closes and the list itself is the confirmation. The toast says what happened and offers the download when rows are left; the bell and the email keep both.</div></div>';
+}
+/* What wasn't imported, said the same way in the toast and the bell. */
+function leftLine(j){
+  return n(j.left)+' rows weren’t imported'+
+    (j.fix&&j.over? ': '+n(j.fix)+' need fixing, '+n(j.over)+' are over your plan’s prospect limit.' : (j.fix? ' because they need fixing.' : ' because they are over your plan’s prospect limit.'));
 }
 
 /* Import can fail before anything is written. The dialog stays open, the
@@ -920,7 +908,7 @@ function doImport(){
   var d=f(), fx=sum(fixG()), ov=overN(), fit=fitN();
   S.imported=true; S.ierr=null;
   if(S.scen==='fail'||S.scen==='quota'){ S.scen='normal'; $('scen').value='normal'; }   // the retry goes through
-  MEM[shapeKey(d.cols_list)] = { map: JSON.parse(JSON.stringify(S.map)), when: 'a moment ago', ca:S.ca, confirmed:true };
+  MEM[shapeKey(d.cols_list)] = { map: JSON.parse(JSON.stringify(S.map)), name: d.name, ca:S.ca, confirmed:true };
   if(limited()) S.room = Math.max(0, S.room-fit);
   var so=seqOut();
   S.job = { key:S.file, name:d.name, rows:d.rows, ready:fit, upd:existN()-so.all, ca:ca(),
@@ -944,8 +932,7 @@ function finishImport(){
            ['Adele Goldberg','adele@parc.test','Researcher','Active','–','Xerox PARC']]);
   drawStrip();
 
-  /* The bell is the durable record, and the only place the outcome survives
-     once the strip is dismissed. */
+  /* The bell is the durable record of every import. */
   $('notifdot').style.display='block'; $('bellbtn').setAttribute('aria-label','Notifications, 1 new');
   $('notifbody').innerHTML =
     '<div class="dot" style="background:'+(j.left?'var(--yel-50)':'var(--grn-50)')+'">'+
@@ -954,18 +941,25 @@ function finishImport(){
     '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+esc(j.name)+': '+
       (j.seq ? n(j.ready+j.upd)+' added to Step '+j.step.n+' of '+esc(SEQ.name)+(j.notAdded? ', '+n(j.notAdded)+' not added':'')
              : n(j.ready)+' added'+(j.upd? ', '+n(j.upd)+' '+j.ca.past:''))+'</div>'+
-    (j.left? '<div class="muted" style="margin-top:3px">'+n(j.left)+' rows weren’t imported'+
-               (j.fix&&j.over? ': '+n(j.fix)+' need fixing, '+n(j.over)+' are over your plan’s prospect limit.' : (j.fix? ' because they need fixing.' : ' because they are over your plan’s prospect limit.'))+'</div>'+
+    (j.left? '<div class="muted" style="margin-top:3px">'+leftLine(j)+'</div>'+
              '<div style="display:flex;gap:14px;margin-top:6px"><button class="btn btn-l" type="button" style="font-size:12px;padding:0" onclick="dl(\''+j.key+'\','+j.over+')">Download the '+n(j.left)+'</button></div>'
            : '<div class="muted" style="margin-top:3px">Nothing needed attention.</div>')+
     '<div class="muted" style="margin-top:5px;font-size:11px">Just now</div></div>';
 
-  /* Success is news, so it is a toast. What is left over is a standing job,
-     so it is the strip. One or the other, never both saying the same thing. */
-  toast('green', j.seq
+  /* One toast says what happened. With rows left it is amber and carries the download;
+     green only when nothing failed. */
+  var said = j.seq
     ? '<strong>'+n(j.ready+j.upd)+' added to Step '+j.step.n+'</strong> of '+esc(SEQ.name)+' from '+esc(j.name)+'.'
-    : '<strong>'+n(j.ready)+' prospect'+(j.ready===1?'':'s')+' added</strong>'+(j.upd? ' and '+n(j.upd)+' '+j.ca.past:'')+' from '+esc(j.name)+'.');
-  setTimeout(function(){ $('toast').classList.remove('show'); }, 4500);
+    : '<strong>'+n(j.ready)+' prospect'+(j.ready===1?'':'s')+' added</strong>'+(j.upd? ' and '+n(j.upd)+' '+j.ca.past:'')+' from '+esc(j.name)+'.';
+  var dlN = j.left+(j.notAdded||0);
+  if(j.left || j.notAdded){
+    toast('amber', said+' '+(j.left? leftLine(j)+(j.notAdded? ' The download also lists the '+n(j.notAdded)+' saved but not added to Step '+j.step.n+'.':'') : n(j.notAdded)+' were saved but not added to Step '+j.step.n+'.')+
+      ' <button class="lnkb" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download '+n(dlN)+' rows</button>');
+    hideToast(8000);
+  } else {
+    toast('green', said);
+    hideToast(4500);
+  }
 }
 
 /* ═══════════════════ screens ═══════════════════ */
@@ -1037,22 +1031,18 @@ function scUpload(){
       pr.map(function(r){ return '<tr>'+r.map(function(v){ return '<td title="'+esc(v)+'">'+esc(v)+'</td>'; }).join('')+'</tr>'; }).join('')+
       '</tbody></table></div></div>'+
       '<div class="pvc">'+(d.rows>3?'First 3 of '+n(d.rows)+' rows':d.rows===1?'1 row':'All '+d.rows+' rows')+'<span class="pvx"> &middot; scroll sideways for all '+d.cols+' columns</span></div>'+
-      (quick() ? '<div class="restored">'+
-        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>'+
-        '<span><strong>Mapping restored.</strong> You used these same columns '+esc(S.restored)+', so all '+d.cols+' are set. <button class="lnkb" type="button" onclick="go(\'map\')">Review mapping</button></span></div>' : '')+
       '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
       '<div><strong>Changed here.</strong> The file is parsed on upload: its counts and first 3 rows show, as read, before any mapping. The wrong file, a wrong delimiter or a mangled encoding is visible here, before any mapping work is wasted. Today this step says only &ldquo;Successfully uploaded.&rdquo;</div></div>';
   }
   return hd()+steps('upload')+'<div class="rule"></div><div class="m-bd">'+body+'</div><div class="rule"></div>'+
     '<div class="m-ft"><button class="ftlink" type="button" onclick="sampleCsv()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>Try sample file</button><span class="sp"></span>'+
     '<button class="btn btn-g" type="button" onclick="closeWizard()">Cancel</button>'+
-    (quick() ? '<button class="btn btn-p" type="button" onclick="startCheck()">Check '+n(f().rows)+' rows</button></div>'
-             : '<button class="btn btn-p" type="button" '+(S.file&&!f().reject?'onclick="go(\'map\')"':'disabled')+'>Next</button></div>');
+    '<button class="btn btn-p" type="button" '+(S.file&&!f().reject?'onclick="go(\'map\')"':'disabled')+'>Next</button></div>';
 }
 
 function fpick(col,ix){
   var cur = S.map[col], open = S.pick===col, set = !unset(col);
-  var q = norm(S.q||''), list = FIELDS.filter(function(fl){ return !q || norm(fl).indexOf(q)>-1; });
+  var q = norm(S.q||''), list = FIELDS.filter(function(fl){ return (!q || norm(fl).indexOf(q)>-1) && (fl==='Don’t import' || fl===cur || !mappedTo(fl)); });
   var cid = col.replace(/'/g,"\\'");
   var out = '<div class="fpick'+(set?' set':'')+'">'+
     '<button type="button" id="fp'+ix+'" aria-haspopup="listbox" aria-expanded="'+open+'" onclick="openPick(\''+cid+'\','+ix+')">'+
@@ -1065,8 +1055,7 @@ function fpick(col,ix){
       '<div class="list" role="listbox">'+
       (list.length
         ? list.map(function(fl){
-            var by = fl!=='Don’t import' && fl!==cur ? mappedTo(fl) : null;
-            return '<button type="button" role="option" aria-selected="'+(fl===cur)+'" class="opt'+(fl===cur?' on':'')+'" data-f="'+esc(fl)+'" onclick="setField(\''+cid+'\',this.getAttribute(\'data-f\'),'+ix+')" onkeydown="pickKey(event)">'+esc(fl)+(by?' <span class="uc">· used by '+esc(by)+'</span>':'')+'</button>';
+            return '<button type="button" role="option" aria-selected="'+(fl===cur)+'" class="opt'+(fl===cur?' on':'')+'" data-f="'+esc(fl)+'" onclick="setField(\''+cid+'\',this.getAttribute(\'data-f\'),'+ix+')" onkeydown="pickKey(event)">'+esc(fl)+'</button>';
           }).join('')
         : '<div class="none">No field matches “'+esc(S.q)+'”. You can create a custom field instead.</div>')+
       '</div></div>';
@@ -1091,8 +1080,8 @@ function scMap(){
   if(S.restored){
     lead = '<div class="bn bn-grn">'+
       '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>'+
-      '<div style="flex:1"><strong>Mapping restored.</strong> You used a file with these same columns '+esc(S.restored)+
-      ', so they are set the way you set them then.'+
+      '<div style="flex:1"><strong>Mapping restored.</strong> This file came from your import of '+esc(S.restored)+
+      ', so its columns are set the way you set them then.'+
       (cols.indexOf('row_number')>-1? ' The three columns we added to the download (row number, error, how to fix) are set to Don’t import.':'')+
       '<div style="margin-top:7px"><button class="btn btn-l" type="button" onclick="clearMapping()" style="padding:0;font-size:12.5px">Clear and map again</button></div></div></div>';
   } else if(todo.length){
@@ -1100,7 +1089,7 @@ function scMap(){
       '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
       '<div><strong>'+matched+' of '+cols.length+' columns matched automatically.</strong> Set the '+
       (todo.length===1?'one highlighted below':todo.length+' highlighted below')+
-      ', and we will remember all '+cols.length+' for the next file with these columns.</div></div>';
+      '.</div></div>';
   } else {
     lead = '<div class="bn bn-grn">'+
       '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'+
@@ -1113,7 +1102,7 @@ function scMap(){
       ? '<div><strong>This file has no email column.</strong><div style="margin-top:3px">Every prospect needs an email, so none of its '+n(d.rows)+' rows can be imported. Choose another file, or add an email column to this one.</div></div></div>'
       : '<div><strong>Map a column to Email to continue.</strong><div style="margin-top:3px">Pick the column that holds email addresses. Every prospect needs one.</div></div></div>');
 
-  var moved = S.moved ? '<div class="muted" role="status">'+esc(S.moved.field)+' moved from '+esc(S.moved.from)+' to '+esc(S.moved.to)+'. One column per field.</div>' : '';
+  var moved = '';
   return hd()+steps('map')+'<div class="rule"></div><div class="m-bd">'+(ok?lead:warn)+moved+
     '<div><div class="hdlbl"><span style="flex:0 0 150px">Fields from file</span><span style="flex:1">First 3 rows</span><span style="flex:0 0 190px;text-align:right">Field</span></div>'+
     rows+'</div>'+

@@ -117,15 +117,6 @@
   "page": false
  },
  {
-  "sec": "Upload",
-  "id": "u14",
-  "title": "Fixed file brought back",
-  "cap": "Mapping restored; Check 280 rows skips Map Fields",
-  "file": "u14.png",
-  "phone": false,
-  "page": false
- },
- {
   "sec": "Map Fields",
   "id": "m01",
   "title": "Columns to set",
@@ -146,8 +137,8 @@
  {
   "sec": "Map Fields",
   "id": "m03",
-  "title": "Mapping restored",
-  "cap": "Same columns as last time; our three columns set to Don’t import",
+  "title": "Fixed file brought back",
+  "cap": "Mapping restored from the import it came from; our three columns set to Don’t import",
   "file": "m03.png",
   "phone": false,
   "page": false
@@ -156,17 +147,8 @@
   "sec": "Map Fields",
   "id": "m04",
   "title": "Field picker",
-  "cap": "Search, and fields already used by another column",
+  "cap": "Search; a field another column uses isn’t offered",
   "file": "m04.png",
-  "phone": false,
-  "page": false
- },
- {
-  "sec": "Map Fields",
-  "id": "m05",
-  "title": "A field moved",
-  "cap": "One column per field: the earlier column is set aside, and the screen says so",
-  "file": "m05.png",
   "phone": false,
   "page": false
  },
@@ -435,7 +417,7 @@
   "sec": "After Import",
   "id": "a02",
   "title": "Finished, rows to fix",
-  "cap": "Toast for what was added; strip for what is left",
+  "cap": "One amber toast: what was added, what wasn’t, and the download",
   "file": "a02.png",
   "phone": false,
   "page": true
@@ -453,7 +435,7 @@
   "sec": "After Import",
   "id": "a04",
   "title": "Finished, both",
-  "cap": "Rows to fix and rows over the limit in one strip",
+  "cap": "Rows to fix and rows over the limit in one toast",
   "file": "a04.png",
   "phone": false,
   "page": true
@@ -462,7 +444,7 @@
   "sec": "After Import",
   "id": "a05",
   "title": "Finished, nothing left",
-  "cap": "Toast only; no strip",
+  "cap": "Green toast only",
   "file": "a05.png",
   "phone": false,
   "page": true
@@ -471,7 +453,7 @@
   "sec": "After Import",
   "id": "a06",
   "title": "Notifications",
-  "cap": "The bell keeps the record",
+  "cap": "The bell keeps the outcome and the download",
   "file": "a06.png",
   "phone": false,
   "page": true
@@ -518,15 +500,6 @@
   "title": "Filtered by error",
   "cap": "Fix one kind at a time",
   "file": "f02.png",
-  "phone": false,
-  "page": false
- },
- {
-  "sec": "Email and the file",
-  "id": "f03",
-  "title": "Expired download link",
-  "cap": "Plain page instead of raw JSON",
-  "file": "f03.png",
   "phone": false,
   "page": false
  },

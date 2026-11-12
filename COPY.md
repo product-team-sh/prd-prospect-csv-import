@@ -31,9 +31,8 @@ Every check that today runs only after Import (duplicate headers, mixed separato
 - Email row marked required. No column mapped to Email: "**Map a column to Email to continue.** Pick the column that holds email addresses. Every prospect needs one." Next disabled. No email-like column at all: "**This file has no email column.** Every prospect needs an email, so none of its {rows} rows can be imported. Choose another file, or add an email column to this one."
 - **After Import** below the fields: production's four labels and descriptions verbatim ([conflict-action.ts](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/conflict-action.ts)), description shown under the select, default Add Missing Fields.
 - An undecided column shows "Select field"; one set aside shows "Don't import".
-- One column per field. In the list, a field already used shows "· used by {column}"; picking it moves it and says "{field} moved from {column} to {column}. One column per field."
-- Cancel, Esc or the close button keeps the mapping, so the same columns come back mapped next time.
-- Headers match an earlier import: "**Mapping restored.** You used a file with these same columns {when}, so they are set the way you set them then." + "Clear and map again". If the file has our three columns: "The three columns we added to the download (row number, error, how to fix) are set to Don't import."
+- One column per field, as production: a field another column uses isn't offered in the list.
+- Cancel, Esc or the close button keeps the mapping while the dialog's file is kept.
 - Field picker: search keeps focus while typing; arrow keys move through options; Enter on the search picks the first match; Esc closes the list.
 
 ### 5.3 Checking
@@ -65,14 +64,12 @@ Every outcome is one row: grey icon, number, sentence. Colour and a button only 
 
 | Surface | When | Copy |
 |---|---|---|
-| Progress card | Running, every page: production's card, unchanged ([async-progress-bar.tsx](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/shared/components/async-progress-bar/async-progress-bar.tsx), [header.tsx L1260](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/home/components/header/header.tsx#L1260)) | Importing {3.5k} Prospects · View List. **Closes when the import finishes.** Today it then says "Imported {total} Prospects", which counts failed rows as imported ([header-helper.tsx L247](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/home/components/header/header-helper.tsx#L247)); the toast and strip carry the outcome instead |
-| Toast | Finished | {added} prospects added and {existing} {past outcome} from {file}. Past outcomes: "had empty fields filled", "were updated", "had filled-in fields updated", "were left unchanged" |
-| Strip, rows to fix | Finished with rows to fix | **{n} rows from {file} weren't imported because they need fixing.** Download them, fix them in that file, and upload it here. Your mapping is remembered. [Download {n} rows] [Upload fixed rows] |
-| Strip, over limit only | | **{n} rows from {file} weren't imported because they are over your plan's prospect limit.** Nothing is wrong with them. Upgrade your plan or delete prospects you no longer need, then upload the downloaded file here. |
-| Strip, both | | **{n} rows from {file} weren't imported:** {fix} need fixing and {over} are over your plan's prospect limit. Download them, fix the rows that need it, make room on your plan, then upload the file here. |
-| Bell | Every import | {file}: {added} added, {existing} {past outcome}. Second line as the strip's bold sentence, with a Download link. Unread state has an accessible name, not colour alone |
+| Progress card | Running, every page: production's card, unchanged ([async-progress-bar.tsx](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/shared/components/async-progress-bar/async-progress-bar.tsx), [header.tsx L1260](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/home/components/header/header.tsx#L1260)) | Importing {3.5k} Prospects · View List. **Closes when the import finishes.** Today it then says "Imported {total} Prospects", which counts failed rows as imported ([header-helper.tsx L247](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/home/components/header/header-helper.tsx#L247)); the toast carries the outcome instead |
+| Toast, nothing left | Finished, every row imported | **{added} prospects added** and {existing} {past outcome} from {file}. Green. Past outcomes: "had empty fields filled", "were updated", "had filled-in fields updated", "were left unchanged" |
+| Toast, rows left | Finished with rows to fix or over the limit | Same first sentence, then one of: "{n} rows weren't imported because they need fixing." / "{n} rows weren't imported because they are over your plan's prospect limit." / "{n} rows weren't imported: {fix} need fixing, {over} are over your plan's prospect limit." [Download {n} rows]. Amber, never green |
+| Bell | Every import | {file}: {added} added, {existing} {past outcome}. Second line as the toast's "weren't imported" sentence, with a Download link. Unread state has an accessible name, not colour alone |
 
-All counts after import come from the import. Rows whose batch failed are counted in "weren't imported" and appear in the file as "Didn't finish". The strip shows on the list imported into, until dismissed or the fixed file is uploaded.
+All counts after import come from the import. Rows whose batch failed are counted in "weren't imported" and appear in the file as "Didn't finish". The toast, the bell and the email carry the outcome and the download.
 
 ### 5.6 Completion email
 
@@ -86,14 +83,13 @@ Subject "Import finished: {file}". Body "{added} added, {existing} {past outcome
 | `row_number` | The row in the user's original file as a spreadsheet shows it: header is row 1 |
 | Lines | One per row not fully imported, blank-email rows included. Imported, updated, repeated and skipped rows are not in it |
 | Over-limit rows | The last new prospects in file order. Never rows already in the list |
-| Several problems | `error` names the first in table order; `how_to_fix` covers every problem on the row |
+| Several problems | `error` and `how_to_fix` cover the first problem found |
 | Second round | When the uploaded file already has `row_number`, `error`, `how_to_fix`, the new file **replaces** those three columns (never adds a second set) and keeps the original `row_number`. Name stays `{name}-rows-to-fix.csv`, never doubled |
 | Quoting | A cell with a comma, double quote, semicolon, tab or line break is quoted; inner quotes doubled. Without the semicolon rule, LibreOffice and European-locale Excel split `a@x.com; b@y.com` and shift the row |
 | Encoding, name | UTF-8 with BOM. `{uploaded name}-rows-to-fix.csv` |
-| Counts | Lines equal the "weren't imported" count on strip, bell and email |
-| Expiry | An expired link says "This file has expired. Files are kept for {n} days. Import your file again to get a new one." Never raw JSON. {n} is how long the report file is kept |
+| Counts | Lines equal the "weren't imported" count in the toast, bell and email |
 
-Error names are fixed text, identical on Review, in the file, strip, bell and email. `{col}` is the user's header; `{value}` the cell.
+Error names are fixed text, identical on Review, in the file, toast, bell and email. `{col}` is the user's header; `{value}` the cell.
 
 | # | `error` | When | `how_to_fix` | Today |
 |---|---|---|---|---|
@@ -114,10 +110,8 @@ Error names are fixed text, identical on Review, in the file, strip, bell and em
 | 15 | Active in another sequence | Admin setting | Active in "{sequence}". Your account doesn't allow a prospect to be active in two sequences, so it wasn't added. Add it after that sequence ends for them, or ask an admin to change the setting. {saved} | Prospect is active in another sequence |
 | 16 | Email bounced before | Sequence import | Emails to this address bounced before, so it wasn't added. Check the address in {col}; if it's wrong, fix it and upload the row again. | Bounced prospect |
 | 17 | Unsubscribed | Sequence import | This person unsubscribed, so they weren't added. Nothing to fix. | Unsubscribed prospect |
-| 18 | On Do Not Contact list | Sequence import | Added to the sequence, but won't be emailed: {email or domain} is on your Do Not Contact list. Remove it from the list to email them. | **Enrolled silently** |
-| 19 | Phone not valid | Not 7 to 15 digits | Imported without the phone. {col} "{value}" needs 7 to 15 digits. Fix it and upload the row again to add it. | **Phone dropped silently** |
 
-`{saved}`: "Its details were updated from your file.", or under Skip Existing Prospects, "Its details were left as they were." Assignment sites in [contacts-import.service.ts](https://github.com/saleshandy/saleshandy-background-jobs/blob/7d18274f935ac261db9fa538aa3afe3d72d6894c/src/contacts/services/contacts-import.service.ts): repeat L2534, email L2543, field type L2551, length L2563, owner L1115, limit L1834, Skip Existing L2747, same sequence L3021, other sequence L2974, active L2924, bounced and unsubscribed L4510, DNC L4530, batch crash L6470; phone [contact-helpers.ts L243](https://github.com/saleshandy/saleshandy-background-jobs/blob/7d18274f935ac261db9fa538aa3afe3d72d6894c/src/contacts/helpers/contact-helpers.ts#L243). **Delete, never assigned:** `NoUpdate`, `NoOverwrite`, `ProspectInCallDNC`, `ContactInDncList`. `MultipleSeparator` is reachable only from a sync route the web app doesn't call.
+`{saved}`: "Its details were updated from your file.", or under Skip Existing Prospects, "Its details were left as they were." Assignment sites in [contacts-import.service.ts](https://github.com/saleshandy/saleshandy-background-jobs/blob/7d18274f935ac261db9fa538aa3afe3d72d6894c/src/contacts/services/contacts-import.service.ts): repeat L2534, email L2543, field type L2551, length L2563, owner L1115, limit L1834, Skip Existing L2747, same sequence L3021, other sequence L2974, active L2924, bounced and unsubscribed L4510, batch crash L6470. An invalid phone (imported, phone left blank) and a Do Not Contact match (enrolled, not emailed) import as today and are not in the file. **Delete, never assigned:** `NoUpdate`, `NoOverwrite`, `ProspectInCallDNC`, `ContactInDncList`. `MultipleSeparator` is reachable only from a sync route the web app doesn't call.
 
 ### 5.8 Import via CSV into a sequence
 
@@ -134,15 +128,13 @@ Same dialog, Upload and Map Fields as the list import ([sequence path today](htt
 | Map Fields: step needs (amber) | When no column is mapped to a field a step needs, above After Import: **No column is mapped to {fields}.** {sequence} has {a call step (Step 3) and a LinkedIn step (Step 2)}, so {its call tasks / those tasks} will have nothing to {dial / open}. If your file has {phone numbers / them}, set {that column / those columns} above. You can still import without {it / them}. Covers every step in the sequence; Next stays enabled |
 | Button | "Add {n} to Step {k}" |
 | Download | Includes the rows not added (errors 13 to 17) and, when only some rows lack it, the step-needs warnings "No phone for call step", "No LinkedIn URL for LinkedIn step" |
-| After | Toast "{n} added to Step {k} of {sequence} from {file}." Strip on the sequence's Prospects tab, adding "The download also lists the {n} saved but not added to Step {k}." Bell "{file}: {n} added to Step {k} of {sequence}, {m} not added". Email subject "Import finished: {file} into {sequence}" |
+| After | Toast "{n} added to Step {k} of {sequence} from {file}." With rows left, amber as the list import, adding "The download also lists the {n} saved but not added to Step {k}." Bell "{file}: {n} added to Step {k} of {sequence}, {m} not added". Email subject "Import finished: {file} into {sequence}" |
 
 The admin setting is "Allow adding duplicate prospects in multiple sequences" (Settings › Admin Settings › Prospects). It only affects prospects already in the list.
 
 ### 5.9 Bringing a file back
 
-When a file's headers match a mapping that was used for a check, every column comes back decided. Then Map Fields has nothing to ask, so Upload skips it:
+A file with our three columns (`row_number`, `error`, `how_to_fix`) is a rows-to-fix file. Map Fields opens with the mapping of the import it came from:
 
-- Under the file: "**Mapping restored.** You used these same columns {when}, so all {n} are set." [Review mapping]
-- Next becomes "Check {rows} rows" and goes straight to the check; the steps show Map Fields as done, and Back on Review opens it.
-- Anything undecided, or Email not mapped: Map Fields as usual.
-- Applies to the fixed file (our three columns are set to Don't import) and to any weekly import with the same columns.
+- "**Mapping restored.** This file came from your import of {file}, so its columns are set the way you set them then. The three columns we added to the download (row number, error, how to fix) are set to Don't import." [Clear and map again]
+- Map Fields is not skipped. Any other file maps as production does.
