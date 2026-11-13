@@ -21,7 +21,7 @@
   "sec": "Upload: rejected files",
   "id": "u03",
   "title": "Excel file",
-  "cap": "Says only what the check knows; the drop zone stays live",
+  "cap": "Red alert with title, file and fix; the drop zone below stays live",
   "file": "u03.png",
   "phone": false,
   "page": false
@@ -30,7 +30,7 @@
   "sec": "Upload: rejected files",
   "id": "u04",
   "title": "Wrong file type",
-  "cap": "Says only what the check knows; the drop zone stays live",
+  "cap": "Red alert with title, file and fix; the drop zone below stays live",
   "file": "u04.png",
   "phone": false,
   "page": false
@@ -39,7 +39,7 @@
   "sec": "Upload: rejected files",
   "id": "u05",
   "title": "Over 95 MB",
-  "cap": "Says only what the check knows; the drop zone stays live",
+  "cap": "Red alert with title, file and fix; the drop zone below stays live",
   "file": "u05.png",
   "phone": false,
   "page": false
@@ -48,7 +48,7 @@
   "sec": "Upload: rejected files",
   "id": "u06",
   "title": "Over 100,000 rows",
-  "cap": "Says only what the check knows; the drop zone stays live",
+  "cap": "Red alert with title, file and fix; the drop zone below stays live",
   "file": "u06.png",
   "phone": false,
   "page": false
@@ -57,7 +57,7 @@
   "sec": "Upload: rejected files",
   "id": "u07",
   "title": "Over 120 columns",
-  "cap": "Says only what the check knows; the drop zone stays live",
+  "cap": "Red alert with title, file and fix; the drop zone below stays live",
   "file": "u07.png",
   "phone": false,
   "page": false
@@ -66,7 +66,7 @@
   "sec": "Upload: rejected files",
   "id": "u08",
   "title": "No prospects",
-  "cap": "Says only what the check knows; the drop zone stays live",
+  "cap": "Red alert with title, file and fix; the drop zone below stays live",
   "file": "u08.png",
   "phone": false,
   "page": false
@@ -75,7 +75,7 @@
   "sec": "Upload: rejected files",
   "id": "u09",
   "title": "Repeated column names",
-  "cap": "Says only what the check knows; the drop zone stays live",
+  "cap": "Red alert with title, file and fix; the drop zone below stays live",
   "file": "u09.png",
   "phone": false,
   "page": false
@@ -84,7 +84,7 @@
   "sec": "Upload: rejected files",
   "id": "u10",
   "title": "Columns with no name",
-  "cap": "Says only what the check knows; the drop zone stays live",
+  "cap": "Red alert with title, file and fix; the drop zone below stays live",
   "file": "u10.png",
   "phone": false,
   "page": false
@@ -93,7 +93,7 @@
   "sec": "Upload: rejected files",
   "id": "u11",
   "title": "Mixed separators",
-  "cap": "Says only what the check knows; the drop zone stays live",
+  "cap": "Red alert with title, file and fix; the drop zone below stays live",
   "file": "u11.png",
   "phone": false,
   "page": false
@@ -102,7 +102,7 @@
   "sec": "Upload: rejected files",
   "id": "u12",
   "title": "Not UTF-8",
-  "cap": "Says only what the check knows; the drop zone stays live",
+  "cap": "Red alert with title, file and fix; the drop zone below stays live",
   "file": "u12.png",
   "phone": false,
   "page": false
@@ -111,7 +111,7 @@
   "sec": "Upload: rejected files",
   "id": "u13",
   "title": "Can’t be read",
-  "cap": "Says only what the check knows; the drop zone stays live",
+  "cap": "Red alert with title, file and fix; the drop zone below stays live",
   "file": "u13.png",
   "phone": false,
   "page": false
@@ -507,7 +507,7 @@
   "sec": "Phone (390px)",
   "id": "p01",
   "title": "Rejected file",
-  "cap": "Centred; drop line wraps as one",
+  "cap": "Alert, then drop zone; both full width",
   "file": "p01.png",
   "phone": true,
   "page": false
