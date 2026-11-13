@@ -228,7 +228,7 @@
   "sec": "Review and Import",
   "id": "r01",
   "title": "Review",
-  "cap": "One row per outcome; colour and a button only on rows that need you",
+  "cap": "Headline, one grey line, one line per problem with its link",
   "file": "r01.png",
   "phone": false,
   "page": false
@@ -237,7 +237,7 @@
   "sec": "Review and Import",
   "id": "r02",
   "title": "Clean file",
-  "cap": "One row: every row is ready",
+  "cap": "Headline and grey line only: every row is ready",
   "file": "r02.png",
   "phone": false,
   "page": false
@@ -246,7 +246,7 @@
   "sec": "Review and Import",
   "id": "r03",
   "title": "Already in your list: Update All Fields",
-  "cap": "The line says what this option does to them",
+  "cap": "The grey line says what this option does to them",
   "file": "r03.png",
   "phone": false,
   "page": false
@@ -255,7 +255,7 @@
   "sec": "Review and Import",
   "id": "r04",
   "title": "Already in your list: Overwrite",
-  "cap": "The line says what this option does to them",
+  "cap": "The grey line says what this option does to them",
   "file": "r04.png",
   "phone": false,
   "page": false
@@ -264,7 +264,7 @@
   "sec": "Review and Import",
   "id": "r05",
   "title": "Already in your list: Skip Existing Prospects",
-  "cap": "The line says what this option does to them",
+  "cap": "The grey line says what this option does to them",
   "file": "r05.png",
   "phone": false,
   "page": false
@@ -273,7 +273,7 @@
   "sec": "Review and Import",
   "id": "r06",
   "title": "Over the plan limit",
-  "cap": "Amber: the account needs room; red stays for rows to fix",
+  "cap": "Amber line and Upgrade plan; red stays for rows to fix",
   "file": "r06.png",
   "phone": false,
   "page": false
@@ -282,7 +282,7 @@
   "sec": "Review and Import",
   "id": "r07",
   "title": "Plan full",
-  "cap": "Grey headline; only rows already in the list can be updated",
+  "cap": "No new prospects can be added; only those already in the list are updated",
   "file": "r07.png",
   "phone": false,
   "page": false
@@ -291,7 +291,7 @@
   "sec": "Review and Import",
   "id": "r08",
   "title": "Not enough credits",
-  "cap": "Credits needed and held; Import disabled",
+  "cap": "The Verify line turns amber with Add credits; Import disabled",
   "file": "r08.png",
   "phone": false,
   "page": false
@@ -300,7 +300,7 @@
   "sec": "Review and Import",
   "id": "r09",
   "title": "Another import running",
-  "cap": "Known on arrival; Import disabled",
+  "cap": "Amber line on arrival, Check again; Import disabled",
   "file": "r09.png",
   "phone": false,
   "page": false
@@ -318,7 +318,7 @@
   "sec": "Review and Import",
   "id": "r11",
   "title": "Import failed",
-  "cap": "Dialog stays; Import again",
+  "cap": "Red line; dialog stays; Import again",
   "file": "r11.png",
   "phone": false,
   "page": false
@@ -327,7 +327,7 @@
   "sec": "Review and Import",
   "id": "r12",
   "title": "Limit reached during import",
-  "cap": "Nothing imported; file and mapping kept",
+  "cap": "Amber line, Upgrade plan; nothing imported; file and mapping kept",
   "file": "r12.png",
   "phone": false,
   "page": false
@@ -336,7 +336,7 @@
   "sec": "Review and Import",
   "id": "r13",
   "title": "Every row fails",
-  "cap": "Download is primary; Upload fixed file; check the mapping",
+  "cap": "Headline says none; Download is primary; Upload fixed file; check the mapping",
   "file": "r13.png",
   "phone": false,
   "page": false
@@ -354,7 +354,7 @@
   "sec": "Import into a sequence",
   "id": "s01",
   "title": "Into an email step",
-  "cap": "Step picked on Review; who won’t be added and why",
+  "cap": "Step picker above the headline; who won’t be added, in grey",
   "file": "s01.png",
   "phone": false,
   "page": false
@@ -363,7 +363,7 @@
   "sec": "Import into a sequence",
   "id": "s02",
   "title": "Into a call step, some phones empty",
-  "cap": "Phone mapped; the rows without one are counted",
+  "cap": "Phone mapped; a grey line counts the prospects without one",
   "file": "s02.png",
   "phone": false,
   "page": false
@@ -372,7 +372,7 @@
   "sec": "Import into a sequence",
   "id": "s03",
   "title": "Into a LinkedIn step, some URLs empty",
-  "cap": "Same warning for LinkedIn profile URLs",
+  "cap": "Same grey line for LinkedIn profile URLs",
   "file": "s03.png",
   "phone": false,
   "page": false
@@ -525,7 +525,7 @@
   "sec": "Phone (390px)",
   "id": "p03",
   "title": "Review",
-  "cap": "Box rows stack; footer buttons full width",
+  "cap": "Lines wrap under their own text; footer buttons full width",
   "file": "p03.png",
   "phone": true,
   "page": false
@@ -534,7 +534,7 @@
   "sec": "Phone (390px)",
   "id": "p04",
   "title": "Sequence Review",
-  "cap": "Step picker above the numbers",
+  "cap": "Step picker above the headline",
   "file": "p04.png",
   "phone": true,
   "page": false

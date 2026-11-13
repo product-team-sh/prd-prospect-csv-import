@@ -42,23 +42,25 @@ Every check that today runs only after Import (duplicate headers, mixed separato
 
 ### 5.4 Review and Import
 
-Every outcome is one row: number, sentence, no icons. Numbers are body size and regular weight. An icon, colour and a button only on rows that need the user: red to fix, amber for the plan limit. Lines about prospects say "prospects"; lines about rows not imported (repeated, to fix) say "rows". No boxes, no bar. Tags and Verification below, unchanged. See it rendered: [copy.html §5.4](copy.html#s5-4).
+One headline, one quiet grey line, then one line per problem, then the options under a rule. The headline is a sentence styled as a heading (20px, semibold). Every other number sits in its sentence at body size and regular weight. A problem line is a small coloured dot, a plain sentence and one link; only rows that need the user get one. Red: rows to fix, or an import that failed. Amber: the plan limit, credits, another import running. No icons, no boxes, no bar. Lines about prospects say "prospects"; lines about repeats and rows to fix say "rows". See it rendered: [copy.html §5.4](copy.html#s5-4).
 
 | Element | Copy |
 |---|---|
-| First row | **{n}** new prospects will be added / {rows} rows checked in {file} |
-| Already in list | {n} prospects already in your list {outcome}. [Change After Import]. Outcomes: Add Missing Fields "will get their empty fields filled"; Update All Fields "will be updated. A blank cell clears the existing value"; Overwrite "will have their filled-in fields updated"; Skip Existing Prospects "will be left unchanged" |
-| Repeated | {n} repeated rows: only the first of each is imported. Repeats are rows with the same email (case and spaces ignored). If that email is invalid, every copy is a row to fix |
-| Clean file | The first row only; its second line ends "Every row is ready." |
-| Red row: rows to fix | **{n} rows need fixing** / {count} {error name} · … (§5.7 names, lower case) [Download {n} rows]. When the file holds more: "The download also lists the {m} over your plan's limit." or "…the {m} not added to the step." |
-| Amber row: over the limit (the account, not the file) | **{over} new prospects are over your plan's limit** / Your plan has room for {room} more; prospects already in your list don't count. [Upgrade plan] |
-| Amber row: plan full | First row: "No new prospects will be added". **Your plan has no room for new prospects** / Upgrade, or delete prospects you no longer need, then import again. [Upgrade plan]. Import disabled unless rows can be updated |
-| Every row fails | First row "**0** of {rows} rows can be imported". Red row **{n} rows need fixing** with reasons; when one reason covers over half: "{n} of {rows} have the same problem, which often means the wrong column is mapped to Email." [Check the mapping] |
-| Credits short | You need up to {n} credits and have {have}. Add credits, or untick this to import now and verify later. [Add credits]. Import disabled |
-| Another import running | **Another import is still running: {file}, {pct}% done.** Only one import runs at a time. You can import this file when it finishes; your file and mapping stay here. [Check again]. Import disabled |
-| Import failed | **The import didn't start. The connection dropped.** Nothing was imported. Your file and mapping are kept here. Check your connection and click Import again. Button becomes "Import again" |
-| Limit reached meanwhile | **Your plan's prospect limit was reached while you were importing.** Nothing was imported. Upgrade, or delete prospects you no longer need, then click Import again. |
-| Verification | "Addresses already verified in the last 15 days are skipped." The 15 days is a fixed default: no link to change it. The credit balance always shows |
+| Headline | {n} new prospects will be added. None new: "No new prospects will be added". Plan full: "No new prospects can be added". Every row fails: "None of the {rows} rows can be imported" |
+| Quiet line (grey) | {rows} rows checked. {n} prospects already in your list {outcome}, {m} repeated rows skipped. A clause with a count of 0 is dropped |
+| Outcomes, by After Import | Add Missing Fields "will get their empty fields filled"; Update All Fields "will be updated (a blank cell clears the existing value)"; Overwrite "will have their filled-in fields updated"; Skip Existing Prospects "will be left unchanged" |
+| Repeats | Repeats are rows with the same email (case and spaces ignored); the first is imported. If that email is invalid, every copy is a row to fix |
+| Clean file | Headline and "{rows} rows checked. Every row is ready." No problem lines |
+| Red line: rows to fix | {n} rows need fixing [Download them]. When the file holds more, grey after the link: "plus the {m} over the limit" or "plus the {m} not added to the step". The per-error breakdown is not on Review; it stays in the toast, bell and email |
+| Amber line: over the limit | {over} new prospects are over your plan's limit [Upgrade plan]. With no rows to fix, the line also carries [Download them] |
+| Amber line: plan full | Headline "No new prospects can be added". Your plan has no room for {over} new prospects [Upgrade plan]. Verify and tags hidden. Button "Update {n} prospects"; disabled when nothing can be updated |
+| Every row fails | Headline "None of the {rows} rows can be imported". When one reason covers over half, quiet line: "{n} of {rows} have the same problem, which often means the wrong column is mapped to Email." [Check the mapping]. Red line "{n} rows need fixing", no link: Download {n} rows is the primary button, "Upload fixed file" on the left |
+| Verify emails | ☑ Verify emails · up to {n} of your {credits} credits. Unticked: "· no credits will be used". Addresses verified in the last 15 days are skipped (fixed default, not shown) |
+| Verify, credits short (amber) | ☑ Verify emails · needs up to {n} credits, you have {have} [Add credits]. Grey line under it: "Or untick it to import now and verify later." Import disabled |
+| Tags | [+ Add tags] link; a click shows the tags input, "Add tags to categorize your prospects…" |
+| Another import running (amber line) | {file} is still importing ({pct}% done). This file can import when it finishes. [Check again]. Import disabled |
+| Import failed (red line) | The connection dropped, so nothing was imported. Click Import again when you're back online. Button becomes "Import again" |
+| Limit reached meanwhile (amber line) | Your plan's limit was reached while importing, so nothing was imported. [Upgrade plan]. Button becomes "Import again" |
 | Buttons | "Import {n} new prospects"; "Update {n} prospects" when none are new; "Importing…" while sending |
 
 ### 5.5 After Import
@@ -121,10 +123,11 @@ Same dialog, Upload and Map Fields as the list import ([sequence path today](htt
 |---|---|
 | Entry | Sequence with no steps: blocked before the dialog opens, "Add at least one step to this sequence before adding prospects." [Go to Steps] |
 | Map Fields | No step picker (production has one here; it moves to Review) |
-| Review, first row | "Import into [Step 1 · Email ▾]", in Review's settings layout. Options name the step type ("Step 2 · LinkedIn connection request"). Default: the lowest step number, as production ([map-fields.tsx L92-L99](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/map-fields.tsx#L92-L99)). Changing it updates every line below at once |
-| First row | "**{n}** prospects will be added to Step {k}". Counts new plus existing, because production adds existing prospects to the step under every After Import option |
-| Rows | "{n} of these prospects are already in your list and {outcome}." [Change After Import] · row "**{n}** prospects already in your list won't be added" / {a} are in another sequence, {b} are in this one, {c} bounced, {d} unsubscribed. [Admin setting] · repeated, as the list import |
-| Plain row: step needs | Only when the field is mapped but some prospects have it empty: **{n} prospects have no phone number** / Their call task (Step {k}) will have nothing to dial. They still import. Same for LinkedIn ("LinkedIn profile URL", "LinkedIn task", "nothing to open"). Covers every step from the chosen one on |
+| Review, above the headline | "Import into [Step 1 · Email ▾]", in Review's settings layout. Options name the step type ("Step 2 · LinkedIn connection request"). Default: the lowest step number, as production ([map-fields.tsx L92-L99](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/map-fields.tsx#L92-L99)). Changing it updates every line below at once |
+| Headline | "{n} prospects will be added to Step {k}". Counts new plus existing, because production adds existing prospects to the step under every After Import option |
+| Quiet lines (grey) | "{rows} rows checked. {n} of the {added} are already in your list and {outcome}, {m} repeated rows skipped." Then "{n} prospects already in your list won't be added: {a} are in another sequence, {b} are in this one, {c} bounced, {d} unsubscribed." [Admin setting] |
+| Quiet line: step needs (grey) | Only when the field is mapped but some prospects have it empty: "{n} prospects have no phone number. Their call task (Step {k}) will have nothing to dial. They still import." Same for LinkedIn ("LinkedIn profile URL", "LinkedIn task", "nothing to open"). Covers every step from the chosen one on |
+| Red line: rows to fix | {n} rows need fixing [Download them] plus the {m} not added to the step |
 | Map Fields: step needs (amber) | When no column is mapped to a field a step needs, above After Import, one line: "No column is mapped to {fields}, which {Step k / Steps j and k} {needs / need}." e.g. "No column is mapped to LinkedIn Profile or Phone Number, which Steps 2 and 3 need." Covers every step in the sequence; Next stays enabled |
 | Button | "Add {n} to Step {k}" |
 | Download | Includes the rows not added that the user can act on (errors 13 to 15). Already in this sequence, unsubscribed, and rows a step can't work are counts on Review only |
