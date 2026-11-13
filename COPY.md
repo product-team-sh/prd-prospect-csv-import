@@ -27,7 +27,9 @@ Every check that today runs only after Import (duplicate headers, mixed separato
 
 ### 5.2 Map Fields
 
-- Email row marked required. No column mapped to Email: "**Map a column to Email to continue.** Pick the column that holds email addresses. Every prospect needs one." Next disabled. No email-like column at all: "**This file has no email column.** Every prospect needs an email, so none of its {rows} rows can be imported. Choose another file, or add an email column to this one."
+- Email row marked with a red *. Row look as production: neutral selects, no row tint. Header "Fields from file", "First 3 rows", "Field" (left edge of the selects).
+- Line above the rows: "{m} of {n} columns matched automatically." When all matched: "All {n} columns matched automatically." Grey, one line; unmatched columns are not highlighted.
+- No column mapped to Email: "Map a column to Email to continue." Red, one line. Next disabled. No email-like column at all: "This file has no email column. Add one, or choose another file." Red, one line, Next disabled.
 - **After Import** below the fields: production's four labels and descriptions verbatim ([conflict-action.ts](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/conflict-action.ts)), description shown under the select, default Add Missing Fields.
 - An undecided column shows "Select field"; one set aside shows "Don't import".
 - One column per field, as production: a field another column uses isn't offered in the list.
@@ -36,22 +38,22 @@ Every check that today runs only after Import (duplicate headers, mixed separato
 
 ### 5.3 Checking
 
-"Checking your file", progress as "{done} of {rows} rows", "Nothing has been imported yet." One button: Cancel check.
+"Checking your file", progress as "{done} of {rows} rows", "Nothing is imported yet." No footer; one text link, "Cancel", centred under the progress.
 
 ### 5.4 Review and Import
 
-Every outcome is one row: grey icon, number, sentence. Colour and a button only on rows that need the user: red to fix, amber for the plan limit or a step's needs. No boxes, no bar. Tags and Verification below, unchanged. See it rendered: [copy.html §5.4](copy.html#s5-4).
+Every outcome is one row: number, sentence, no icons. Numbers are body size and regular weight. An icon, colour and a button only on rows that need the user: red to fix, amber for the plan limit. Lines about prospects say "prospects"; lines about rows not imported (repeated, to fix) say "rows". No boxes, no bar. Tags and Verification below, unchanged. See it rendered: [copy.html §5.4](copy.html#s5-4).
 
 | Element | Copy |
 |---|---|
 | First row | **{n}** new prospects will be added / {rows} rows checked in {file} |
-| Already in list | {n} already in your list {outcome}. [Change]. Outcomes: Add Missing Fields "will get their empty fields filled"; Update All Fields "will be updated. A blank cell clears the existing value"; Overwrite "will have their filled-in fields updated"; Skip Existing Prospects "will be left unchanged" |
-| Repeated | {n} repeated rows: only the first of each is imported. |
+| Already in list | {n} prospects already in your list {outcome}. [Change After Import]. Outcomes: Add Missing Fields "will get their empty fields filled"; Update All Fields "will be updated. A blank cell clears the existing value"; Overwrite "will have their filled-in fields updated"; Skip Existing Prospects "will be left unchanged" |
+| Repeated | {n} repeated rows: only the first of each is imported. Repeats are rows with the same email (case and spaces ignored). If that email is invalid, every copy is a row to fix |
 | Clean file | The first row only; its second line ends "Every row is ready." |
 | Red row: rows to fix | **{n} rows need fixing** / {count} {error name} · … (§5.7 names, lower case) [Download {n} rows]. When the file holds more: "The download also lists the {m} over your plan's limit." or "…the {m} not added to the step." |
-| Amber row: over the limit (the account, not the file) | **{over} new prospects are over your plan's limit** / Your plan has room for {room} more; rows already in your list don't count. [Upgrade plan] |
+| Amber row: over the limit (the account, not the file) | **{over} new prospects are over your plan's limit** / Your plan has room for {room} more; prospects already in your list don't count. [Upgrade plan] |
 | Amber row: plan full | First row: "No new prospects will be added". **Your plan has no room for new prospects** / Upgrade, or delete prospects you no longer need, then import again. [Upgrade plan]. Import disabled unless rows can be updated |
-| Every row fails | First row "**0** of {rows} rows can be imported", grey. Red row **{n} rows need fixing** with reasons; when one reason covers over half: "{n} of {rows} have the same problem, which often means the wrong column is mapped to Email." [Check the mapping] |
+| Every row fails | First row "**0** of {rows} rows can be imported". Red row **{n} rows need fixing** with reasons; when one reason covers over half: "{n} of {rows} have the same problem, which often means the wrong column is mapped to Email." [Check the mapping] |
 | Credits short | You need up to {n} credits and have {have}. Add credits, or untick this to import now and verify later. [Add credits]. Import disabled |
 | Another import running | **Another import is still running: {file}, {pct}% done.** Only one import runs at a time. You can import this file when it finishes; your file and mapping stay here. [Check again]. Import disabled |
 | Import failed | **The import didn't start. The connection dropped.** Nothing was imported. Your file and mapping are kept here. Check your connection and click Import again. Button becomes "Import again" |
@@ -73,7 +75,7 @@ All counts after import come from the import. Rows whose batch failed are counte
 
 ### 5.6 Completion email
 
-Subject "Import finished: {file}". Body "{added} added, {existing} {past outcome}, {n} not imported: {top 3 error names with counts}. Download the rows to fix them." Replaces "Congratulations! Your Prospect Import is completed." for every outcome ([prospect-import.hbs L11](https://github.com/saleshandy/saleshandy-background-jobs/blob/c2c60a6ee24b9910b7aa6e67b54876bca132785c/src/app-mailer/email-templates/prospect-import.hbs#L11)). A client user's import names them and the sequence.
+Sender "{Brand} <no-reply@{brand domain}>", the account's white-label brand. Subject "Import finished: {file}". Body "{added} added, {existing} {past outcome}, {n} not imported: {top 3 error names with counts}. Download the rows to fix them." Replaces "Congratulations! Your Prospect Import is completed." for every outcome ([prospect-import.hbs L11](https://github.com/saleshandy/saleshandy-background-jobs/blob/c2c60a6ee24b9910b7aa6e67b54876bca132785c/src/app-mailer/email-templates/prospect-import.hbs#L11)). A client user's import names them and the sequence.
 
 ### 5.7 The rows-to-fix file
 
@@ -121,9 +123,9 @@ Same dialog, Upload and Map Fields as the list import ([sequence path today](htt
 | Map Fields | No step picker (production has one here; it moves to Review) |
 | Review, first row | "Import into [Step 1 · Email ▾]", in Review's settings layout. Options name the step type ("Step 2 · LinkedIn connection request"). Default: the lowest step number, as production ([map-fields.tsx L92-L99](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/map-fields.tsx#L92-L99)). Changing it updates every line below at once |
 | First row | "**{n}** prospects will be added to Step {k}". Counts new plus existing, because production adds existing prospects to the step under every After Import option |
-| Rows | "{n} of them are already in your list and {outcome}." [Change] · grey row "**{n}** already in your list won't be added" / {a} are in another sequence, {b} are in this one, {c} bounced, {d} unsubscribed. [Admin setting] · repeated, as the list import |
-| Amber row: step needs | Only when the field is mapped but some rows are empty: **{n} have no phone number** / Their call task (Step {k}) will have nothing to dial. They still import. Same for LinkedIn ("LinkedIn profile URL", "LinkedIn task", "nothing to open"). Covers every step from the chosen one on |
-| Map Fields: step needs (amber) | When no column is mapped to a field a step needs, above After Import: **No column is mapped to {fields}.** {sequence} has {a call step (Step 3) and a LinkedIn step (Step 2)}, so {its call tasks / those tasks} will have nothing to {dial / open}. If your file has {phone numbers / them}, set {that column / those columns} above. You can still import without {it / them}. Covers every step in the sequence; Next stays enabled |
+| Rows | "{n} of these prospects are already in your list and {outcome}." [Change After Import] · row "**{n}** prospects already in your list won't be added" / {a} are in another sequence, {b} are in this one, {c} bounced, {d} unsubscribed. [Admin setting] · repeated, as the list import |
+| Plain row: step needs | Only when the field is mapped but some prospects have it empty: **{n} prospects have no phone number** / Their call task (Step {k}) will have nothing to dial. They still import. Same for LinkedIn ("LinkedIn profile URL", "LinkedIn task", "nothing to open"). Covers every step from the chosen one on |
+| Map Fields: step needs (amber) | When no column is mapped to a field a step needs, above After Import, one line: "No column is mapped to {fields}, which {Step k / Steps j and k} {needs / need}." e.g. "No column is mapped to LinkedIn Profile or Phone Number, which Steps 2 and 3 need." Covers every step in the sequence; Next stays enabled |
 | Button | "Add {n} to Step {k}" |
 | Download | Includes the rows not added that the user can act on (errors 13 to 15). Already in this sequence, unsubscribed, and rows a step can't work are counts on Review only |
 | After | Toast "{n} added to Step {k} of {sequence} from {file}." With rows left, amber as the list import, adding "The download also lists the {n} saved but not added to Step {k}." Bell "{file}: {n} added to Step {k} of {sequence}, {m} not added". Email subject "Import finished: {file} into {sequence}" |
@@ -134,5 +136,5 @@ The admin setting is "Allow adding duplicate prospects in multiple sequences" (S
 
 A file with our three columns (`row_number`, `error`, `how_to_fix`) is a rows-to-fix file. Map Fields opens with the mapping of the import it came from:
 
-- "**Mapping restored.** This file came from your import of {file}, so its columns are set the way you set them then. The three columns we added to the download (row number, error, how to fix) are set to Don't import." [Clear and map again]
+- "Mapping restored from your import of {file}." [Clear and map again]. Grey, one line. Our three columns (`row_number`, `error`, `how_to_fix`) are set to Don't import.
 - Map Fields is not skipped. Any other file maps as production does.

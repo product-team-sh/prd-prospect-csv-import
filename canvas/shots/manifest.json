@@ -120,7 +120,7 @@
   "sec": "Map Fields",
   "id": "m01",
   "title": "Columns to set",
-  "cap": "Two columns highlighted; After Import below",
+  "cap": "Match line; After Import below",
   "file": "m01.png",
   "phone": false,
   "page": false
@@ -129,7 +129,7 @@
   "sec": "Map Fields",
   "id": "m02",
   "title": "Everything matched",
-  "cap": "Nothing to set",
+  "cap": "All columns matched",
   "file": "m02.png",
   "phone": false,
   "page": false
@@ -219,7 +219,7 @@
   "sec": "Checking",
   "id": "c01",
   "title": "Checking every row",
-  "cap": "Nothing imported yet; one Cancel",
+  "cap": "Nothing imported yet; Cancel link, no footer",
   "file": "c01.png",
   "phone": false,
   "page": false

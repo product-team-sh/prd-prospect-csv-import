@@ -111,12 +111,14 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .bn svg{flex:0 0 auto;margin-top:2px}
 .bn-red{background:var(--red-50);border:1px solid var(--red-200);color:var(--red-900)}
 .bn-amb{background:var(--yel-50);border:1px solid var(--yel-200);color:var(--yel-900)}
+.bn-gry{background:var(--g-50);border:1px solid var(--g-200);color:var(--g-800)}
+.bn-gry svg{margin-top:1px}
+.bn-1{align-items:center}.bn-1 svg{margin-top:0}
 .bn-grn{background:var(--grn-50);border:1px solid var(--grn-200);color:var(--grn-900)}
 .bn-blu{background:var(--blue-50);border:1px solid var(--blue-200);color:var(--blue-900)}
 
 /* map table */
 .maprow{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--g-100)}
-.maprow.req{background:var(--blue-50);margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:var(--r-input);border-top-color:transparent}
 .maprow.bad{background:var(--red-50);margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:var(--r-input);border-top-color:transparent}
 .maprow .f{flex:0 0 150px;font-size:13px;font-weight:600}
 .maprow .s{flex:1;min-width:0;display:flex;font-size:12px;color:var(--g-600);line-height:1.45;white-space:nowrap}
@@ -124,7 +126,6 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .maprow .s .v{flex:0 1 auto;min-width:0;max-width:55%;overflow:hidden;text-overflow:ellipsis}.maprow .s .v.k{flex-shrink:0}
 .maprow .s .d{flex:0 0 auto;padding:0 5px;color:var(--g-400)}
 .maprow select{flex:0 0 138px;font-family:inherit;font-size:12.5px;padding:7px 8px;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-900)}
-.maprow select.set{border-color:var(--blue-700);color:var(--blue-700);font-weight:500}
 .maprow select.err{border-color:var(--red-700);color:var(--red-700)}
 .hdlbl{display:flex;gap:10px;padding-bottom:8px;font-size:11.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--g-500)}
 
@@ -133,7 +134,6 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .fpick>button{width:100%;display:flex;align-items:center;gap:6px;text-align:left;font-size:12.5px;padding:7px 9px;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-900)}
 .fpick>button .v{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fpick>button svg{flex:0 0 auto;opacity:.6}
-.fpick.set>button{border-color:var(--blue-700);color:var(--blue-700);font-weight:500}
 .fpick.err>button{border-color:var(--red-700);color:var(--red-700)}
 .fmenu{position:absolute;z-index:30;top:calc(100% + 4px);right:0;width:256px;background:#fff;border:1px solid var(--g-200);border-radius:var(--r-btn);box-shadow:var(--sh-lg);overflow:hidden}
 .fmenu input{display:block;width:100%;border:0;border-bottom:1px solid var(--g-200);padding:9px 11px;font-family:inherit;font-size:12.5px;color:var(--g-900);outline:none}
@@ -142,8 +142,6 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .fmenu .opt:hover{background:var(--blue-50);color:var(--blue-800)}
 .fmenu .opt.on{background:var(--blue-50);color:var(--blue-800);font-weight:600}
 .fmenu .none{padding:12px 11px;font-size:12.5px;color:var(--g-500)}
-.maprow.todo{background:var(--yel-50);margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:var(--r-input);border-top-color:transparent}
-.maprow.todo .f{color:var(--yel-900)}
 
 /* progress */
 .bar{height:6px;border-radius:9999px;background:var(--g-200);overflow:hidden}
@@ -292,13 +290,14 @@ body.mopen #toast{bottom:auto;top:50px}
 .rv-l{display:flex;flex-direction:column}
 .rv-l .it{display:flex;gap:12px;align-items:flex-start;padding:11px 0;font-size:13.5px;line-height:20px;color:var(--g-700)}
 .rv-l .it+.it{border-top:1px solid var(--g-100)}
-.rv-l .it.lead{padding-top:0}.rv-l .it.lead b{font-size:15px}
+.rv-l .it.lead{padding-top:0}
 .rv-l .ic{width:20px;height:20px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;background:var(--g-100)}
 .rv-l .tx{flex:1;min-width:0}.rv-l .tx .s{display:block;font-size:12.5px;line-height:18px;color:var(--g-500);margin-top:2px}
 .rv-l .tx .s .s.hint,.rv-l .tx .s.hint{display:block;margin-top:6px}
-.rv-l .it b{font-weight:600;color:var(--g-900);font-variant-numeric:tabular-nums}
-.rv-l .it.fx .ic{background:var(--red-100)}.rv-l .it.fx b{color:var(--red-800)}.rv-l .it.fx .tx .s{color:var(--red-800)}
-.rv-l .it.ov .ic{background:#FEF3C7}.rv-l .it.ov b{color:var(--yel-900)}.rv-l .it.ov .tx .s{color:var(--yel-900)}
+.rv-l .it b{font-weight:400;color:inherit;font-variant-numeric:tabular-nums}
+.rv-l .ic.ph{display:none}
+.rv-l .it.fx .ic{background:var(--red-100)}.rv-l .it.fx .tx .s{color:var(--red-800)}
+.rv-l .it.ov .ic{background:#FEF3C7}.rv-l .it.ov .tx .s{color:var(--yel-900)}
 .rv-l .it .btn{flex:0 0 auto;align-self:center}
 .rv-l .tx .lnkb{font-size:inherit}
 @media(max-width:720px){.rv-l .it{flex-wrap:wrap;row-gap:10px}.rv-l .it .tx{flex:1 1 calc(100% - 32px)}.rv-l .it .btn{margin-left:32px}}
@@ -759,12 +758,10 @@ function seqNeedsBanner(){
   var miss=SEQ.steps.filter(function(x){ return x.need && !mappedTo(x.need.field); });
   if(!miss.length) return '';
   var fields=miss.map(function(x){return x.need.field;}).join(' or ');
-  var steps=miss.map(function(x){return (x.need.task==='call'?'a call step':'a '+x.need.task+' step')+' (Step '+x.n+')';}).join(' and ');
-  var verbs=miss.map(function(x){return x.need.verb;}).join(' or ');
-  var one=miss.length===1;
-  return '<div class="bn bn-amb" role="status"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'+
-    '<div><strong>No column is mapped to '+fields+'.</strong> '+esc(SEQ.name)+' has '+steps+', so '+(one?'its '+miss[0].need.task+' tasks':'those tasks')+' will have nothing to '+verbs+'. '+
-    'If your file has '+(one? miss[0].need.what+'s' : 'them')+', set '+(one?'that column':'those columns')+' above. You can still import without '+(one?'it':'them')+'.</div></div>';
+  var nums=miss.map(function(x){return x.n;}), one=miss.length===1;
+  var steps=(one?'Step ':'Steps ')+(one?nums[0]:nums.slice(0,-1).join(', ')+' and '+nums[nums.length-1]);
+  return '<div class="bn bn-amb bn-1" role="status"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'+
+    '<div>No column is mapped to '+fields+', which '+steps+' '+(one?'needs':'need')+'.</div></div>';
 }
 function todoCols(){ return f().cols_list.filter(function(c){ return unset(c) && !S.touched[c]; }); }
 
@@ -1077,7 +1074,7 @@ function scMap(){
 
   var rows = cols.map(function(c,i){
     var isEmail = S.map[c]==='Email';
-    var cls = 'maprow'+(isEmail?' req':(todo.indexOf(c)>-1?' todo':''));
+    var cls = 'maprow';
     return '<div class="'+cls+'"><span class="f">'+esc(c)+(isEmail?' <span style="color:var(--red-700)">*</span>':'')+'</span>'+
       '<span class="s">'+d.samples[i].map(function(v){ v=v==null?'':String(v); return '<span class="v'+(v.length<=14?' k':'')+'" title="'+esc(v)+'">'+esc(v)+'</span>'; }).join('<span class="d" aria-hidden="true">·</span>')+'</span>'+fpick(c,i)+'</div>';
   }).join('');
@@ -1086,33 +1083,28 @@ function scMap(){
      done, so the eye goes straight to what is not. */
   var lead;
   if(S.restored){
-    lead = '<div class="bn bn-grn">'+
-      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>'+
-      '<div style="flex:1"><strong>Mapping restored.</strong> This file came from your import of '+esc(S.restored)+
-      ', so its columns are set the way you set them then.'+
-      (cols.indexOf('row_number')>-1? ' The three columns we added to the download (row number, error, how to fix) are set to Don’t import.':'')+
-      '<div style="margin-top:7px"><button class="btn btn-l" type="button" onclick="clearMapping()" style="padding:0;font-size:12.5px">Clear and map again</button></div></div></div>';
+    lead = '<div class="bn bn-gry bn-1">'+
+      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>'+
+      '<div style="flex:1">Mapping restored from your import of '+esc(S.restored)+'. <button class="btn btn-l" type="button" onclick="clearMapping()" style="padding:0;font-size:inherit">Clear and map again</button></div></div>';
   } else if(todo.length){
-    lead = '<div class="bn bn-amb">'+
-      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-      '<div><strong>'+matched+' of '+cols.length+' columns matched automatically.</strong> Set the '+
-      (todo.length===1?'one highlighted below':todo.length+' highlighted below')+
-      '.</div></div>';
+    lead = '<div class="bn bn-gry bn-1">'+
+      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
+      '<div>'+matched+' of '+cols.length+' columns matched automatically.</div></div>';
   } else {
-    lead = '<div class="bn bn-grn">'+
-      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'+
-      '<div>All '+cols.length+' columns matched automatically. Nothing to set.</div></div>';
+    lead = '<div class="bn bn-gry bn-1">'+
+      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'+
+      '<div>All '+cols.length+' columns matched automatically.</div></div>';
   }
 
   var warn = ok ? '' :
-    '<div class="bn bn-red" role="alert"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'+
+    '<div class="bn bn-red bn-1" role="alert"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'+
     (d.blocked
-      ? '<div><strong>This file has no email column.</strong><div style="margin-top:3px">Every prospect needs an email, so none of its '+n(d.rows)+' rows can be imported. Choose another file, or add an email column to this one.</div></div></div>'
-      : '<div><strong>Map a column to Email to continue.</strong><div style="margin-top:3px">Pick the column that holds email addresses. Every prospect needs one.</div></div></div>');
+      ? '<div>This file has no email column. Add one, or choose another file.</div></div>'
+      : '<div>Map a column to Email to continue.</div></div>');
 
   var moved = '';
   return hd()+steps('map')+'<div class="rule"></div><div class="m-bd">'+(ok?lead:warn)+moved+
-    '<div><div class="hdlbl"><span style="flex:0 0 150px">Fields from file</span><span style="flex:1">First 3 rows</span><span style="flex:0 0 190px;text-align:right">Field</span></div>'+
+    '<div><div class="hdlbl"><span style="flex:0 0 150px">Fields from file</span><span style="flex:1">First 3 rows</span><span style="flex:0 0 190px">Field</span></div>'+
     rows+'</div>'+
     /* After Import: kept from production (6 Nov). The option's own text is shown
        under the select instead of only on hover. */
@@ -1138,10 +1130,10 @@ function scChecking(){
     '<div style="font-size:16px;font-weight:600">Checking your file</div>'+
     '<div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:9px">'+
     '<div class="bar"><i id="pfill"></i></div>'+
-    '<div style="display:flex;justify-content:space-between" class="muted"><span id="pcount">0 of '+n(d.rows)+' rows</span><span>checking against your prospect list</span></div></div>'+
-    '<div class="muted" style="text-align:center;max-width:420px">Nothing has been imported yet. We check every row before you commit so the next screen can tell you the whole picture.</div>'+
-    '</div><div class="rule"></div>'+
-    '<div class="m-ft"><span class="sp"></span><button class="btn btn-g" type="button" onclick="closeWizard()">Cancel check</button></div>';
+    '<div style="text-align:center" class="muted"><span id="pcount">0 of '+n(d.rows)+' rows</span></div></div>'+
+    '<div class="muted" style="text-align:center">Nothing is imported yet.</div>'+
+    '<button class="lnkb" type="button" onclick="closeWizard()">Cancel</button>'+
+    '</div>';
 }
 
 function grpRows(list,sev){
@@ -1179,32 +1171,32 @@ function scSummary(){
   var IC={ok:'<path d="M20 6 9 17l-5-5"/>', upd:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
           skip:'<path d="M5 12h14"/>', away:'<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>', alert:'<path d="M12 7v6"/><path d="M12 16.5h.01"/>'};
   var reasons = fixG().map(function(g){ return n(g.count)+' '+(SHORT[g.key]||g.label.toLowerCase()); }).join(' · ');
-  var chg=' <button class="lnkb" type="button" onclick="go(\'map\')">Change</button>';
+  var chg=' <button class="lnkb" type="button" onclick="go(\'map\')">Change After Import</button>';
   var rows=[], it=function(kind,icon,html,sub,btn){
-    var col = kind==='fx'?'#B91C1C':kind==='ov'?'#92400E':'var(--g-600)';
-    rows.push('<div class="it'+(kind?' '+kind:'')+'"><span class="ic">'+ic(IC[icon],col,12)+'</span><div class="tx">'+html+(sub?'<span class="s">'+sub+'</span>':'')+'</div>'+(btn||'')+'</div>'); };
+    var col = kind==='fx'?'#B91C1C':'#92400E';
+    rows.push('<div class="it'+(kind?' '+kind:'')+'">'+(icon?'<span class="ic">'+ic(IC[icon],col,12)+'</span>':'<span class="ic ph"></span>')+'<div class="tx">'+html+(sub?'<span class="s">'+sub+'</span>':'')+'</div>'+(btn||'')+'</div>'); };
   var lead = none ? '<b>0</b> of '+n(d.rows)+' rows can be imported'
     : isSeq() ? '<b>'+n(added)+'</b> prospect'+(added===1?'':'s')+' will be added to Step '+st.n
     : fit ? '<b>'+n(fit)+'</b> new prospect'+(fit===1?'':'s')+' will be added' : 'No new prospects will be added';
   var clean = !none && !ex && !du && !act && !so.all && !(isSeq() && st.need);
-  it('lead', none?'away':'ok', lead, n(d.rows)+' rows checked in '+esc(d.name)+(clean?'. Every row is ready.':''));
-  if(isSeq()){ if(exIn) it('','upd','<b>'+n(exIn)+'</b> of them are already in your list and '+ca().fut.replace(' from your file','')+'.'+chg); }
-  else if(ex) it('','upd','<b>'+n(ex)+'</b> already in your list '+ca().fut.replace(' from your file','')+'.'+chg);
-  if(du) it('','skip','<b>'+n(du)+'</b> repeated rows: only the first of each is imported');
+  it('lead', '', lead, n(d.rows)+' rows checked in '+esc(d.name)+(clean?'. Every row is ready.':''));
+  if(isSeq()){ if(exIn) it('','','<b>'+n(exIn)+'</b> of these prospects are already in your list and '+ca().fut.replace(' from your file','')+'.'+chg); }
+  else if(ex) it('','','<b>'+n(ex)+'</b> prospects already in your list '+ca().fut.replace(' from your file','')+'.'+chg);
+  if(du) it('','','<b>'+n(du)+'</b> repeated rows: only the first of each is imported');
   /* Sequence: prospects already in the list that the step turns away. Grey: nothing is wrong with them. */
-  if(isSeq() && so.all) it('','away','<b>'+n(so.all)+'</b> already in your list won’t be added',
+  if(isSeq() && so.all) it('','','<b>'+n(so.all)+'</b> prospects already in your list won’t be added',
       [so.other? so.other+' are in another sequence':'', so.same? so.same+' are in this one':'', so.bounce? so.bounce+' bounced':'', so.unsub? so.unsub+' unsubscribed':''].filter(Boolean).join(', ')+
       '. <button class="lnkb" type="button" onclick="elsewhere(\'Settings › Admin Settings › Prospects (admins only)\')">Admin setting</button>');
   /* What a step ahead needs: the rows still import. Unmapped fields are flagged on Map Fields instead. */
   if(isSeq() && added) SEQ.steps.slice(S.step||0).forEach(function(x){
     if(!x.need || !mappedTo(x.need.field)) return;
-    it('ov','alert','<b>'+n(Math.round(added*0.3))+'</b> have no '+x.need.what,'Their '+x.need.task+' task (Step '+x.n+') will have nothing to '+x.need.verb+'. They still import.');
+    it('','','<b>'+n(Math.round(added*0.3))+'</b> prospects have no '+x.need.what,'Their '+x.need.task+' task (Step '+x.n+') will have nothing to '+x.need.verb+'. They still import.');
   });
   /* Plan limit: only new prospects count (catalogue G03-066, G03-078). Amber: about the account, not the file. */
   var upB='<button class="btn btn-s" type="button" onclick="elsewhere(\'Settings › Billing › Upgrade plan\')">Upgrade plan</button>';
   if(ov) it('ov','alert', full ? 'Your plan has no room for new prospects' : '<b>'+n(ov)+'</b> new prospects are over your plan’s limit',
       full ? 'Upgrade, or delete prospects you no longer need, then import again.'
-           : 'Your plan has room for '+n(S.room)+' more; rows already in your list don’t count.'+(tfx? '' : ' <button class="lnkb" type="button" onclick="dl()">Download the '+n(dln)+' rows</button>'), upB);
+           : 'Your plan has room for '+n(S.room)+' more; prospects already in your list don’t count.'+(tfx? '' : ' <button class="lnkb" type="button" onclick="dl()">Download the '+n(dln)+' rows</button>'), upB);
   if(tfx){
     /* One reason behind most rows usually means the wrong column is mapped to Email. */
     var big=fixG().slice().sort(function(x,y){return y.count-x.count;})[0], dom=none && big && big.count/d.rows>0.5;
@@ -1214,7 +1206,8 @@ function scSummary(){
       (dom? '<span class="s hint">'+n(big.count)+' of '+n(d.rows)+' have the same problem, which often means the wrong column is mapped to Email. <button class="lnkb" type="button" onclick="go(\'map\')">Check the mapping</button></span>' : ''),
       none? '' : dlB(dln));
   }
-  body += '<div class="rv-l">'+rows.join('')+'</div>';
+  var rvh=rows.join(''); if(rvh.indexOf('class="ic"')<0) rvh=rvh.split('<span class="ic ph"></span>').join('');
+  body += '<div class="rv-l">'+rvh+'</div>';
 
   if(!none && !full){
     body += '<div class="rule"></div>'+
@@ -1227,10 +1220,10 @@ function scSummary(){
         (!S.verify
           ? '<div class="sub"><div class="cred">No credits will be used. You can verify these from the prospect list later.</div></div>'
           : creditShort()
-            ? '<div class="sub"><div class="cred short">You need up to <strong>'+n(fit)+'</strong> credits and have <strong>'+n(credits())+'</strong>. '+
+            ? '<div class="sub"><div class="cred short">You need up to '+n(fit)+' credits and have '+n(credits())+'. '+
               'Add credits, or untick this to import now and verify later.</div>'+
               '<div style="margin-top:7px"><button class="btn btn-s" type="button" style="min-height:28px;padding:4px 12px;font-size:12.5px" onclick="elsewhere(\'the Add credits checkout, then returns here\')">Add credits</button></div></div>'
-            : '<div class="sub"><div class="cred">Up to <strong>'+n(fit)+'</strong> credits. You have '+n(credits())+'.</div></div>')+
+            : '<div class="sub"><div class="cred">Up to '+n(fit)+' credits. You have '+n(credits())+'.</div></div>')+
       '</div></div>';
   }
 
@@ -1250,7 +1243,7 @@ function scSummary(){
 
   body += '<div class="bn bn-blu xnote">'+
     ic('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>','#1E3A8A',17)+
-    '<div><strong>Changed here.</strong> Every outcome is one row in the same pattern: grey icon, number, sentence. Colour and a button appear only on rows that need you: red to fix, amber for the plan limit or what a step needs. Tags and Verification are unchanged, below the rule.</div></div>';
+    '<div><strong>Changed here.</strong> Every outcome is one row in the same pattern: number, sentence. An icon, colour and a button appear only on rows that need you: red to fix, amber for the plan limit. Tags and Verification are unchanged, below the rule.</div></div>';
 
   var blocked = creditShort() || S.scen==='busy';
   /* The button names what the headline counts: new prospects. Updates are stated
