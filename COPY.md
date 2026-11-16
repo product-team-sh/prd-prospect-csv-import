@@ -51,14 +51,14 @@ One headline, one quiet grey line, then one line per problem, then the options u
 | Outcomes, by After Import | Add Missing Fields "will get their empty fields filled"; Update All Fields "will be updated (a blank cell clears the existing value)"; Overwrite "will have their filled-in fields updated"; Skip Existing Prospects "will be left unchanged" |
 | Repeats | Repeats are rows with the same email (case and spaces ignored); the first is imported. If that email is invalid, every copy is a row to fix |
 | Clean file | Headline and "{rows} rows checked. Every row is ready." No problem lines |
-| Red line: rows to fix | {n} rows need fixing [Download them]. When the file holds more, grey after the link: "plus the {m} over the limit" or "plus the {m} not added to the step". The per-error breakdown is not on Review; it stays in the toast, bell and email |
+| Red line: rows to fix | {n} rows to fix [Download them]. When the file holds rows over the plan limit, grey after the link: "plus the {m} over the limit". The per-error breakdown is not on Review; it stays in the file |
 | Amber line: over the limit | {over} new prospects are over your plan's limit [Upgrade plan]. With no rows to fix, the line also carries [Download them] |
 | Amber line: plan full | Headline "No new prospects can be added". "You've reached your plan's prospect limit." [Upgrade plan]. Verify and tags hidden. Button "Update {n} prospects"; disabled when nothing can be updated |
-| Every row fails | Headline "None of the {rows} rows can be imported". When one reason covers over half, quiet line: "{n} of {rows} have the same problem, which often means the wrong column is mapped to Email." [Check the mapping]. Red line "{n} rows need fixing", no link: Download {n} rows is the primary button, "Upload fixed file" on the left |
+| Every row fails | Headline "None of the {rows} rows can be imported". When one reason covers over half, quiet line: "{n} of {rows} have the same problem, which often means the wrong column is mapped to Email." [Check the mapping]. Red line "{n} rows to fix", no link: Download {n} rows is the primary button, "Upload fixed file" on the left |
 | Verify emails | ☑ Verify emails · up to {n} of your {credits} credits. Unticked: "· no credits will be used". Addresses verified in the last 15 days are skipped (fixed default, not shown) |
 | Verify, credits short (amber) | ☑ Verify emails · needs up to {n} credits, you have {have} [Add credits]. Grey line under it: "Or untick it to import now and verify later." Import disabled |
 | Tags | [+ Add tags] link; a click shows the tags input, "Add tags to categorize your prospects…" |
-| Another import running (amber line) | {file} is still importing ({pct}% done). This file can import when it finishes. [Check again]. Import disabled |
+| Another import running (amber line) | Another import is still running. You can import when it finishes. [Check again]. Import disabled |
 | Import failed (red line) | The connection dropped, so nothing was imported. Click Import again when you're back online. Button becomes "Import again" |
 | Limit reached meanwhile (amber line) | Your plan's limit was reached while importing, so nothing was imported. [Upgrade plan]. Button becomes "Import again" |
 | Buttons | "Import {n} new prospects"; "Update {n} prospects" when none are new; "Importing…" while sending |
@@ -69,15 +69,16 @@ One headline, one quiet grey line, then one line per problem, then the options u
 |---|---|---|
 | Progress card | Running, every page: production's card, unchanged ([async-progress-bar.tsx](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/shared/components/async-progress-bar/async-progress-bar.tsx), [header.tsx L1260](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/home/components/header/header.tsx#L1260)) | Importing {3.5k} Prospects · View List. **Closes when the import finishes.** Today it then says "Imported {total} Prospects", which counts failed rows as imported ([header-helper.tsx L247](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/home/components/header/header-helper.tsx#L247)); the toast carries the outcome instead |
 | Toast, nothing left | Finished, every row imported | **{added} prospects added.** Green |
-| Toast, rows left | Finished with rows to fix or over the limit | **{added} prospects added.** {n} rows not imported. [Download CSV]. Amber, never green. The reasons are in the CSV. Sequence imports keep their own toast (§5.8) |
+| Toast, rows left | Finished with rows to fix or over the limit | **{added} prospects added.** {n} rows to fix. [Download CSV] ({n} = rows in the download). Amber, never green. The reasons are in the CSV. Sequence imports keep their own toast (§5.8) |
 | List line | Finished, on the list it went into | **List updated.** {n} new prospects from {file} are at the top. [Show only these]. Sequence: "**List updated.** {n} prospects added to Step {k} from {file} are at the top." Grey, between the tabs and the table; stays while the user is on the list. The list refreshes itself; [Show only these] applies the imported-file filter, then reads [Show all prospects] |
-| Bell | Every import | {file}: {added} added, {existing} already in your list {past outcome}. Second line as the toast's "weren't imported" sentence, with a Download link. Unread state has an accessible name, not colour alone |
+| Toast, after a download | Download clicked | CSV downloaded. Green, short |
+| Bell | Every import | Production's sentence, unchanged: "Your file {file} is imported having {total} prospects: {imported} Imported and {failed} Failed", with the link "Download Failed Report" when {failed} is not 0 ([notification-log-templates.ts L4-L5](https://github.com/saleshandy/saleshandy-background-jobs/blob/c2c60a6ee24b9910b7aa6e67b54876bca132785c/src/notification/constants/notification-log-templates.ts#L4-L5), [notification.tsx L542-L559](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/notification/notification.tsx#L542-L559)). {imported} = rows that became prospects or updated existing ones; {failed} = every other row of the file, repeats and rows not added included, so {imported} + {failed} = {total}. No second line. Unread state has an accessible name, not colour alone |
 
-All counts after import come from the import. Rows whose batch failed are counted in "weren't imported" and appear in the file as "Didn't finish". The toast, the bell and the email carry the outcome and the download.
+All counts after import come from the import. Rows whose batch failed are counted in "rows to fix" and appear in the file as "Didn't finish". The toast, the bell and the email carry the outcome and the download.
 
 ### 5.6 Completion email
 
-Sender "{Brand} <no-reply@{brand domain}>", the account's white-label brand. Subject "Import finished: {file}". Body "{added} added, {existing} already in your list {past outcome}, {n} not imported: {top 3 error names with counts}. Download the CSV to fix them." Replaces "Congratulations! Your Prospect Import is completed." for every outcome ([prospect-import.hbs L11](https://github.com/saleshandy/saleshandy-background-jobs/blob/c2c60a6ee24b9910b7aa6e67b54876bca132785c/src/app-mailer/email-templates/prospect-import.hbs#L11)). A client user's import names them and the sequence.
+Sender "{Brand} <no-reply@{brand domain}>", the account's white-label brand. Subject "Import finished: {file}". Body, one count per line, a line with a count of 0 dropped except the first: "{added} prospects added" / "{existing} already in your list {past outcome}" / "{n} rows to fix"; then "Download the CSV to fix them." and the button "Download CSV". No per-error breakdown; the reasons are in the CSV. When every row failed: "0 prospects added" / "{n} rows to fix" Replaces "Congratulations! Your Prospect Import is completed." for every outcome ([prospect-import.hbs L11](https://github.com/saleshandy/saleshandy-background-jobs/blob/c2c60a6ee24b9910b7aa6e67b54876bca132785c/src/app-mailer/email-templates/prospect-import.hbs#L11)). A client user's import names them and the sequence.
 
 ### 5.7 The rows-to-fix file
 
@@ -91,7 +92,7 @@ Sender "{Brand} <no-reply@{brand domain}>", the account's white-label brand. Sub
 | Second round | When the uploaded file already has `row_number`, `error`, `how_to_fix`, the new file **replaces** those three columns (never adds a second set) and keeps the original `row_number`. Name stays `{name}-rows-to-fix.csv`, never doubled |
 | Quoting | A cell with a comma, double quote, semicolon, tab or line break is quoted; inner quotes doubled. Without the semicolon rule, LibreOffice and European-locale Excel split `a@x.com; b@y.com` and shift the row |
 | Encoding, name | UTF-8 with BOM. `{uploaded name}-rows-to-fix.csv` |
-| Counts | Lines equal the "weren't imported" count in the toast, bell and email |
+| Counts | Lines equal the "rows to fix" count on Review, in the toast and in the email |
 
 Error names are fixed text, identical on Review, in the file, toast, bell and email. `{col}` is the user's header; `{value}` the cell.
 
@@ -124,13 +125,13 @@ Same dialog, Upload and Map Fields as the list import ([sequence path today](htt
 | Map Fields | No step picker (production has one here; it moves to Review) |
 | Review, above the headline | "Import into [Step 1 · Email ▾]", in Review's settings layout. Options name the step type ("Step 2 · LinkedIn connection request"). Default: the lowest step number, as production ([map-fields.tsx L92-L99](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/map-fields.tsx#L92-L99)). Changing it updates every line below at once |
 | Headline | "{n} prospects will be added to Step {k}". Counts new plus existing, because production adds existing prospects to the step under every After Import option |
-| Quiet lines (grey) | "{rows} rows checked. {n} of the {added} are already in your list and {outcome}, {m} repeated rows skipped." Then "{n} prospects already in your list won't be added: {a} are in another sequence, {b} are in this one, {c} bounced, {d} unsubscribed." [Admin setting] |
-| Quiet line: step needs (grey) | Only when the field is mapped but some prospects have it empty: "{n} prospects have no phone number. Their call task (Step {k}) will have nothing to dial. They still import." Same for LinkedIn ("LinkedIn profile URL", "LinkedIn task", "nothing to open"). Covers every step from the chosen one on |
-| Red line: rows to fix | {n} rows need fixing [Download them] plus the {m} not added to the step |
+| Quiet lines (grey) | One line: "{rows} rows checked. {n} already in your list {outcome}, {m} repeated rows skipped, {k} won't be added." No breakdown and no Admin setting link on Review; the reasons are in the CSV |
+| Quiet line: step needs (grey) | Only when the field is mapped but some prospects have it empty: "{n} prospects have no phone number for the Step {k} call." Same for LinkedIn: "{n} prospects have no LinkedIn URL for the Step {k} task." They still import; no colour. Covers every step from the chosen one on |
+| Red line: rows to fix | {n} rows to fix [Download them], with {n} = rows in the download (rows to fix plus those not added that the user can act on) |
 | Map Fields: step needs (amber) | When no column is mapped to a field a step needs, one line in the message slot at the top of Map Fields (replaces the grey match line; a red Email error wins over it): "No column is mapped to {fields}, which {Step k / Steps j and k} {needs / need}." e.g. "No column is mapped to LinkedIn Profile or Phone Number, which Steps 2 and 3 need." Covers every step in the sequence; Next stays enabled |
 | Button | "Add {n} to Step {k}" |
 | Download | Includes the rows not added that the user can act on (errors 13 to 15). Already in this sequence, unsubscribed, and rows a step can't work are counts on Review only |
-| After | Toast "{n} added to Step {k} of {sequence} from {file}." With rows left, amber as the list import, adding "The download also lists the {n} saved but not added to Step {k}." Bell "{file}: {n} added to Step {k} of {sequence}, {m} not added". Email subject "Import finished: {file} into {sequence}" |
+| After | Toast "**{n} added to Step {k}.** {m} rows to fix. [Download CSV]", amber, with {m} the rows in the download; green "{n} added to Step {k}." when nothing is left. Bell: production's sentence with "is imported in {sequence} having" (§5.5). Email subject "Import finished: {file} into {sequence}"; body "{n} prospects added to Step {k} of {sequence}" / "{m} not added", then "Download the CSV to fix them." and [Download CSV] |
 
 The admin setting is "Allow adding duplicate prospects in multiple sequences" (Settings › Admin Settings › Prospects). It only affects prospects already in the list.
 

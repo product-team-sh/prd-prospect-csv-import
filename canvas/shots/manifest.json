@@ -354,7 +354,7 @@
   "sec": "Import into a sequence",
   "id": "s01",
   "title": "Into an email step",
-  "cap": "Step picker above the headline; who won’t be added, in grey",
+  "cap": "Step picker above the headline; one grey line, as on the list Review",
   "file": "s01.png",
   "phone": false,
   "page": false

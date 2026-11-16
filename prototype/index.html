@@ -434,8 +434,8 @@ var ERR = {at:'Email missing @', empty:'Email empty', multi:'More than one email
    the admin setting "Allow adding duplicate prospects in multiple sequences" turns some away. */
 var SEQ = { name:'Q4 Outbound', other:'Q2 Webinar follow-up',
   steps:[ {n:1, type:'Email', need:null},
-          {n:2, type:'LinkedIn connection request', need:{field:'LinkedIn Profile', what:'LinkedIn profile URL', task:'LinkedIn', verb:'open', col:'LinkedIn'}},
-          {n:3, type:'Call', need:{field:'Phone Number', what:'phone number', task:'call', verb:'dial', col:'phone'}} ] };
+          {n:2, type:'LinkedIn connection request', need:{field:'LinkedIn Profile', what:'LinkedIn profile URL', task:'LinkedIn', verb:'open', col:'LinkedIn', short:'LinkedIn URL', kind:'task'}},
+          {n:3, type:'Call', need:{field:'Phone Number', what:'phone number', task:'call', verb:'dial', col:'phone', short:'phone number', kind:'call'}} ] };
 function isSeq(){ return S.path==='seq'; }
 function stp(){ return SEQ.steps[S.step||0]; }
 /* Of the rows already in the list, how many the sequence turns away. Illustrative counts. */
@@ -763,7 +763,7 @@ function dl(key, over){
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   setTimeout(function(){ URL.revokeObjectURL(url); },1500);
 
-  toast('green','<strong>'+n(rows.length)+' rows downloaded.</strong> Each row starts with its row number in your file, the error and how to fix it, then your own columns. Filter by error to fix one kind at a time.');
+  toast('green','CSV downloaded.');
   hideToast(5000);
 }
 
@@ -821,10 +821,6 @@ function drawStrip(){
     '<div><strong>Changed here.</strong> There is no fourth step any more. The old one restated Review&rsquo;s three numbers in the past tense and offered four buttons. Every row was checked before you committed, so the dialog closes and the list itself is the confirmation. Today the list only changes on a reload; here it refreshes when the import finishes and the line above says so. The toast says what happened and offers the download when rows are left; the bell and the email keep both.</div></div>';
 }
 /* What wasn't imported, said the same way in the toast and the bell. */
-function leftLine(j){
-  return n(j.left)+' rows weren’t imported'+
-    (j.fix&&j.over? ': '+n(j.fix)+' need fixing, '+n(j.over)+' are over your plan’s prospect limit.' : (j.fix? ' because they need fixing.' : ' because they are over your plan’s prospect limit.'));
-}
 
 /* Import can fail before anything is written. The dialog stays open, the
    file and mapping stay, and the message sits beside the button that retries.
@@ -832,7 +828,7 @@ function leftLine(j){
 var IERR = {
   fail:'The connection dropped, so nothing was imported. Click Import again when you’re back online.',
   quota:'Your plan’s limit was reached while importing, so nothing was imported.',
-  busy:'leads-october.csv is still importing (62% done). This file can import when it finishes.'
+  busy:'Another import is still running. You can import when it finishes.'
 };
 function doImport(){
   if(S.importing) return;
@@ -870,30 +866,27 @@ function finishImport(){
            ['Adele Goldberg','adele@parc.test','Researcher','Active',sq,'Xerox PARC']]);
   drawStrip();
 
-  /* The bell is the durable record of every import. */
+  /* The bell is the durable record of every import. Imported = rows that became or updated prospects (or were added to the step); Failed = every other row, so the two add up to the file. */
+  var imp = j.ready+j.upd;
   $('notifdot').style.display='block'; $('bellbtn').setAttribute('aria-label','Notifications, 1 new');
   $('notifbody').innerHTML =
     '<div class="dot" style="background:'+(j.left?'var(--yel-50)':'var(--grn-50)')+'">'+
     (j.left?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
             :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>')+'</div>'+
-    '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+esc(j.name)+': '+
-      (j.seq ? n(j.ready+j.upd)+' added to Step '+j.step.n+' of '+esc(SEQ.name)+(j.notAdded? ', '+n(j.notAdded)+' not added':'')
-             : n(j.ready)+' added'+(j.upd? ', '+n(j.upd)+' already in your list '+j.ca.past:''))+'</div>'+
-    (j.left? '<div class="muted" style="margin-top:3px">'+leftLine(j)+'</div>'+
-             '<div style="display:flex;gap:14px;margin-top:6px"><button class="btn btn-l" type="button" style="font-size:12px;padding:0" onclick="dl(\''+j.key+'\','+j.over+')">Download the '+n(j.left+(j.inFile||0))+'</button></div>'
-           : '<div class="muted" style="margin-top:3px">Nothing needed attention.</div>')+
+    '<div style="flex:1"><div style="font-size:13px;font-weight:600">Your file '+esc(j.name)+' is imported'+(j.seq? ' in '+esc(SEQ.name):'')+' having '+n(j.rows)+' prospects: '+n(imp)+' Imported and '+n(j.rows-imp)+' Failed</div>'+
+    (j.left? '<div style="display:flex;gap:14px;margin-top:6px"><button class="btn btn-l" type="button" style="font-size:12px;padding:0" onclick="dl(\''+j.key+'\','+j.over+')">Download Failed Report</button></div>' : '')+
     '<div class="muted" style="margin-top:5px;font-size:11px">Just now</div></div>';
 
   /* One toast says what happened. With rows left it is amber and carries the download;
      green only when nothing failed. */
-  var said = j.seq
-    ? '<strong>'+n(j.ready+j.upd)+' added to Step '+j.step.n+'</strong> of '+esc(SEQ.name)+' from '+esc(j.name)+'.'
-    : '<strong>'+n(j.ready)+' prospect'+(j.ready===1?'':'s')+' added.</strong>';
   var dlN = j.left+(j.inFile||0);
+  var said = j.seq
+    ? '<strong>'+n(j.ready+j.upd)+' added to Step '+j.step.n+'.</strong>'
+    : '<strong>'+n(j.ready)+' prospect'+(j.ready===1?'':'s')+' added.</strong>';
   if(j.left || j.notAdded){
-    if(!j.seq){ toast('amber', said+' '+n(j.left)+' rows not imported. <button class="lnkb" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download CSV</button>'); hideToast(8000); return; }
-    toast('amber', said+' '+(j.left? leftLine(j)+(j.inFile? ' The download also lists the '+n(j.inFile)+' saved but not added to Step '+j.step.n+'.':'') : n(j.notAdded)+' were saved but not added to Step '+j.step.n+'.')+
-      (dlN? ' <button class="lnkb" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download '+n(dlN)+' rows</button>' : ''));
+    var dlb=' <button class="lnkb" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download CSV</button>';
+    if(!j.seq){ toast('amber', said+' '+n(j.left)+' rows to fix.'+dlb); hideToast(8000); return; }
+    toast('amber', said+' '+(dlN? n(dlN)+' rows to fix.'+dlb : n(j.notAdded)+' not added.'));
     hideToast(8000);
   } else {
     toast('green', said);
@@ -1096,22 +1089,20 @@ function scSummary(){
   var fut = ca().fut.replace(' from your file',''), cut = fut.indexOf('. ');
   if(cut>0) fut = fut.slice(0,cut)+' ('+fut.charAt(cut+2).toLowerCase()+fut.slice(cut+3)+')';
   var quiet=[], cl=[];
-  if(isSeq()){ if(exIn) cl.push(n(exIn)+' of the '+n(added)+' are already in your list and '+fut); }
+  if(isSeq()){ if(exIn) cl.push(n(exIn)+' already in your list '+fut); }
   else if(ex) cl.push(n(ex)+' prospects already in your list '+fut);
   if(du) cl.push(n(du)+' repeated rows skipped');
+  /* Sequence: prospects already in the list that the step turns away, as one clause; the reasons for the ones the user can act on are in the CSV. */
+  if(isSeq() && so.all) cl.push(n(so.all)+' won’t be added');
   var clean = !none && !ex && !du && !act && !so.all && !(isSeq() && st.need);
   /* One reason behind most rows usually means the wrong column is mapped to Email. */
   var big=fixG().slice().sort(function(x,y){return y.count-x.count;})[0], dom=none && big && big.count/d.rows>0.5;
   if(none){ if(dom) quiet.push(n(big.count)+' of '+n(d.rows)+' have the same problem, which often means the wrong column is mapped to Email. <button class="lnkb" type="button" onclick="go(\'map\')">Check the mapping</button>'); }
   else quiet.push(n(d.rows)+' rows checked.'+(cl.length? ' '+cl.join(', ')+'.' : (clean? ' Every row is ready.' : '')));
-  /* Sequence: prospects already in the list that the step turns away. Grey: nothing is wrong with them. */
-  if(isSeq() && so.all) quiet.push(n(so.all)+' prospects already in your list won’t be added: '+
-      [so.other? so.other+' are in another sequence':'', so.same? so.same+' are in this one':'', so.bounce? so.bounce+' bounced':'', so.unsub? so.unsub+' unsubscribed':''].filter(Boolean).join(', ')+
-      '. <button class="lnkb" type="button" onclick="elsewhere(\'Settings › Admin Settings › Prospects (admins only)\')">Admin setting</button>');
   /* What a step ahead needs: the rows still import. Unmapped fields are flagged on Map Fields instead. */
   if(isSeq() && added) SEQ.steps.slice(S.step||0).forEach(function(x){
     if(!x.need || !mappedTo(x.need.field)) return;
-    quiet.push(n(Math.round(added*0.3))+' prospects have no '+x.need.what+'. Their '+x.need.task+' task (Step '+x.n+') will have nothing to '+x.need.verb+'. They still import.');
+    quiet.push(n(Math.round(added*0.3))+' prospects have no '+x.need.short+' for the Step '+x.n+' '+x.need.kind+'.');
   });
   body += '<div><div class="rv-h">'+head+'</div>'+quiet.map(function(q){ return '<div class="rv-m">'+q+'</div>'; }).join('')+'</div>';
 
@@ -1128,8 +1119,8 @@ function scSummary(){
   if(ov) line('am', full ? 'You’ve reached your plan’s prospect limit' : n(ov)+' new prospects are over your plan’s limit',
       upL+(tfx? '' : lk('Download them','dl()')));
   if(tfx){
-    var more=[ov? n(ov)+' over the limit':'', so.file? n(so.file)+' not added to the step':''].filter(Boolean).join(' and ');
-    line('fx', n(tfx)+' rows need fixing', none? '' : lk('Download them','dl()'), (more && !none)? 'plus the '+more : '');
+    var more=ov? n(ov)+' over the limit':'';
+    line('fx', n(tfx+(isSeq()? so.file||0 : 0))+' rows to fix', none? '' : lk('Download them','dl()'), (more && !none)? 'plus the '+more : '');
   }
   if(lines.length) body += '<div class="rv-x">'+lines.join('')+'</div>';
 
