@@ -57,7 +57,7 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 
 .btn{border-radius:var(--r-btn);padding:6px 16px;min-height:32px;font-size:14px;font-weight:500;border:1px solid transparent;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;flex:0 0 auto}
 .btn-p{background:var(--blue-700);color:#fff}.btn-p:hover{background:var(--blue-800)}
-.btn-p[disabled]{background:var(--g-300);cursor:not-allowed}
+.btn-p[disabled],.btn-p[aria-disabled="true"]{background:var(--g-300);cursor:not-allowed}
 .btn-s{background:#fff;color:var(--g-700);border-color:var(--g-200)}.btn-s:hover{background:var(--g-50)}
 .btn-g{background:transparent;color:var(--g-500);border-color:var(--g-200)}.btn-g:hover{color:var(--g-500);background:var(--g-100)}
 .btn-l{background:transparent;color:var(--blue-700);border:0;font-weight:500}.btn-l:hover{color:var(--blue-800)}
@@ -222,6 +222,11 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 body.mopen #toast{bottom:auto;top:50px}
 #mtitle:focus{outline:none}
 .lnkb{background:none;border:0;padding:0;font:inherit;color:var(--blue-700);cursor:pointer}.lnkb:hover{text-decoration:underline}
+/* Hit height of at least 24px on every width; the negative margin keeps the line box, so nothing moves. */
+.lnkb{padding-top:4px;padding-bottom:4px;margin-top:-4px;margin-bottom:-4px}
+.tst-x{border:0;background:transparent;color:inherit;opacity:.5;padding:5px;margin:-2px -6px -2px auto;border-radius:var(--r-input);display:flex;flex:0 0 auto;cursor:pointer}
+.tst-x:hover{opacity:1;background:rgba(0,0,0,.06)}.tlk{white-space:nowrap}.bn .tst-x svg{margin-top:0}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .ftlink{display:inline-flex;align-items:center;gap:8px;height:24px;background:none;border:0;padding:0;font:inherit;font-size:14px;font-weight:500;line-height:20px;color:var(--blue-700);cursor:pointer;transition:color .2s ease}
 .ftlink:hover{color:var(--blue-800)}.ftlink svg{width:20px;height:20px;flex:0 0 auto}
 .fmenu.up{top:auto;bottom:calc(100% + 4px)}
@@ -291,7 +296,7 @@ body.mopen #toast{bottom:auto;top:50px}
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div id="addmenu" style="display:none">
-          <button type="button" onclick="openWizard()">
+          <button type="button" onclick="openFromMenu()">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
             Import via CSV</button>
           <button type="button" onclick="toggleAdd()">
@@ -347,7 +352,7 @@ body.mopen #toast{bottom:auto;top:50px}
   </div>
 </div>
 
-<div id="scrim"><div id="modal" role="dialog" aria-modal="true" aria-labelledby="mtitle"></div></div>
+<div id="scrim"><div id="modal" role="dialog" aria-modal="true" aria-labelledby="mtitle"></div><div id="mlive" class="sr" role="status" aria-live="polite"></div></div>
 
 <script>
 /* ═══════════════════ prototype data ═══════════════════ */
@@ -446,13 +451,13 @@ var SHORT = {at:'email missing @', at2:'email missing @', empty:'email empty', e
    map-fields/conflict-action.ts (webui f9425f2). Default is Add Missing Fields. */
 var CA = [
   {k:'add',  label:'Add Missing Fields',      text:'Fills in fields that are currently empty using data from the CSV. Existing field data is not changed.',
-   fut:'will get their empty fields filled from your file', past:'had empty fields filled'},
+   fut:'will get their empty fields filled from your file'},
   {k:'upsert', label:'Update All Fields',     text:'Updates existing fields using data from the CSV and adds any that are missing. A blank cell clears the existing value.',
-   fut:'will be updated from your file. A blank cell clears the existing value', past:'were updated'},
+   fut:'will be updated from your file. A blank cell clears the existing value'},
   {k:'over', label:'Overwrite',               text:'Updates existing fields using data from the CSV. Fields that are currently empty will not be filled in.',
-   fut:'will have their filled-in fields updated from your file', past:'had filled-in fields updated'},
+   fut:'will have their filled-in fields updated from your file'},
   {k:'skip', label:'Skip Existing Prospects', text:'Keeps existing prospect field details unchanged and does not apply any updates.',
-   fut:'will be left unchanged', past:'were left unchanged'}
+   fut:'will be left unchanged'}
 ];
 function ca(){ for(var i=0;i<CA.length;i++) if(CA[i].k===S.ca) return CA[i]; return CA[0]; }
 
@@ -577,16 +582,19 @@ function toggleNotes(){
 function toggleAdd(){ var m=$('addmenu'); m.style.display = m.style.display==='none'?'block':'none'; }
 function toggleNotif(){ var el=$('notif'); el.classList.toggle('show'); }
 /* One timer for the one toast, so an earlier toast's timer never hides a newer one. */
-var TT=null;
-function hideToast(ms){ clearTimeout(TT); TT=setTimeout(function(){ $('toast').classList.remove('show'); }, ms); }
-function toast(kind,html){ clearTimeout(TT);
+/* A toast that carries a link (Download CSV, Upgrade plan) stays until dismissed; one without a link may time out. */
+var TT=null, TSTICK=false;
+function hideToast(ms){ clearTimeout(TT); if(TSTICK) return; TT=setTimeout(function(){ $('toast').classList.remove('show'); }, ms); }
+function dismissToast(){ clearTimeout(TT); TSTICK=false; $('toast').classList.remove('show'); }
+function toast(kind,html){ clearTimeout(TT); TSTICK=/<button/.test(html);
   var c = kind==='amber'?'bn-amb':(kind==='green'?'bn-grn':(kind==='blue'?'bn-blu':'bn-red'));
   var ic = kind==='blue'
     ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'
     : kind==='green'
     ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.8 10A10 10 0 1 1 17 3.34"/><path d="m9 11 3 3L22 4"/></svg>'
     : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
-  $('toast').innerHTML='<div class="bn '+c+'" style="box-shadow:var(--sh-lg);background-color:#fff">'+ic+'<div>'+html+'</div></div>';
+  var x = TSTICK ? '<button class="tst-x" type="button" aria-label="Dismiss" onclick="dismissToast()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' : '';
+  $('toast').innerHTML='<div class="bn '+c+'" style="box-shadow:var(--sh-lg);background-color:#fff">'+ic+'<div>'+html+'</div>'+x+'</div>';
   $('toast').classList.add('show');
 }
 
@@ -619,20 +627,46 @@ function reset(){
      ca:'add',scen:'normal',room:ROOM0,ierr:null,importing:false,path:'list',step:0};
   setPath('list');
   MEM={}; delete FILES.fixed; $('scen').value='normal';
-  $('scrim').classList.remove('show'); $('toast').classList.remove('show');
+  $('scrim').classList.remove('show'); $('toast').classList.remove('show'); setInert(false); OPENER=null; TSTICK=false;
   $('notif').classList.remove('show'); $('notifdot').style.display='none';
   $('notifbody').innerHTML='<span class="muted">Nothing yet. Run an import.</span>';
   $('addmenu').style.display='none'; $('pstep').textContent='entry';
   drawCRM([]); showIntro();
 }
-function openWizard(){ $('addmenu').style.display='none'; S.file=null; S.map={};
-  S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q=''; go('upload'); }
+/* While the dialog is open the page behind it is inert. The prototype bar stays usable (it is not
+   the product), and so does the toast, which is the dialog's own feedback and must still be announced. */
+var BEHIND=['app','notif','intro'];
+function setInert(on){ BEHIND.forEach(function(id){ var el=$(id); if(!el) return; if(on) el.setAttribute('inert',''); else el.removeAttribute('inert'); }); }
+/* The control that opened the dialog gets focus back when it closes. A menu item hides with
+   its menu, so it hands over to the menu's button; so does anything else no longer on screen. */
+var OPENER=null;
+function noteOpener(){ if($('scrim').classList.contains('show')) return;
+  var a=document.activeElement;
+  OPENER = (!a || a===document.body) ? null : (a.closest('#addmenu') ? $('hdr').querySelector('.btn-p') : a); }
+/* The ring shows only when the dialog was closed from the keyboard, as the browser does for a click. */
+var KEYED=false;
+document.addEventListener('keydown',function(){ KEYED=true; },true);
+document.addEventListener('pointerdown',function(){ KEYED=false; },true);
+function returnFocus(){ var o=OPENER; OPENER=null;
+  if(!o || !document.contains(o) || !o.offsetParent || o.closest('[inert]')) o=$('hdr').querySelector('.btn-p');
+  if(o) o.focus({focusVisible:KEYED}); }
+function openWizard(){ noteOpener(); $('addmenu').style.display='none'; S.file=null; S.map={};
+  S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q=''; S.draft=null; go('upload'); }
+/* Import via CSV from the menu picks up where the user closed it: same file, same mapping (PRD 5.2). */
+function openFromMenu(){ var d=S.draft; openWizard(); if(!d) return;
+  S.file=d.file; S.map=d.map; S.auto=d.auto; S.touched=d.touched; S.restored=d.restored; S.ca=d.ca; S.step=d.step;
+  go(d.screen); }
 function closeWizard(){ if(S.timer){clearInterval(S.timer);S.timer=null;}
   if(S.file && f() && !f().reject && (S.screen==='map'||S.screen==='summary'||S.screen==='checking'))
     (function(k,prev){ MEM[k] = { map: JSON.parse(JSON.stringify(S.map)), name: f().name, ca:S.ca, confirmed: !!(prev && prev.confirmed) }; })(shapeKey(f().cols_list), MEM[shapeKey(f().cols_list)]);
-  S.screen='entry'; S.shown=null;
+  /* Cancel, Esc or close keeps the file and its mapping for the next open. An import or Start over clears it. */
+  var cp=function(o){ return JSON.parse(JSON.stringify(o)); };
+  S.draft = (S.file && f() && !f().reject) ? { file:S.file, map:cp(S.map), auto:cp(S.auto), touched:cp(S.touched),
+    restored:S.restored, ca:S.ca, step:S.step, screen: S.screen==='upload' ? 'upload' : 'map' } : null;
+  S.screen='entry'; S.shown=null; S.pick=null; S.q='';
   document.body.classList.remove('mopen');
-  $('scrim').classList.remove('show'); $('pstep').textContent='entry'; }
+  $('scrim').classList.remove('show'); $('mlive').textContent=''; $('pstep').textContent='entry';
+  setInert(false); returnFocus(); }
 
 function pickFile(k){
   S.file=k; S.map={}; S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q=''; S.ierr=null; S.tagsOpen=false; S.tagv='';
@@ -776,7 +810,9 @@ function startCheck(){
     S.prog += Math.random()*11+7;
     if(S.prog>=100){ S.prog=100; clearInterval(S.timer); S.timer=null; setTimeout(function(){go('summary');},260); }
     var el=$('pfill'); if(el){ el.style.width=Math.min(S.prog,100)+'%'; }
-    var lb=$('pcount'); if(lb){ lb.textContent=n(Math.round(f().rows*Math.min(S.prog,100)/100))+' of '+n(f().rows)+' rows'; }
+    var dn=Math.round(f().rows*Math.min(S.prog,100)/100), tx=n(dn)+' of '+n(f().rows)+' rows';
+    var lb=$('pcount'); if(lb){ lb.textContent=tx; }
+    var pb=$('pchk'); if(pb){ pb.setAttribute('aria-valuenow',dn); pb.setAttribute('aria-valuetext',tx); }
   },190);
 }
 /* ── the result strip ─────────────────────────────────────────────
@@ -847,7 +883,7 @@ function doImport(){
   S.job = { key:S.file, name:d.name, rows:d.rows, ready:fit, upd:existN()-so.all, ca:ca(),
             seq:isSeq(), step:stp(), notAdded:so.all, inFile:so.file,
             fix:fx, over:ov, left:fx+ov, done:0, running:true };
-  closeWizard();
+  closeWizard(); S.draft=null;   // imported: the next open starts fresh
   drawStrip();
 
   if(S.jt) clearInterval(S.jt);
@@ -866,31 +902,37 @@ function finishImport(){
            ['Adele Goldberg','adele@parc.test','Researcher','Active',sq,'Xerox PARC']]);
   drawStrip();
 
-  /* The bell is the durable record of every import. Imported = rows that became or updated prospects (or were added to the step); Failed = every other row, so the two add up to the file. */
-  var imp = j.ready+j.upd;
+  /* One count model on every surface after import (toast, bell, email):
+     Imported = new + updated prospects (a sequence: prospects added to the step).
+     Rows to fix = rows in the CSV the user can act on. Rows over the plan's limit are in the
+     CSV too, but named apart: nothing is wrong with them. The bell's Failed = every row in the CSV. */
+  var imp = j.ready+j.upd, inFile = j.inFile||0, inCsv = j.left+inFile, toFix = j.fix+inFile;
+  var dlb = '<button class="lnkb" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download CSV</button>';
+  var upb = '<button class="lnkb" type="button" onclick="elsewhere(\'Settings › Billing › Upgrade plan\')">Upgrade plan</button>';
   $('notifdot').style.display='block'; $('bellbtn').setAttribute('aria-label','Notifications, 1 new');
   $('notifbody').innerHTML =
-    '<div class="dot" style="background:'+(j.left?'var(--yel-50)':'var(--grn-50)')+'">'+
-    (j.left?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
-            :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>')+'</div>'+
-    '<div style="flex:1"><div style="font-size:13px;font-weight:600">Your file '+esc(j.name)+' is imported'+(j.seq? ' in '+esc(SEQ.name):'')+' having '+n(j.rows)+' prospects: '+n(imp)+' Imported and '+n(j.rows-imp)+' Failed</div>'+
-    (j.left? '<div style="display:flex;gap:14px;margin-top:6px"><button class="btn btn-l" type="button" style="font-size:12px;padding:0" onclick="dl(\''+j.key+'\','+j.over+')">Download Failed Report</button></div>' : '')+
+    '<div class="dot" style="background:'+(inCsv?'var(--yel-50)':'var(--grn-50)')+'">'+
+    (inCsv?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
+          :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>')+'</div>'+
+    '<div style="flex:1"><div style="font-size:13px;font-weight:600">Your file '+esc(j.name)+' is imported'+(j.seq? ' in '+esc(SEQ.name):'')+' having '+n(j.rows)+' prospects: '+n(imp)+' Imported and '+n(inCsv)+' Failed</div>'+
+    (inCsv? '<div style="display:flex;gap:14px;margin-top:6px"><button class="btn btn-l" type="button" style="font-size:12px;padding:0" onclick="dl(\''+j.key+'\','+j.over+')">Download CSV</button></div>' : '')+
     '<div class="muted" style="margin-top:5px;font-size:11px">Just now</div></div>';
 
-  /* One toast says what happened. With rows left it is amber and carries the download;
-     green only when nothing failed. */
-  var dlN = j.left+(j.inFile||0);
+  /* One toast says what happened. Amber with the download while rows are left (and Upgrade plan
+     when rows are over the limit); green only when nothing is left. */
   var said = j.seq
-    ? '<strong>'+n(j.ready+j.upd)+' added to Step '+j.step.n+'.</strong>'
-    : '<strong>'+n(j.ready)+' prospect'+(j.ready===1?'':'s')+' added.</strong>';
-  if(j.left || j.notAdded){
-    var dlb=' <button class="lnkb" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download CSV</button>';
-    if(!j.seq){ toast('amber', said+' '+n(j.left)+' rows to fix.'+dlb); hideToast(8000); return; }
-    toast('amber', said+' '+(dlN? n(dlN)+' rows to fix.'+dlb : n(j.notAdded)+' not added.'));
-    hideToast(8000);
+    ? '<strong>'+n(imp)+' added to Step '+j.step.n+'.</strong>'
+    : '<strong>'+n(imp)+' prospect'+(imp===1?'':'s')+' imported.</strong>';
+  var parts=[];
+  if(toFix) parts.push(n(toFix)+' row'+(toFix===1?'':'s')+' to fix');
+  if(j.over) parts.push(n(j.over)+' over your plan’s limit');
+  if(inCsv){
+    /* The links wrap as one group, so a line never starts with the separator. */
+    toast('amber', said+' '+parts.join(', ')+'. <span class="tlk">'+(j.over? upb+'<span aria-hidden="true"> · </span>' : '')+dlb+'</span>');
+  } else if(j.notAdded){
+    toast('amber', said+' '+n(j.notAdded)+' not added.'); hideToast(8000);
   } else {
-    toast('green', said);
-    hideToast(4500);
+    toast('green', said); hideToast(4500);
   }
 }
 
@@ -914,7 +956,7 @@ function scUpload(){
   if(!S.file){
     body = '<div class="drop">'+
       '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/><path d="M20 16.7A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 14.9"/></svg>'+
-      '<div style="font-size:14px;color:var(--g-600)">Drag &amp; drop your CSV with prospect details</div></div>'+
+      '<div style="font-size:14px;color:var(--g-600)" id="upwhy">Drag &amp; drop your CSV with prospect details</div></div>'+
       '<div class="bn bn-blu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
       '<div><strong>Prototype</strong> &ndash; choose a sample file to continue.'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:11px">'+
@@ -942,7 +984,7 @@ function scUpload(){
     }[f().reject];
     body = '<div class="bn bn-red rja" role="alert">'+
       '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7F1D1D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'+
-      '<div class="rja-b"><div class="rja-h"><div class="rja-t">'+R.t+'</div>'+
+      '<div class="rja-b" id="upwhy"><div class="rja-h"><div class="rja-t">'+R.t+'</div>'+
       '<div class="rja-fn" title="'+esc(f().name)+'">'+esc(f().name)+'</div></div>'+
       '<div class="rja-fix">'+R.fix+'</div></div></div>'+
       '<div class="drop" ondragover="event.preventDefault()" ondrop="event.preventDefault();S.file=null;render()">'+
@@ -968,7 +1010,7 @@ function scUpload(){
   return hd()+steps('upload')+'<div class="rule"></div><div class="m-bd">'+body+'</div><div class="rule"></div>'+
     '<div class="m-ft"><button class="ftlink" type="button" onclick="sampleCsv()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>Try sample file</button><span class="sp"></span>'+
     '<button class="btn btn-g" type="button" onclick="closeWizard()">Cancel</button>'+
-    '<button class="btn btn-p" type="button" '+(S.file&&!f().reject?'onclick="go(\'map\')"':'disabled')+'>Next</button></div>';
+    '<button class="btn btn-p" type="button" '+(S.file&&!f().reject?'onclick="go(\'map\')"':'aria-disabled="true" aria-describedby="upwhy"')+'>Next</button></div>';
 }
 
 function fpick(col,ix){
@@ -976,7 +1018,7 @@ function fpick(col,ix){
   var q = norm(S.q||''), list = FIELDS.filter(function(fl){ return (!q || norm(fl).indexOf(q)>-1) && (fl==='Don’t import' || fl===cur || !mappedTo(fl)); });
   var cid = col.replace(/'/g,"\\'");
   var out = '<div class="fpick'+(set?' set':'')+'">'+
-    '<button type="button" id="fp'+ix+'" aria-haspopup="listbox" aria-expanded="'+open+'" onclick="openPick(\''+cid+'\','+ix+')">'+
+    '<button type="button" id="fp'+ix+'" aria-labelledby="fc'+ix+' fp'+ix+'" aria-haspopup="listbox" aria-expanded="'+open+'" onclick="openPick(\''+cid+'\','+ix+')">'+
     '<span class="v">'+esc(set?cur:(S.touched[col]?'Don’t import':'Select field'))+'</span>'+
     '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>';
   if(open){
@@ -1001,7 +1043,7 @@ function scMap(){
   var rows = cols.map(function(c,i){
     var isEmail = S.map[c]==='Email';
     var cls = 'maprow';
-    return '<div class="'+cls+'"><span class="f">'+esc(c)+(isEmail?' <span style="color:var(--red-700)">*</span>':'')+'</span>'+
+    return '<div class="'+cls+'"><span class="f" id="fc'+i+'">'+esc(c)+(isEmail?' <span style="color:var(--red-700)" aria-hidden="true">*</span>':'')+'</span>'+
       '<span class="s">'+d.samples[i].map(function(v){ v=v==null?'':String(v); return '<span class="v'+(v.length<=14?' k':'')+'" title="'+esc(v)+'">'+esc(v)+'</span>'; }).join('<span class="d" aria-hidden="true">·</span>')+'</span>'+fpick(c,i)+'</div>';
   }).join('');
 
@@ -1025,8 +1067,8 @@ function scMap(){
   var warn = ok ? '' :
     '<div class="bn bn-red bn-1" role="alert"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'+
     (d.blocked
-      ? '<div>This file has no email column. Add one, or choose another file.</div></div>'
-      : '<div>Map a column to Email to continue.</div></div>');
+      ? '<div id="mapwhy">This file has no email column. Add one, or choose another file.</div></div>'
+      : '<div id="mapwhy">Map a column to Email to continue.</div></div>');
 
   var moved = '';
   return hd()+steps('map')+'<div class="rule"></div><div class="m-bd">'+(ok?(seqNeedsBanner()||lead):warn)+moved+
@@ -1045,7 +1087,7 @@ function scMap(){
     '</div><div class="rule"></div>'+
     '<div class="m-ft"><span class="sp"></span>'+
     '<button class="btn btn-g" type="button" onclick="go(\'upload\')">Back</button>'+
-    '<button class="btn btn-p" type="button" '+(ok?'onclick="startCheck()"':'disabled')+'>Next</button></div>';
+    '<button class="btn btn-p" type="button" '+(ok?'onclick="startCheck()"':'aria-disabled="true" aria-describedby="mapwhy"')+'>Next</button></div>';
 }
 
 function scChecking(){
@@ -1054,8 +1096,8 @@ function scChecking(){
     '<div class="m-bd" style="padding:40px 22px;align-items:center;gap:17px">'+
     '<div style="font-size:16px;font-weight:600">Checking your file</div>'+
     '<div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:9px">'+
-    '<div class="bar"><i id="pfill"></i></div>'+
-    '<div style="text-align:center" class="muted"><span id="pcount">0 of '+n(d.rows)+' rows</span></div></div>'+
+    '<div class="bar" id="pchk" role="progressbar" aria-label="Checking your file" aria-valuemin="0" aria-valuemax="'+d.rows+'" aria-valuenow="0" aria-valuetext="0 of '+n(d.rows)+' rows"><i id="pfill"></i></div>'+
+    '<div style="text-align:center" class="muted" aria-hidden="true"><span id="pcount">0 of '+n(d.rows)+' rows</span></div></div>'+
     '<div class="muted" style="text-align:center">Nothing is imported yet.</div>'+
     '<button class="lnkb" type="button" onclick="closeWizard()">Cancel</button>'+
     '</div>';
@@ -1064,8 +1106,8 @@ function scChecking(){
 function scSummary(){
   var d=f(), tfx=sum(fixG()), ex=existN(), du=dupN(), fit=fitN(), ov=overN(), body='';
   var ic=function(pth,st,w){ return '<svg width="'+(w||14)+'" height="'+(w||14)+'" viewBox="0 0 24 24" fill="none" stroke="'+st+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+pth+'</svg>'; };
-  var dlBtn=function(cnt){ return '<button class="btn btn-p" type="button" onclick="dl()">'+
-    ic('<path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>','currentColor',13)+'Download '+n(cnt)+' rows</button>'; };
+  var dlBtn=function(){ return '<button class="btn btn-p" type="button" onclick="dl()">'+
+    ic('<path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>','currentColor',13)+'Download CSV</button>'; };
   var none = (d.ready||0)===0;            // every row needs fixing
   var full = limited() && S.room===0 && !none;
   var act = tfx+ov;                       // rows the user has to act on
@@ -1092,8 +1134,10 @@ function scSummary(){
   if(isSeq()){ if(exIn) cl.push(n(exIn)+' already in your list '+fut); }
   else if(ex) cl.push(n(ex)+' prospects already in your list '+fut);
   if(du) cl.push(n(du)+' repeated rows skipped');
-  /* Sequence: prospects already in the list that the step turns away, as one clause; the reasons for the ones the user can act on are in the CSV. */
-  if(isSeq() && so.all) cl.push(n(so.all)+' won’t be added');
+  /* Sequence: prospects the step turns away that are not in the CSV (already in this sequence,
+     unsubscribed). Those the user can act on are counted once, in the red line, so the parts are disjoint. */
+  var away = so.all - so.file;
+  if(isSeq() && away) cl.push(n(away)+' won’t be added');
   var clean = !none && !ex && !du && !act && !so.all && !(isSeq() && st.need);
   /* One reason behind most rows usually means the wrong column is mapped to Email. */
   var big=fixG().slice().sort(function(x,y){return y.count-x.count;})[0], dom=none && big && big.count/d.rows>0.5;
@@ -1104,30 +1148,28 @@ function scSummary(){
     if(!x.need || !mappedTo(x.need.field)) return;
     quiet.push(n(Math.round(added*0.3))+' prospects have no '+x.need.short+' for the Step '+x.n+' '+x.need.kind+'.');
   });
-  body += '<div><div class="rv-h">'+head+'</div>'+quiet.map(function(q){ return '<div class="rv-m">'+q+'</div>'; }).join('')+'</div>';
+  body += '<div><div class="rv-h" id="rvh">'+head+'</div>'+quiet.map(function(q){ return '<div class="rv-m">'+q+'</div>'; }).join('')+'</div>';
 
   /* ── 3. One line per problem: dot, plain sentence, one link. Only rows that need the user.
      Red: rows to fix, or an import that failed. Amber: the plan limit, credits, another import. ── */
-  var lines=[], line=function(tone,txt,links,after){
-    lines.push('<div class="it"><span class="dt '+tone+'"></span><span class="tx">'+txt+(links||'')+(after? ' <span class="c">'+after+'</span>':'')+'</span></div>'); };
+  var lines=[], line=function(tone,txt,links,id){
+    lines.push('<div class="it"><span class="dt '+tone+'"></span><span class="tx">'+(id?'<span id="'+id+'">'+txt+'</span>':txt)+(links||'')+'</span></div>'); };
   var lk=function(lbl,js){ return '<button class="lnkb" type="button" onclick="'+js+'">'+lbl+'</button>'; };
   var upL=lk('Upgrade plan','elsewhere(\'Settings › Billing › Upgrade plan\')');
   if(S.ierr==='fail') line('fx', IERR.fail);
   if(S.ierr==='quota') line('am', IERR.quota, upL);
-  if(S.scen==='busy' && !none) line('am', IERR.busy, lk('Check again','S.scen=\'normal\';$(\'scen\').value=\'normal\';render()'));
+  if(S.scen==='busy' && !none) line('am', IERR.busy, lk('Check again','S.scen=\'normal\';$(\'scen\').value=\'normal\';render()'), 'whybusy');
   /* Plan limit: only new prospects count (catalogue G03-066, G03-078). */
   if(ov) line('am', full ? 'You’ve reached your plan’s prospect limit' : n(ov)+' new prospects are over your plan’s limit',
-      upL+(tfx? '' : lk('Download them','dl()')));
-  if(tfx){
-    var more=ov? n(ov)+' over the limit':'';
-    line('fx', n(tfx+(isSeq()? so.file||0 : 0))+' rows to fix', none? '' : lk('Download them','dl()'), (more && !none)? 'plus the '+more : '');
-  }
+      upL+(tfx? '' : lk('Download CSV','dl()')), 'whyfull');
+  var toFix = tfx + (isSeq()? so.file : 0);
+  if(toFix) line('fx', n(toFix)+' row'+(toFix===1?'':'s')+' to fix', none? '' : lk('Download CSV','dl()'));
   if(lines.length) body += '<div class="rv-x">'+lines.join('')+'</div>';
 
   /* ── 4. Options under a rule: Verify on one line, tags behind a link. ── */
   if(!none && !full){
     var vline = !S.verify ? '<span class="c">· no credits will be used</span>'
-      : creditShort() ? '<span class="c am">· needs up to '+n(fit)+' credits, you have '+n(credits())+'</span>'
+      : creditShort() ? '<span class="c am" id="whycr">· needs up to '+n(fit)+' credits, you have '+n(credits())+'</span>'
       : '<span class="c">· up to '+n(fit)+' of your '+n(credits())+' credits</span>';
     body += '<div class="rule"></div><div class="rv-o">'+
       '<div class="vf"><input type="checkbox" id="vfy"'+(S.verify?' checked':'')+' onchange="S.verify=this.checked;render()">'+
@@ -1151,12 +1193,15 @@ function scSummary(){
               fit ? 'Import '+n(fit)+' new prospect'+(fit===1?'':'s') : (upd ? 'Update '+n(upd)+' prospects' : 'Import'));
   if(isSeq() && !added) blocked = true;
   if(full && !upd) blocked = true;   // a full plan still lets rows already in the list be updated
+  /* A blocked Import stays focusable and says why (aria-disabled plus the line that explains it). */
+  var why=[]; if(creditShort()) why.push('whycr'); if(S.scen==='busy') why.push('whybusy');
+  if(isSeq() && !added) why.push('rvh'); if(full && !upd && ov) why.push('whyfull');
   var ft = '<div class="m-ft">'+
     (none ? '<button class="ftlink" type="button" onclick="uploadFixedNow()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>Upload fixed file</button>' : '')+
     '<span class="sp"></span>'+
     '<button class="btn btn-g" type="button" onclick="go(\'map\')">Back</button>'+
-    (none ? dlBtn(act)
-          : '<button class="btn btn-p" type="button" '+(blocked||S.importing?'disabled':'onclick="doImport()"')+'>'+label+'</button>')+'</div>';
+    (none ? dlBtn()
+          : '<button class="btn btn-p" type="button" '+(blocked||S.importing? 'aria-disabled="true"'+(why.length&&!S.importing?' aria-describedby="'+why.join(' ')+'"':'') : 'onclick="doImport()"')+'>'+label+'</button>')+'</div>';
 
   return hd()+steps('review')+'<div class="rule"></div><div class="m-bd">'+body+'</div><div class="rule"></div>'+ft;
 }
@@ -1171,7 +1216,8 @@ window.addEventListener('resize',function(){ fitPv(); });
 function render(){
   var m=$('modal'), sc=$('scrim');
   document.body.classList.toggle('mopen', S.screen!=='entry');
-  if(S.screen==='entry'){ sc.classList.remove('show'); S.shown=null; return; }
+  if(S.screen==='entry'){ sc.classList.remove('show'); S.shown=null; setInert(false); return; }
+  setInert(true);
   var a=document.activeElement, keep=(a && m.contains(a) && a.id)? a.id : null,
       sel=(keep && a.setSelectionRange && a.selectionStart!=null)? [a.selectionStart,a.selectionEnd] : null;
   sc.classList.add('show');
@@ -1181,6 +1227,12 @@ function render(){
   if(S.screen==='checking') m.innerHTML=scChecking();
   if(S.screen==='summary')  m.innerHTML=scSummary();
   fitPv();
+  /* The Review result is announced once on arrival, and again only when it changes (e.g. another step). */
+  var say='';
+  if(S.screen==='summary') say=[].slice.call(m.querySelectorAll('.rv-h, .rv-m, .rv-x .tx')).map(function(el){
+    return [].slice.call(el.childNodes).filter(function(c){ return !(c.nodeType===1 && c.tagName==='BUTTON'); })
+      .map(function(c){ return c.textContent; }).join('').trim(); }).filter(Boolean).join(' ');
+  if($('mlive').textContent!==say) $('mlive').textContent=say;
   $('pstep').textContent=S.screen;
   if(S.shown!==S.screen){ S.shown=S.screen; var t=$('mtitle'); if(t){ t.tabIndex=-1; t.focus(); } }
   else if(keep){ var el=$(keep); if(el){ el.focus(); if(sel && el.setSelectionRange) el.setSelectionRange(sel[0],sel[1]); } }

@@ -336,7 +336,7 @@
   "sec": "Review and Import",
   "id": "r13",
   "title": "Every row fails",
-  "cap": "Headline says none; Download is primary; Upload fixed file; check the mapping",
+  "cap": "Headline says none; Download CSV is primary; Upload fixed file; check the mapping",
   "file": "r13.png",
   "phone": false,
   "page": false
@@ -453,7 +453,7 @@
   "sec": "Email and the file",
   "id": "e01",
   "title": "Email: rows to fix",
-  "cap": "Real counts and the top errors",
+  "cap": "The toast’s numbers, then Download CSV",
   "file": "e01.png",
   "phone": false,
   "page": false
