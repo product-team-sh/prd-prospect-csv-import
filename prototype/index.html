@@ -888,9 +888,10 @@ function finishImport(){
      green only when nothing failed. */
   var said = j.seq
     ? '<strong>'+n(j.ready+j.upd)+' added to Step '+j.step.n+'</strong> of '+esc(SEQ.name)+' from '+esc(j.name)+'.'
-    : '<strong>'+n(j.ready)+' prospect'+(j.ready===1?'':'s')+' added</strong>'+(j.upd? ' and '+n(j.upd)+' already in your list '+j.ca.past:'')+' from '+esc(j.name)+'.';
+    : '<strong>'+n(j.ready)+' prospect'+(j.ready===1?'':'s')+' added.</strong>';
   var dlN = j.left+(j.inFile||0);
   if(j.left || j.notAdded){
+    if(!j.seq){ toast('amber', said+' '+n(j.left)+' rows not imported. <button class="lnkb" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download CSV</button>'); hideToast(8000); return; }
     toast('amber', said+' '+(j.left? leftLine(j)+(j.inFile? ' The download also lists the '+n(j.inFile)+' saved but not added to Step '+j.step.n+'.':'') : n(j.notAdded)+' were saved but not added to Step '+j.step.n+'.')+
       (dlN? ' <button class="lnkb" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download '+n(dlN)+' rows</button>' : ''));
     hideToast(8000);
@@ -1124,7 +1125,7 @@ function scSummary(){
   if(S.ierr==='quota') line('am', IERR.quota, upL);
   if(S.scen==='busy' && !none) line('am', IERR.busy, lk('Check again','S.scen=\'normal\';$(\'scen\').value=\'normal\';render()'));
   /* Plan limit: only new prospects count (catalogue G03-066, G03-078). */
-  if(ov) line('am', full ? 'Your plan has no room for '+n(ov)+' new prospects' : n(ov)+' new prospects are over your plan’s limit',
+  if(ov) line('am', full ? 'You’ve reached your plan’s prospect limit' : n(ov)+' new prospects are over your plan’s limit',
       upL+(tfx? '' : lk('Download them','dl()')));
   if(tfx){
     var more=[ov? n(ov)+' over the limit':'', so.file? n(so.file)+' not added to the step':''].filter(Boolean).join(' and ');

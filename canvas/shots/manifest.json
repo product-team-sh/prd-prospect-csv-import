@@ -379,15 +379,6 @@
  },
  {
   "sec": "Import into a sequence",
-  "id": "s04",
-  "title": "Sequence with no steps",
-  "cap": "Blocked before the dialog opens",
-  "file": "s04.png",
-  "phone": false,
-  "page": false
- },
- {
-  "sec": "Import into a sequence",
   "id": "s05",
   "title": "After a sequence import",
   "cap": "The Prospects tab refreshed and says so; amber toast with the download",
@@ -426,7 +417,7 @@
   "sec": "After Import",
   "id": "a03",
   "title": "Finished, over the limit only",
-  "cap": "Nothing wrong with the rows; the plan needs room",
+  "cap": "Nothing wrong with the rows; the plan limit was reached",
   "file": "a03.png",
   "phone": false,
   "page": true
