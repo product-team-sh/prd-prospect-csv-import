@@ -77,7 +77,7 @@ All counts after import come from the import. Rows whose batch failed are counte
 
 ### 5.6 Completion email
 
-Sender "{Brand} <no-reply@{brand domain}>", the account's white-label brand. Subject "Import finished: {file}". Body "{added} added, {existing} already in your list {past outcome}, {n} not imported: {top 3 error names with counts}. Download the rows to fix them." Replaces "Congratulations! Your Prospect Import is completed." for every outcome ([prospect-import.hbs L11](https://github.com/saleshandy/saleshandy-background-jobs/blob/c2c60a6ee24b9910b7aa6e67b54876bca132785c/src/app-mailer/email-templates/prospect-import.hbs#L11)). A client user's import names them and the sequence.
+Sender "{Brand} <no-reply@{brand domain}>", the account's white-label brand. Subject "Import finished: {file}". Body "{added} added, {existing} already in your list {past outcome}, {n} not imported: {top 3 error names with counts}. Download the CSV to fix them." Replaces "Congratulations! Your Prospect Import is completed." for every outcome ([prospect-import.hbs L11](https://github.com/saleshandy/saleshandy-background-jobs/blob/c2c60a6ee24b9910b7aa6e67b54876bca132785c/src/app-mailer/email-templates/prospect-import.hbs#L11)). A client user's import names them and the sequence.
 
 ### 5.7 The rows-to-fix file
 
@@ -128,7 +128,7 @@ Same dialog, Upload and Map Fields as the list import ([sequence path today](htt
 | Quiet lines (grey) | "{rows} rows checked. {n} of the {added} are already in your list and {outcome}, {m} repeated rows skipped." Then "{n} prospects already in your list won't be added: {a} are in another sequence, {b} are in this one, {c} bounced, {d} unsubscribed." [Admin setting] |
 | Quiet line: step needs (grey) | Only when the field is mapped but some prospects have it empty: "{n} prospects have no phone number. Their call task (Step {k}) will have nothing to dial. They still import." Same for LinkedIn ("LinkedIn profile URL", "LinkedIn task", "nothing to open"). Covers every step from the chosen one on |
 | Red line: rows to fix | {n} rows need fixing [Download them] plus the {m} not added to the step |
-| Map Fields: step needs (amber) | When no column is mapped to a field a step needs, above After Import, one line: "No column is mapped to {fields}, which {Step k / Steps j and k} {needs / need}." e.g. "No column is mapped to LinkedIn Profile or Phone Number, which Steps 2 and 3 need." Covers every step in the sequence; Next stays enabled |
+| Map Fields: step needs (amber) | When no column is mapped to a field a step needs, one line in the message slot at the top of Map Fields (replaces the grey match line; a red Email error wins over it): "No column is mapped to {fields}, which {Step k / Steps j and k} {needs / need}." e.g. "No column is mapped to LinkedIn Profile or Phone Number, which Steps 2 and 3 need." Covers every step in the sequence; Next stays enabled |
 | Button | "Add {n} to Step {k}" |
 | Download | Includes the rows not added that the user can act on (errors 13 to 15). Already in this sequence, unsubscribed, and rows a step can't work are counts on Review only |
 | After | Toast "{n} added to Step {k} of {sequence} from {file}." With rows left, amber as the list import, adding "The download also lists the {n} saved but not added to Step {k}." Bell "{file}: {n} added to Step {k} of {sequence}, {m} not added". Email subject "Import finished: {file} into {sequence}" |

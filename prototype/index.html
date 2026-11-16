@@ -687,7 +687,7 @@ function clearMapping(){
 function unset(c){ return S.map[c]==='Don’t import'; }
 /* Sequence import, Map Fields: fields the sequence's steps need that no column is mapped to.
    Prospects move through every step, so this covers all steps, not only the one picked on Review.
-   A warning: Next stays enabled (D11). Moved here from Review. */
+   A warning: Next stays enabled (D11). Shown in the one message slot at the top: red error, then this, then the grey match line. */
 function seqNeedsBanner(){
   if(!isSeq()) return '';
   var miss=SEQ.steps.filter(function(x){ return x.need && !mappedTo(x.need.field); });
@@ -1017,7 +1017,7 @@ function scMap(){
   if(S.restored){
     lead = '<div class="bn bn-gry bn-1">'+
       '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>'+
-      '<div style="flex:1">Mapping restored from your import of '+esc(S.restored)+'. <button class="btn btn-l" type="button" onclick="clearMapping()" style="padding:0;font-size:inherit">Clear and map again</button></div></div>';
+      '<div style="flex:1">Mapping restored from your import of '+esc(S.restored)+'. <button class="btn btn-l" type="button" onclick="clearMapping()" style="padding:0;font-size:inherit;line-height:inherit;height:auto;min-height:0;display:inline;vertical-align:baseline">Clear and map again</button></div></div>';
   } else if(todo.length){
     lead = '<div class="bn bn-gry bn-1">'+
       '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
@@ -1035,12 +1035,11 @@ function scMap(){
       : '<div>Map a column to Email to continue.</div></div>');
 
   var moved = '';
-  return hd()+steps('map')+'<div class="rule"></div><div class="m-bd">'+(ok?lead:warn)+moved+
+  return hd()+steps('map')+'<div class="rule"></div><div class="m-bd">'+(ok?(seqNeedsBanner()||lead):warn)+moved+
     '<div><div class="hdlbl"><span style="flex:0 0 150px">Fields from file</span><span style="flex:1">First 3 rows</span><span style="flex:0 0 190px">Field</span></div>'+
     rows+'</div>'+
     /* After Import: kept from production (6 Nov). The option's own text is shown
        under the select instead of only on hover. */
-    seqNeedsBanner()+
     '<div class="cfg"><label class="k" for="cafield">After Import</label><div class="v">'+
       '<select id="cafield" onchange="S.ca=this.value;render()">'+
       CA.map(function(o){ return '<option value="'+o.k+'"'+(o.k===S.ca?' selected':'')+'>'+o.label+'</option>'; }).join('')+
