@@ -227,7 +227,7 @@ body.mopen #toast{bottom:auto;top:50px}
 .fmenu.up{top:auto;bottom:calc(100% + 4px)}
 .restored{display:flex;gap:8px;align-items:flex-start;max-width:470px;font-size:13px;line-height:1.5;color:var(--grn-900);text-align:left}
 .restored svg{flex:0 0 auto;margin-top:2px}
-.rja{gap:11px}.rja-b{flex:1;min-width:0}.rja-t{font-weight:600;line-height:1.5}.rja-fn{font-size:13px;line-height:18px;color:var(--g-500);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rja-fix{color:var(--g-900);margin-top:6px}.rja-fix b{font-weight:600}
+.rja{gap:11px}.rja-h{display:flex;align-items:baseline;gap:8px;min-width:0}.rja-h .rja-t{flex:0 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rja-h .rja-fn{margin-top:0;flex:0 1 auto;min-width:0}@media(max-width:480px){.rja-h{flex-wrap:wrap;row-gap:0}.rja-h .rja-t{white-space:normal}}.rja-b{flex:1;min-width:0}.rja-t{font-weight:600;line-height:1.5}.rja-fn{font-size:13px;line-height:18px;color:var(--g-500);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rja-fix{color:var(--g-900);margin-top:6px}.rja-fix b{font-weight:600}
 .fmenu .opt .uc{color:var(--g-500);font-weight:400}
 #async{position:absolute;top:74px;right:24px;z-index:90;width:250px}
 #async .card{display:flex;align-items:center;gap:8px;padding:12px;background:#fff;border:1px solid var(--g-100);border-radius:4px;box-shadow:2px 2px 16px -3px rgba(4,21,76,.16)}
@@ -942,8 +942,8 @@ function scUpload(){
     }[f().reject];
     body = '<div class="bn bn-red rja" role="alert">'+
       '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7F1D1D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'+
-      '<div class="rja-b"><div class="rja-t">'+R.t+'</div>'+
-      '<div class="rja-fn" title="'+esc(f().name)+'">'+esc(f().name)+'</div>'+
+      '<div class="rja-b"><div class="rja-h"><div class="rja-t">'+R.t+'</div>'+
+      '<div class="rja-fn" title="'+esc(f().name)+'">'+esc(f().name)+'</div></div>'+
       '<div class="rja-fix">'+R.fix+'</div></div></div>'+
       '<div class="drop" ondragover="event.preventDefault()" ondrop="event.preventDefault();S.file=null;render()">'+
       '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/><path d="M20 16.7A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 14.9"/></svg>'+
