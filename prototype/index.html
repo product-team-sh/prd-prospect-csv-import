@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="data:,">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prospect CSV Import · Clickable Prototype</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
@@ -877,7 +878,7 @@ function finishImport(){
             :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>')+'</div>'+
     '<div style="flex:1"><div style="font-size:13px;font-weight:600">'+esc(j.name)+': '+
       (j.seq ? n(j.ready+j.upd)+' added to Step '+j.step.n+' of '+esc(SEQ.name)+(j.notAdded? ', '+n(j.notAdded)+' not added':'')
-             : n(j.ready)+' added'+(j.upd? ', '+n(j.upd)+' '+j.ca.past:''))+'</div>'+
+             : n(j.ready)+' added'+(j.upd? ', '+n(j.upd)+' already in your list '+j.ca.past:''))+'</div>'+
     (j.left? '<div class="muted" style="margin-top:3px">'+leftLine(j)+'</div>'+
              '<div style="display:flex;gap:14px;margin-top:6px"><button class="btn btn-l" type="button" style="font-size:12px;padding:0" onclick="dl(\''+j.key+'\','+j.over+')">Download the '+n(j.left+(j.inFile||0))+'</button></div>'
            : '<div class="muted" style="margin-top:3px">Nothing needed attention.</div>')+
@@ -887,7 +888,7 @@ function finishImport(){
      green only when nothing failed. */
   var said = j.seq
     ? '<strong>'+n(j.ready+j.upd)+' added to Step '+j.step.n+'</strong> of '+esc(SEQ.name)+' from '+esc(j.name)+'.'
-    : '<strong>'+n(j.ready)+' prospect'+(j.ready===1?'':'s')+' added</strong>'+(j.upd? ' and '+n(j.upd)+' '+j.ca.past:'')+' from '+esc(j.name)+'.';
+    : '<strong>'+n(j.ready)+' prospect'+(j.ready===1?'':'s')+' added</strong>'+(j.upd? ' and '+n(j.upd)+' already in your list '+j.ca.past:'')+' from '+esc(j.name)+'.';
   var dlN = j.left+(j.inFile||0);
   if(j.left || j.notAdded){
     toast('amber', said+' '+(j.left? leftLine(j)+(j.inFile? ' The download also lists the '+n(j.inFile)+' saved but not added to Step '+j.step.n+'.':'') : n(j.notAdded)+' were saved but not added to Step '+j.step.n+'.')+
