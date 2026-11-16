@@ -158,6 +158,8 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .rv-h{font-size:20px;line-height:28px;font-weight:600;color:var(--g-900);font-variant-numeric:tabular-nums;letter-spacing:-.005em;text-wrap:pretty}
 .rv-m{font-size:13px;line-height:19px;color:var(--g-500);margin-top:4px;text-wrap:pretty}
 .rv-m .lnkb{font-weight:500}
+.rv-dl{list-style:none;margin:8px 0 0;padding:0 0 0 12px;border-left:2px solid var(--g-200);display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:19px;color:var(--g-600)}
+.rv-dl small{display:block;font-size:12.5px;line-height:18px;color:var(--g-500)}
 .rv-x{display:flex;flex-direction:column;gap:8px}
 .rv-x .it{display:flex;align-items:baseline;gap:8px;font-size:13.5px;line-height:20px;color:var(--g-800)}
 .rv-x .dt{width:7px;height:7px;border-radius:50%;flex:0 0 auto;transform:translateY(-1px)}
@@ -668,7 +670,7 @@ function closeWizard(){ if(S.timer){clearInterval(S.timer);S.timer=null;}
   $('scrim').classList.remove('show'); $('mlive').textContent=''; $('pstep').textContent='entry';
   setInert(false); returnFocus(); }
 
-function pickFile(k){
+function pickFile(k){ S.det=false;
   S.file=k; S.map={}; S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q=''; S.ierr=null; S.tagsOpen=false; S.tagv='';
   if(f().reject){ render(); return; }
   /* Only a rows-to-fix file (it carries our three columns) gets its mapping back,
@@ -976,7 +978,7 @@ function scUpload(){
       rows:{t:'This file has more than 100,000 rows', fix:'Split it into files of 100,000 rows or fewer, and upload them one at a time.'},
       cols:{t:'This file has more than 120 columns', fix:'Remove the columns you don’t need.'},
       empty:{t:'This file has no prospects', fix:'It has column names but no rows. Add the prospects under the header row.'},
-      dupe:{t:'Some columns have the same name', fix:'Each column needs its own name so we know where it goes. Rename or delete the repeated columns, then save the file.'},
+      dupe:{t:'Some columns have the same name', fix:'Rename or delete the repeated columns.'},
       blank:{t:'Some columns have no name', fix:'Every column needs a name in the first row. Name the empty ones, or delete those columns.'},
       sep:{t:'The header row mixes separators', fix:'Use one separator throughout, or put quotes around headers that contain a comma.'},
       utf:{t:'This file isn’t saved as UTF‑8', fix:XL},
@@ -1130,7 +1132,7 @@ function scSummary(){
      The After Import option words the clause about prospects already in the list. */
   var fut = ca().fut.replace(' from your file',''), cut = fut.indexOf('. ');
   if(cut>0) fut = fut.slice(0,cut)+' ('+fut.charAt(cut+2).toLowerCase()+fut.slice(cut+3)+')';
-  var quiet=[], cl=[];
+  var quiet=[], cl=[], body_det='';
   if(isSeq()){ if(exIn) cl.push(n(exIn)+' already in your list '+fut); }
   else if(ex) cl.push(n(ex)+' prospects already in your list '+fut);
   if(du) cl.push(n(du)+' repeated rows skipped');
@@ -1143,12 +1145,19 @@ function scSummary(){
   var big=fixG().slice().sort(function(x,y){return y.count-x.count;})[0], dom=none && big && big.count/d.rows>0.5;
   if(none){ if(dom) quiet.push(n(big.count)+' of '+n(d.rows)+' have the same problem, which often means the wrong column is mapped to Email. <button class="lnkb" type="button" onclick="go(\'map\')">Check the mapping</button>'); }
   else quiet.push(n(d.rows)+' rows checked.'+(cl.length? ' '+cl.join(', ')+'.' : (clean? ' Every row is ready.' : '')));
+  /* Update All Fields (R03): the line folds behind See details; the blank-cell warning is in the details. */
+  if(!none && !isSeq() && S.ca==='upsert' && cl.length){
+    quiet[quiet.length-1] = n(d.rows)+' rows checked · <button class="lnkb" id="rvdetbtn" type="button" aria-expanded="'+(S.det?'true':'false')+'" aria-controls="rvdet" onclick="S.det=!S.det;render();focusId(\'rvdetbtn\')">'+(S.det?'Hide details':'See details')+'</button>';
+    if(S.det) body_det = '<ul class="rv-dl" id="rvdet">'+cl.map(function(c){
+      var w=c.replace(/^(\d[\d,]*) prospects already/,'$1 already'), cut=w.indexOf(' (a blank cell clears the existing value)');
+      return '<li>'+(cut>0? w.slice(0,cut)+'<small>A blank cell clears the existing value.</small>' : w)+'</li>'; }).join('')+'</ul>';
+  }
   /* What a step ahead needs: the rows still import. Unmapped fields are flagged on Map Fields instead. */
   if(isSeq() && added) SEQ.steps.slice(S.step||0).forEach(function(x){
     if(!x.need || !mappedTo(x.need.field)) return;
     quiet.push(n(Math.round(added*0.3))+' prospects have no '+x.need.short+' for the Step '+x.n+' '+x.need.kind+'.');
   });
-  body += '<div><div class="rv-h" id="rvh">'+head+'</div>'+quiet.map(function(q){ return '<div class="rv-m">'+q+'</div>'; }).join('')+'</div>';
+  body += '<div><div class="rv-h" id="rvh">'+head+'</div>'+quiet.map(function(q){ return '<div class="rv-m">'+q+'</div>'; }).join('')+body_det+'</div>';
 
   /* ── 3. One line per problem: dot, plain sentence, one link. Only rows that need the user.
      Red: rows to fix, or an import that failed. Amber: the plan limit, credits, another import. ── */

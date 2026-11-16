@@ -17,7 +17,7 @@ A rejected file: a red alert above the drop zone. Alert icon, the **title** (red
 | Too many rows | Past 100,000 rows (no total) | This file has more than 100,000 rows | Split it into files of 100,000 rows or fewer, and upload them one at a time. |
 | Too many columns | Over 120 columns | This file has more than 120 columns | Remove the columns you don't need. |
 | No prospects | No data row | This file has no prospects | It has column names but no rows. Add the prospects under the header row. |
-| Repeated column names | Two or more headers match (yes or no) | Some columns have the same name | Each column needs its own name so we know where it goes. Rename or delete the repeated columns, then save the file. |
+| Repeated column names | Two or more headers match (yes or no) | Some columns have the same name | Rename or delete the repeated columns. |
 | Columns with no name | Two or more blank headers (yes or no) | Some columns have no name | Every column needs a name in the first row. Name the empty ones, or delete those columns. |
 | Mixed separators | Header uses more than one of `, ; | tab` (moves from the server, [edge L1380](https://github.com/saleshandy/saleshandy-edge/blob/23c74c892b99392f27f5fb81bd5e3d610d1f4c11/src/common/response/messages/api-errors.ts#L1380-L1382)) | The header row mixes separators | Use one separator throughout, or put quotes around headers that contain a comma. |
 | Not UTF-8 | Unreadable bytes (existing `is-utf8-file` util) | This file isn't saved as UTF-8 | In Excel, choose **File › Save As** and pick **CSV UTF-8 (Comma delimited)**. |
@@ -49,6 +49,7 @@ One headline, one quiet grey line, then one line per problem, then the options u
 | Headline | {n} new prospects will be added. None new: "No new prospects will be added". Plan full: "No new prospects can be added". Every row fails: "None of the {rows} rows can be imported" |
 | Quiet line (grey) | {rows} rows checked. {n} prospects already in your list {outcome}, {m} repeated rows skipped. A clause with a count of 0 is dropped |
 | Outcomes, by After Import | Add Missing Fields "will get their empty fields filled"; Update All Fields "will be updated (a blank cell clears the existing value)"; Overwrite "will have their filled-in fields updated"; Skip Existing Prospects "will be left unchanged" |
+| Update All Fields: folded | The grey line reads "{rows} rows checked · [See details]". See details expands in place as a short list under that line (thin grey rule on the left): "{n} already in your list will be updated" with "A blank cell clears the existing value." in smaller grey under it, then "{m} repeated rows skipped". The link becomes [Hide details]. Only under Update All Fields |
 | Repeats | Repeats are rows with the same email (case and spaces ignored); the first is imported. If that email is invalid, every copy is a row to fix |
 | Clean file | Headline and "{rows} rows checked. Every row is ready." No problem lines |
 | Red line: rows to fix | {n} rows to fix [Download CSV]. Rows over the plan limit are named on the amber line only, never here. The per-error breakdown is not on Review; it stays in the file |
