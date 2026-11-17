@@ -228,7 +228,7 @@
   "sec": "Review and Import",
   "id": "r01",
   "title": "Review",
-  "cap": "Headline, one grey line, one line per problem with its link",
+  "cap": "Headline, rows checked behind See details, one line per problem with its link",
   "file": "r01.png",
   "phone": false,
   "page": false
@@ -246,7 +246,7 @@
   "sec": "Review and Import",
   "id": "r03",
   "title": "Already in your list: Update All Fields",
-  "cap": "Grey line folded: rows checked and See details",
+  "cap": "See details open: the first item says what this option does to them",
   "file": "r03.png",
   "phone": false,
   "page": false
@@ -255,7 +255,7 @@
   "sec": "Review and Import",
   "id": "r04",
   "title": "Already in your list: Overwrite",
-  "cap": "The grey line says what this option does to them",
+  "cap": "See details open: the first item says what this option does to them",
   "file": "r04.png",
   "phone": false,
   "page": false
@@ -264,7 +264,7 @@
   "sec": "Review and Import",
   "id": "r05",
   "title": "Already in your list: Skip Existing Prospects",
-  "cap": "The grey line says what this option does to them",
+  "cap": "See details open: the first item says what this option does to them",
   "file": "r05.png",
   "phone": false,
   "page": false
@@ -354,7 +354,7 @@
   "sec": "Import into a sequence",
   "id": "s01",
   "title": "Into an email step",
-  "cap": "Step picker above the headline; one grey line, as on the list Review",
+  "cap": "Step picker above the headline; the grey line folds behind See details",
   "file": "s01.png",
   "phone": false,
   "page": false
@@ -363,7 +363,7 @@
   "sec": "Import into a sequence",
   "id": "s02",
   "title": "Into a call step, some phones empty",
-  "cap": "Phone mapped; a grey line counts the prospects without one",
+  "cap": "Phone mapped; the rows checked line folds, a grey line counts the prospects without a phone",
   "file": "s02.png",
   "phone": false,
   "page": false
@@ -372,7 +372,7 @@
   "sec": "Import into a sequence",
   "id": "s03",
   "title": "Into a LinkedIn step, some URLs empty",
-  "cap": "Same grey line for LinkedIn profile URLs",
+  "cap": "Rows checked folds behind See details; one grey line for missing LinkedIn URLs",
   "file": "s03.png",
   "phone": false,
   "page": false

@@ -1145,8 +1145,9 @@ function scSummary(){
   var big=fixG().slice().sort(function(x,y){return y.count-x.count;})[0], dom=none && big && big.count/d.rows>0.5;
   if(none){ if(dom) quiet.push(n(big.count)+' of '+n(d.rows)+' have the same problem, which often means the wrong column is mapped to Email. <button class="lnkb" type="button" onclick="go(\'map\')">Check the mapping</button>'); }
   else quiet.push(n(d.rows)+' rows checked.'+(cl.length? ' '+cl.join(', ')+'.' : (clean? ' Every row is ready.' : '')));
-  /* Update All Fields (R03): the line folds behind See details; the blank-cell warning is in the details. */
-  if(!none && !isSeq() && S.ca==='upsert' && cl.length){
+  /* Every Review: when the line carries more than the row count, it folds behind See details;
+     the blank-cell warning (Update All Fields) is in the details. */
+  if(!none && cl.length){
     quiet[quiet.length-1] = n(d.rows)+' rows checked · <button class="lnkb" id="rvdetbtn" type="button" aria-expanded="'+(S.det?'true':'false')+'" aria-controls="rvdet" onclick="S.det=!S.det;render();focusId(\'rvdetbtn\')">'+(S.det?'Hide details':'See details')+'</button>';
     if(S.det) body_det = '<ul class="rv-dl" id="rvdet">'+cl.map(function(c){
       var w=c.replace(/^(\d[\d,]*) prospects already/,'$1 already'), cut=w.indexOf(' (a blank cell clears the existing value)');
