@@ -147,7 +147,7 @@
   "sec": "Map Fields",
   "id": "m05",
   "title": "Create custom field",
-  "cap": "From the field list: name it, Create and map",
+  "cap": "Production’s modal from the field list; Save maps the column",
   "file": "m05.png",
   "phone": false,
   "page": false

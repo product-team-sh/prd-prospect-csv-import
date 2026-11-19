@@ -30,10 +30,10 @@ Every check that today runs only after Import (duplicate headers, mixed separato
 - Email row marked with a red *. Row look as production: neutral selects, no row tint. Header "Fields from file", "Sample", "Field" (left edge of the selects).
 - No line about matched columns. A column with no field yet: its "Select field" select is amber; the row stays plain.
 - No column mapped to Email: "Map a column to Email to continue." Red, one line. Next disabled. No email-like column at all: "This file has no email column. Add one, or choose another file." Red, one line, Next disabled.
-- **After Import** below the fields: production's four labels and descriptions verbatim ([conflict-action.ts](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/conflict-action.ts)), description shown under the select, default Add Missing Fields.
+- **After Import** in the table footer, as production, with "Import into [Step 1]" before it on a sequence import; (i) "Please select the action to perform on your prospect details after importing"; each option shows its text on hover: production's four labels and descriptions verbatim ([conflict-action.ts](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/conflict-action.ts)), default Add Missing Fields.
 - An undecided column shows "Select field"; one set aside shows "Don't import".
 - Header band, sentence case: "Fields from file", "Sample", "Field". Cross button on a mapped field: aria-label "Remove field from {column}".
-- Field list footer: "+ Create custom field". Its box: label "New custom field", prefilled name, "Back" and "Create and map". No matches: "No field matches “{search}”."
+- Field list footer: "+ Create custom field", which opens production's modal: title "Create Custom Field"; "Field Name" ("Enter Field Name", prefilled with the column name); "Field Type" (Text, Number, Long Text, Date, Dropdown, Currency); "Fallback Text (Optional)" ("Enter Fallback Text") for Text, Number, Long Text; "+ Add Option" for Dropdown; "Currency" for Currency; "Tags" ("Enter a tag"); Cancel, Save. No matches: "No field matches “{search}”."
 - One column per field, as production: a field another column uses isn't offered in the list.
 - Cancel, Esc or the close button keeps the mapping while the dialog's file is kept.
 - Field picker: search keeps focus while typing; arrow keys move through options; Enter on the search picks the first match; Esc closes the list.
@@ -124,8 +124,7 @@ Same dialog, Upload and Map Fields as the list import ([sequence path today](htt
 
 | Where | Requirement |
 |---|---|
-| Map Fields | No step picker (production has one here; it moves to Review) |
-| Review, above the card | "Import into [Step 1 · Email ▾]", on the card's inner edge. Options name the step type ("Step 2 · LinkedIn connection request"). Default: the lowest step number, as production |
+| Map Fields | Production's table footer, unchanged: "Import into [Step 1 ▾]" beside "After Import (i) [Add Missing Fields ▾]". Default: the lowest step |
 | Headline | "{n} prospects will be added to Step {k}". Counts new plus existing, because production adds existing prospects to the step under every After Import option |
 | Card rows | "Added to Step {k}" {n} with the note "{e} already in your list · {d} on Do Not Contact, won't be emailed" ({d} is inside {n}); "Repeated rows" {r} "first one kept"; "Won't be added" {w} "in this sequence or unsubscribed"; "Rows to fix" {f} [Download CSV], {f} = rows in the download |
 | Step needs (grey, under the card) | Only when the field is mapped but some prospects have it empty: "{n} prospects have no phone number for the Step {k} call." Same for LinkedIn: "{n} prospects have no LinkedIn URL for the Step {k} task." They still import |

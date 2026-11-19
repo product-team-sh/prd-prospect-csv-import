@@ -176,6 +176,21 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .setr{display:flex;gap:14px;align-items:flex-start}
 .setr .k{flex:0 0 96px;font-size:13px;font-weight:500;color:var(--g-700);padding-top:9px}
 .setr .v{flex:1;min-width:0}
+#modal{position:relative}
+.mfoot{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;padding:10px 14px;background:var(--g-100);border-top:1px solid var(--g-200);border-radius:0 0 var(--r-input) var(--r-input)}
+.mfoot .mf-l{font-size:13.5px;font-weight:500;color:var(--g-800)}.mfoot .mf-l+select{margin-right:14px}.mfoot .ib+select{margin-left:2px}
+.mfoot select{height:34px;min-width:120px;font-family:inherit;font-size:13.5px;padding:0 10px;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-800)}
+.mfoot #cafield{min-width:200px}.mfoot .ib .tip{left:0;transform:none;bottom:calc(100% + 8px)}
+.cfm-scrim{position:absolute;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(17,24,39,.4)}
+.cfm{width:100%;max-width:460px;max-height:calc(100% - 8px);display:flex;flex-direction:column;background:#fff;border-radius:var(--r-modal);box-shadow:0 12px 32px rgba(17,24,39,.22)}
+.cfm-h{padding:18px 22px 6px;font-size:16px;font-weight:600;color:var(--g-900)}
+.cfm-b{padding:10px 22px 18px;display:flex;flex-direction:column;gap:14px;overflow:auto}
+.cfm-f{display:flex;flex-direction:column;gap:6px}.cfm-l{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--g-700)}
+.cfm input,.cfm select,.cfm textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--g-900);border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;padding:8px 10px}
+.cfm select,.cfm input{height:36px}.cfm textarea{resize:vertical;min-height:72px}
+.cfm input:focus,.cfm select:focus,.cfm textarea:focus{outline:none;border-color:var(--blue-700)}
+.cfm-op{display:flex;align-items:center;gap:6px}.cfm-add{align-self:flex-start;font-size:13px;font-weight:500}
+.cfm-ft{display:flex;justify-content:flex-end;gap:16px;padding:14px 22px;border-top:1px solid var(--g-200)}
 /* Review options share the card's inner edge (17px), so labels, controls and the card's numbers line up. */
 .opts{display:flex;flex-direction:column;gap:14px;padding:0 17px;margin-top:5px}
 .opts .setr .k,.setr.ins .k{font-size:13.5px;line-height:20px;font-weight:500;color:var(--g-800);padding-top:7px}
@@ -795,7 +810,7 @@ function uploadFixedNow(){ var k=S.file, left=sum(fixG())+overN(); openWizard();
 
 function setField(col,val,ix){
   S.map[col]=val; S.touched[col]=true; S.pick=null; S.q=''; render(); focusId('fp'+ix); }
-function openPick(col,ix){ var was=S.pick===col; S.pick = was?null:col; S.q=''; S.cf=null; S.pickIx=ix; render();
+function openPick(col,ix){ var was=S.pick===col; S.pick = was?null:col; S.q=''; S.pickIx=ix; render();
   if(was){ focusId('fp'+ix); return; }
   flipMenu(); focusId('fq'); }
 /* The dialog clips overflow, so a list that would run past its bottom opens upwards. */
@@ -1125,12 +1140,7 @@ function fpick(col,ix){
     '<button type="button" id="fp'+ix+'" aria-labelledby="fc'+ix+' fp'+ix+'" aria-haspopup="listbox" aria-expanded="'+open+'" onclick="openPick(\''+cid+'\','+ix+')">'+
     '<span class="v">'+esc(set?cur:(S.touched[col]?'Don’t import':'Select field'))+'</span>'+
     '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>';
-  if(open && S.cf===col){
-    out += '<div class="fmenu" onclick="event.stopPropagation()"><div class="cf"><label for="cfn">New custom field</label>'+
-      '<input id="cfn" type="text" value="'+esc(S.cfv)+'" oninput="S.cfv=this.value" onkeydown="cfKey(event,\''+cid+'\','+ix+')">'+
-      '<div class="cf-a"><button class="lnkb" type="button" onclick="S.cf=null;render();flipMenu();focusId(\'fq\')">Back</button>'+
-      '<button class="btn btn-p" type="button" onclick="createCF(\''+cid+'\','+ix+')">Create and map</button></div></div></div>';
-  } else if(open){
+  if(open){
     out += '<div class="fmenu">'+
       '<input id="fq" type="text" placeholder="Search '+FIELDS.length+' fields…" value="'+esc(S.q)+'" '+
       'oninput="S.q=this.value;render();flipMenu()" onclick="event.stopPropagation()" onkeydown="pickKey(event)" aria-label="Search fields">'+
@@ -1140,7 +1150,7 @@ function fpick(col,ix){
             return '<button type="button" role="option" aria-selected="'+(fl===cur)+'" class="opt'+(fl===cur?' on':'')+'" data-f="'+esc(fl)+'" onclick="setField(\''+cid+'\',this.getAttribute(\'data-f\'),'+ix+')" onkeydown="pickKey(event)">'+esc(fl)+'</button>';
           }).join('')
         : '<div class="none">No field matches “'+esc(S.q)+'”.</div>')+
-      '</div><button class="fm-new" type="button" id="fmnew" onclick="event.stopPropagation();startCF(\''+cid+'\','+ix+')">+ Create custom field</button></div>';
+      '</div><button class="fm-new" type="button" id="fmnew" onclick="event.stopPropagation();openCFM(\''+cid+'\','+ix+')">+ Create custom field</button></div>';
   }
   out += '</div>';
   /* Remove: a cross on the right of a mapped field, as the meeting asked (production has a trash icon on the left). */
@@ -1155,17 +1165,45 @@ function tagKey(e){
   else if(e.key==='Backspace' && !S.tagv && (S.tags||[]).length){ S.tags.pop(); render(); focusId('tagin'); }
 }
 function clearField(col,ix){ S.map[col]='Don’t import'; S.touched[col]=true; S.pick=null; render(); focusId('fp'+ix); }
-function startCF(col,ix){ S.cf=col; S.cfv=(S.q||col).trim(); render(); flipMenu(); var i=$('cfn'); if(i){ i.focus(); i.select(); } }
-function createCF(col,ix){
-  var v=(S.cfv||'').trim(); if(!v){ focusId('cfn'); return; }
+/* Create Custom Field: production's modal (settings/custom-fields/.../create-update-custom-field-modal.tsx):
+   Field Name, Field Type, Fallback Text (Optional) for Text/Number/Long Text, options for Dropdown,
+   Currency for Currency, Tags; Cancel and Save. Opened from the field list, it maps the column on Save. */
+var CF_TYPES=['Text','Number','Long Text','Date','Dropdown','Currency'];
+function openCFM(col,ix){ S.pick=null; S.q=''; S.cfm={col:col,ix:ix,name:col,type:'Text',fb:'',opts:[''],cur:'USD ($)',tags:''}; render(); var i=$('cfmname'); if(i){ i.focus(); i.select(); } }
+function cfmClose(){ var ix=S.cfm.ix; S.cfm=null; render(); focusId('fp'+ix); }
+function cfmSave(){
+  var m=S.cfm, v=(m.name||'').trim(); if(!v){ focusId('cfmname'); return; }
   var hit=FIELDS.filter(function(fl){ return norm(fl)===norm(v); })[0];
   if(!hit){ FIELDS.push(v); hit=v; }
-  S.cf=null; S.cfv=''; setField(col,hit,ix);
+  S.cfm=null; setField(m.col,hit,m.ix);
 }
-function cfKey(e,col,ix){
-  if(e.key==='Enter'){ e.preventDefault(); createCF(col,ix); }
-  else if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); S.cf=null; render(); flipMenu(); focusId('fq'); }
+function cfmKey(e){ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); cfmClose(); } }
+function cfmHtml(){
+  var m=S.cfm, ok=(m.name||'').trim().length>0 && (m.type!=='Dropdown' || m.opts.some(function(o){return o.trim();}));
+  var INFO='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
+  var X='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+  var extra='';
+  if(m.type==='Dropdown') extra='<div class="cfm-f"><span class="cfm-l">Options</span>'+m.opts.map(function(o,i){
+      return '<div class="cfm-op"><input type="text" placeholder="Option '+(i+1)+'" value="'+esc(o)+'" aria-label="Option '+(i+1)+'" oninput="S.cfm.opts['+i+']=this.value;cfmOk()">'+
+        (m.opts.length>1?'<button class="mx" type="button" aria-label="Remove option '+(i+1)+'" onclick="S.cfm.opts.splice('+i+',1);render()">'+X+'</button>':'<span class="mx-sp"></span>')+'</div>'; }).join('')+
+      '<button class="lnkb cfm-add" type="button" onclick="S.cfm.opts.push(\'\');render();var q=document.querySelectorAll(\'.cfm-op input\');q[q.length-1].focus()">+ Add Option</button></div>';
+  else if(m.type==='Currency') extra='<div class="cfm-f"><label class="cfm-l" for="cfmcur">Currency</label><select id="cfmcur" onchange="S.cfm.cur=this.value">'+
+      ['USD ($)','EUR (€)','GBP (£)','INR (₹)','AUD (A$)','CAD (C$)'].map(function(c){ return '<option'+(c===m.cur?' selected':'')+'>'+c+'</option>'; }).join('')+'</select></div>';
+  else if(m.type!=='Date') extra='<div class="cfm-f"><label class="cfm-l" for="cfmfb">Fallback Text (Optional) <span class="ib" tabindex="0" role="button" aria-label="About fallback text" aria-describedby="cfmtip">'+INFO+
+      '<span class="tip" role="tooltip" id="cfmtip">Used in your emails when a prospect has no value for this field.</span></span></label>'+
+      (m.type==='Long Text'? '<textarea id="cfmfb" rows="3" placeholder="Enter Fallback Text" oninput="S.cfm.fb=this.value">'+esc(m.fb)+'</textarea>'
+                           : '<input id="cfmfb" type="text" placeholder="Enter Fallback Text" value="'+esc(m.fb)+'" oninput="S.cfm.fb=this.value">')+'</div>';
+  return '<div class="cfm-scrim" onclick="if(event.target===this)cfmClose()"><div class="cfm" role="dialog" aria-modal="true" aria-labelledby="cfmt" onkeydown="cfmKey(event)">'+
+    '<div class="cfm-h" id="cfmt">Create Custom Field</div><div class="cfm-b">'+
+    '<div class="cfm-f"><label class="cfm-l" for="cfmname">Field Name</label><input id="cfmname" type="text" placeholder="Enter Field Name" value="'+esc(m.name)+'" oninput="S.cfm.name=this.value;cfmOk()"></div>'+
+    '<div class="cfm-f"><label class="cfm-l" for="cfmtype">Field Type</label><select id="cfmtype" onchange="S.cfm.type=this.value;render();focusId(\'cfmtype\')">'+
+      CF_TYPES.map(function(t){ return '<option'+(t===m.type?' selected':'')+'>'+t+'</option>'; }).join('')+'</select></div>'+extra+
+    '<div class="cfm-f"><label class="cfm-l" for="cfmtags">Tags</label><input id="cfmtags" type="text" placeholder="Enter a tag" value="'+esc(m.tags)+'" oninput="S.cfm.tags=this.value"></div>'+
+    '</div><div class="cfm-ft"><button class="btn btn-g" type="button" onclick="cfmClose()">Cancel</button>'+
+    '<button class="btn btn-p" type="button" id="cfmsave" '+(ok?'':'aria-disabled="true" ')+'onclick="if(this.getAttribute(\'aria-disabled\')!==\'true\')cfmSave()">Save</button></div></div></div>';
 }
+function cfmOk(){ var m=S.cfm, b=$('cfmsave'); if(!b) return; var ok=(m.name||'').trim().length>0 && (m.type!=='Dropdown' || m.opts.some(function(o){return o.trim();}));
+  if(ok) b.removeAttribute('aria-disabled'); else b.setAttribute('aria-disabled','true'); }
 
 function scMap(){
   var d=f(), ok=emailMapped(), cols=d.cols_list, todo=todoCols(),
@@ -1196,13 +1234,18 @@ function scMap(){
   var moved = '';
   return hd()+steps('map')+'<div class="rule"></div><div class="m-bd">'+(ok?(seqNeedsBanner()||lead):warn)+moved+
     '<div class="mtbl"><div class="hdlbl"><span style="flex:0 0 150px">Fields from file</span><span style="flex:1">Sample</span><span style="flex:0 0 220px">Field</span></div>'+
-    '<div class="mrows">'+rows+'</div></div>'+
-    /* After Import: kept from production (6 Nov). The option's own text is shown
-       under the select instead of only on hover. */
-    '<div class="cfg"><label class="k" for="cafield">After Import</label><div class="v">'+
-      '<select id="cafield" onchange="S.ca=this.value;render()">'+
-      CA.map(function(o){ return '<option value="'+o.k+'"'+(o.k===S.ca?' selected':'')+'>'+o.label+'</option>'; }).join('')+
-      '</select><span class="hint">For prospects already in your list: '+esc(ca().text.charAt(0).toLowerCase()+ca().text.slice(1))+'</span></div></div>'+
+    '<div class="mrows">'+rows+'</div>'+
+    /* Production's footer row inside the table (map-fields.tsx customFieldFooter), unchanged: Import into
+       (sequence only), After Import with its (i), the four options with their text on hover. */
+    '<div class="mfoot">'+
+      (isSeq()? '<label class="mf-l" for="stepsel">Import into</label><select id="stepsel" onchange="S.step=+this.value;render();focusId(\'stepsel\')">'+
+        SEQ.steps.map(function(x,i){ return '<option value="'+i+'"'+(i===(S.step||0)?' selected':'')+'>Step '+x.n+'</option>'; }).join('')+'</select>' : '')+
+      '<label class="mf-l" for="cafield">After Import</label>'+
+      '<span class="ib" tabindex="0" role="button" aria-label="About After Import" aria-describedby="catip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
+        '<span class="tip" role="tooltip" id="catip">Please select the action to perform on your prospect details after importing</span></span>'+
+      '<select id="cafield" onchange="S.ca=this.value;render();focusId(\'cafield\')" title="'+esc(ca().text)+'">'+
+      CA.map(function(o){ return '<option value="'+o.k+'" title="'+esc(o.text)+'"'+(o.k===S.ca?' selected':'')+'>'+o.label+'</option>'; }).join('')+'</select>'+
+    '</div></div>'+
     '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
     '<div><strong>Kept from production (6 Nov).</strong> The After Import choice and its four options are today’s, word for word, default Add Missing Fields. The 8 Sep version had dropped it and called existing rows “skipped”, which is not what the default does. The option text now shows under the field instead of only on hover.</div></div>'+
     '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
@@ -1210,7 +1253,8 @@ function scMap(){
     '</div><div class="rule"></div>'+
     '<div class="m-ft"><span class="sp"></span>'+
     '<button class="btn btn-g" type="button" onclick="go(\'upload\')">Back</button>'+
-    '<button class="btn btn-p" type="button" '+(ok?'onclick="startCheck()"':'aria-disabled="true" aria-describedby="mapwhy"')+'>Next</button></div>';
+    '<button class="btn btn-p" type="button" '+(ok?'onclick="startCheck()"':'aria-disabled="true" aria-describedby="mapwhy"')+'>Next</button></div>'+
+    (S.cfm? cfmHtml() : '');
 }
 
 function scChecking(){
@@ -1237,12 +1281,6 @@ function scSummary(){
   var act = tfx+ov;                       // rows the user has to act on
   var so = seqOut(), exIn = ex - so.all;  // sequence: existing prospects turned away, and those added
   var added = fit + (isSeq()? exIn : 0), st = stp();
-
-  /* Sequence: the step comes first, because every number below depends on it. */
-  if(isSeq() && !none) body += '<div class="setr ins"><label class="k" for="stepsel" style="padding-top:7px">Import into</label><div class="v">'+
-      '<select id="stepsel" onchange="S.step=+this.value;render()" style="min-width:260px">'+
-      SEQ.steps.map(function(x,i){ return '<option value="'+i+'"'+(i===(S.step||0)?' selected':'')+'>Step '+x.n+' · '+x.type+'</option>'; }).join('')+
-      '</select></div></div>';
 
   /* ── 1. Headline: one sentence, what will happen. ── */
   var head = none ? 'None of the '+n(d.rows)+' rows can be imported'
@@ -1401,7 +1439,7 @@ function render(){
 /* Escape closes an open list first, then the dialog. Tab stays inside the dialog. */
 document.addEventListener('keydown',function(e){
   if(!$('scrim').classList.contains('show')) return;
-  if(e.key==='Escape'){ if(S.pick){ var ix=S.pickIx; S.pick=null; S.q=''; render(); focusId('fp'+ix); } else closeWizard(); return; }
+  if(e.key==='Escape'){ if(S.cfm){ cfmClose(); return; } if(S.pick){ var ix=S.pickIx; S.pick=null; S.q=''; render(); focusId('fp'+ix); } else closeWizard(); return; }
   if(e.key!=='Tab') return;
   var fs=[].slice.call($('modal').querySelectorAll('button:not([disabled]),input,select,[tabindex="0"]'));
   if(!fs.length) return;
@@ -1411,7 +1449,7 @@ document.addEventListener('keydown',function(e){
 });
 
 document.addEventListener('click',function(e){
-  if(S.pick && !e.target.closest('.fpick')){ S.pick=null; S.q=''; S.cf=null; render(); }
+  if(S.pick && !e.target.closest('.fpick')){ S.pick=null; S.q=''; render(); }
   if(!e.target.closest('#addmenu') && !e.target.closest('#hdr .btn-p')) $('addmenu').style.display='none';
   if(!e.target.closest('#notif') && !e.target.closest('#hdr .btn-s')) $('notif').classList.remove('show');
 });
