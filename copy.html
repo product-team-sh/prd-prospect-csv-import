@@ -176,7 +176,20 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .mfoot{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;padding:10px 14px;background:var(--g-100);border-top:1px solid var(--g-200);border-radius:0 0 var(--r-input) var(--r-input)}
 .mfoot .mf-l{font-size:13.5px;font-weight:500;color:var(--g-800)}.mfoot .mf-l+select{margin-right:14px}.mfoot .ib+select{margin-left:2px}
 .mfoot select{height:34px;min-width:120px;font-family:inherit;font-size:13.5px;padding:0 10px;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-800)}
-.mfoot #cafield{min-width:200px}.mfoot .ib .tip{left:0;transform:none;bottom:calc(100% + 8px)}
+.mfoot .ib .tip{left:0;transform:none;bottom:calc(100% + 8px)}
+/* Production's footer Select (map-fields.tsx): a button and a list; each After Import option shows its text
+   in a tooltip to its right on hover or keyboard focus (OverlayTooltip, placement Right). */
+.fsel{position:relative;display:inline-block}
+.fsel>button{height:34px;min-width:120px;display:flex;align-items:center;gap:8px;padding:0 10px;font-family:inherit;font-size:13.5px;text-align:left;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-800);cursor:pointer}
+.fsel>button .v{flex:1;white-space:nowrap}.fsel>button svg{flex:0 0 auto;opacity:.6;transition:transform .15s}
+.fsel>button:hover{border-color:var(--g-400)}.fsel>button[aria-expanded=true]{border-color:var(--blue-600)}.fsel>button[aria-expanded=true] svg{transform:rotate(180deg)}
+.fsel.ca>button{min-width:200px}.mfoot .fsel+.mf-l{margin-left:14px}.mfoot .ib+.fsel{margin-left:2px}
+.fsel .fmenu{left:0;right:auto;width:auto;min-width:100%;overflow:visible}.fsel .fmenu .list{max-height:none;overflow:visible}
+.fsel .fmenu .opt{position:relative;font-size:13.5px;padding:7px 10px;white-space:nowrap}
+.otip{position:absolute;left:calc(100% + 16px);top:50%;transform:translateY(-50%);width:240px;padding:8px 10px;border-radius:var(--r-input);background:var(--g-900);color:#fff;font-size:12px;font-weight:400;line-height:17px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .12s;pointer-events:none;z-index:40}
+.fmenu.tl .otip{left:auto;right:calc(100% + 16px)}
+.fsel .opt:hover .otip,.fsel .opt:focus-visible .otip,.fsel .opt.tipon .otip{opacity:1;visibility:visible}
+@media(max-width:480px){.fsel .fmenu .opt{position:static}.fsel .fmenu .otip,.fsel .fmenu.tl .otip{left:0;right:0;width:auto;top:auto;bottom:calc(100% + 8px);transform:none}}
 .cfm-scrim{position:absolute;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(17,24,39,.4)}
 .cfm{width:100%;max-width:460px;max-height:calc(100% - 8px);display:flex;flex-direction:column;background:#fff;border-radius:var(--r-modal);box-shadow:0 12px 32px rgba(17,24,39,.22)}
 .cfm-h{padding:18px 22px 6px;font-size:16px;font-weight:600;color:var(--g-900)}

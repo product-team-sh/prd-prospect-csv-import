@@ -183,7 +183,7 @@
   "sec": "Map Fields",
   "id": "m08",
   "title": "After Import: Update All Fields",
-  "cap": "Production label and text, shown under the select",
+  "cap": "Production’s list; each option’s text shows on hover",
   "file": "m08.png",
   "phone": false,
   "page": false
@@ -192,7 +192,7 @@
   "sec": "Map Fields",
   "id": "m09",
   "title": "After Import: Overwrite",
-  "cap": "Production label and text, shown under the select",
+  "cap": "Production’s list; each option’s text shows on hover",
   "file": "m09.png",
   "phone": false,
   "page": false
@@ -201,7 +201,7 @@
   "sec": "Map Fields",
   "id": "m10",
   "title": "After Import: Skip Existing Prospects",
-  "cap": "Production label and text, shown under the select",
+  "cap": "Production’s list; each option’s text shows on hover",
   "file": "m10.png",
   "phone": false,
   "page": false

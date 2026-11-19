@@ -180,7 +180,20 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .mfoot{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;padding:10px 14px;background:var(--g-100);border-top:1px solid var(--g-200);border-radius:0 0 var(--r-input) var(--r-input)}
 .mfoot .mf-l{font-size:13.5px;font-weight:500;color:var(--g-800)}.mfoot .mf-l+select{margin-right:14px}.mfoot .ib+select{margin-left:2px}
 .mfoot select{height:34px;min-width:120px;font-family:inherit;font-size:13.5px;padding:0 10px;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-800)}
-.mfoot #cafield{min-width:200px}.mfoot .ib .tip{left:0;transform:none;bottom:calc(100% + 8px)}
+.mfoot .ib .tip{left:0;transform:none;bottom:calc(100% + 8px)}
+/* Production's footer Select (map-fields.tsx): a button and a list; each After Import option shows its text
+   in a tooltip to its right on hover or keyboard focus (OverlayTooltip, placement Right). */
+.fsel{position:relative;display:inline-block}
+.fsel>button{height:34px;min-width:120px;display:flex;align-items:center;gap:8px;padding:0 10px;font-family:inherit;font-size:13.5px;text-align:left;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-800);cursor:pointer}
+.fsel>button .v{flex:1;white-space:nowrap}.fsel>button svg{flex:0 0 auto;opacity:.6;transition:transform .15s}
+.fsel>button:hover{border-color:var(--g-400)}.fsel>button[aria-expanded=true]{border-color:var(--blue-600)}.fsel>button[aria-expanded=true] svg{transform:rotate(180deg)}
+.fsel.ca>button{min-width:200px}.mfoot .fsel+.mf-l{margin-left:14px}.mfoot .ib+.fsel{margin-left:2px}
+.fsel .fmenu{left:0;right:auto;width:auto;min-width:100%;overflow:visible}.fsel .fmenu .list{max-height:none;overflow:visible}
+.fsel .fmenu .opt{position:relative;font-size:13.5px;padding:7px 10px;white-space:nowrap}
+.otip{position:absolute;left:calc(100% + 16px);top:50%;transform:translateY(-50%);width:240px;padding:8px 10px;border-radius:var(--r-input);background:var(--g-900);color:#fff;font-size:12px;font-weight:400;line-height:17px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .12s;pointer-events:none;z-index:40}
+.fmenu.tl .otip{left:auto;right:calc(100% + 16px)}
+.fsel .opt:hover .otip,.fsel .opt:focus-visible .otip,.fsel .opt.tipon .otip{opacity:1;visibility:visible}
+@media(max-width:480px){.fsel .fmenu .opt{position:static}.fsel .fmenu .otip,.fsel .fmenu.tl .otip{left:0;right:0;width:auto;top:auto;bottom:calc(100% + 8px);transform:none}}
 .cfm-scrim{position:absolute;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(17,24,39,.4)}
 .cfm{width:100%;max-width:460px;max-height:calc(100% - 8px);display:flex;flex-direction:column;background:#fff;border-radius:var(--r-modal);box-shadow:0 12px 32px rgba(17,24,39,.22)}
 .cfm-h{padding:18px 22px 6px;font-size:16px;font-weight:600;color:var(--g-900)}
@@ -1176,6 +1189,29 @@ function fpick(col,ix){
              : '<span class="mx-sp" aria-hidden="true"></span>';
   return '<div class="fcell">'+out+'</div>';
 }
+/* Footer selects (Import into, After Import), production's Select: one open at a time in S.fsel. */
+function fsel(id,bid,opts,cur){ var open=S.fsel===id, c=opts.filter(function(o){ return o.k===cur; })[0]||opts[0];
+  var out='<div class="fsel '+id+'"><button type="button" id="'+bid+'" aria-haspopup="listbox" aria-expanded="'+open+'" onclick="openFsel(\''+id+'\')"><span class="v">'+esc(c.label)+'</span>'+
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>';
+  if(open) out+='<div class="fmenu"><div class="list" role="listbox" aria-labelledby="'+bid+'">'+opts.map(function(o){
+    var tid='ot-'+id+'-'+o.k;
+    return '<button type="button" role="option" aria-selected="'+(o.k===c.k)+'" class="opt'+(o.k===c.k?' on':'')+(S.fselTip===o.k?' tipon':'')+'"'+(o.text?' aria-describedby="'+tid+'"':'')+
+      ' onclick="pickFsel(\''+id+'\',\''+o.k+'\')" onkeydown="fselKey(event)">'+esc(o.label)+(o.text?'<span class="otip" role="tooltip" id="'+tid+'">'+esc(o.text)+'</span>':'')+'</button>'; }).join('')+'</div></div>';
+  return out+'</div>'; }
+function fselBtn(id){ return id==='ca'?'cafield':'stepsel'; }
+function openFsel(id){ var was=S.fsel===id; S.fsel=was?null:id; S.fselTip=null; S.pick=null; render();
+  if(was){ focusId(fselBtn(id)); return; }
+  flipMenu(); placeTips(); var on=document.querySelector('.fsel .opt.on'); if(on) on.focus(); }
+function pickFsel(id,k){ if(id==='ca') S.ca=k; else S.step=+k; S.fsel=null; S.fselTip=null; render(); focusId(fselBtn(id)); }
+/* Tooltips sit to the right of the list, as production; on the left when the dialog has no room. */
+function placeTips(){ var mn=document.querySelector('.fsel .fmenu'), md=$('modal'); if(!mn) return;
+  if(mn.getBoundingClientRect().right+256 > md.getBoundingClientRect().right-8) mn.classList.add('tl'); }
+function fselKey(e){
+  var opts=[].slice.call(document.querySelectorAll('.fsel .opt')), i=opts.indexOf(document.activeElement);
+  if(e.key==='ArrowDown'){ e.preventDefault(); (opts[i+1]||opts[0]).focus(); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); (opts[i-1]||opts[opts.length-1]).focus(); }
+  else if(e.key==='Escape'||e.key==='Tab'){ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); } var id=S.fsel; S.fsel=null; render(); focusId(fselBtn(id)); }
+}
 function tagKey(e){
   var v=(S.tagv||'').trim();
   if((e.key==='Enter'||e.key===',') && v){ e.preventDefault(); S.tags=S.tags||[]; if(S.tags.map(norm).indexOf(norm(v))<0) S.tags.push(v); S.tagv=''; render(); focusId('tagin'); }
@@ -1256,16 +1292,15 @@ function scMap(){
     /* Production's footer row inside the table (map-fields.tsx customFieldFooter), unchanged: Import into
        (sequence only), After Import with its (i), the four options with their text on hover. */
     '<div class="mfoot">'+
-      (isSeq()? '<label class="mf-l" for="stepsel">Import into</label><select id="stepsel" onchange="S.step=+this.value;render();focusId(\'stepsel\')">'+
-        SEQ.steps.map(function(x,i){ return '<option value="'+i+'"'+(i===(S.step||0)?' selected':'')+'>Step '+x.n+'</option>'; }).join('')+'</select>' : '')+
+      (isSeq()? '<label class="mf-l" for="stepsel">Import into</label>'+
+        fsel('step','stepsel',SEQ.steps.map(function(x,i){ return {k:i,label:'Step '+x.n}; }),S.step||0) : '')+
       '<label class="mf-l" for="cafield">After Import</label>'+
       '<span class="ib" tabindex="0" role="button" aria-label="About After Import" aria-describedby="catip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
         '<span class="tip" role="tooltip" id="catip">Please select the action to perform on your prospect details after importing</span></span>'+
-      '<select id="cafield" onchange="S.ca=this.value;render();focusId(\'cafield\')" title="'+esc(ca().text)+'">'+
-      CA.map(function(o){ return '<option value="'+o.k+'" title="'+esc(o.text)+'"'+(o.k===S.ca?' selected':'')+'>'+o.label+'</option>'; }).join('')+'</select>'+
+      fsel('ca','cafield',CA,S.ca||'add')+
     '</div></div>'+
     '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-    '<div><strong>Kept from production (6 Nov).</strong> The After Import choice and its four options are today’s, word for word, default Add Missing Fields. The 8 Sep version had dropped it and called existing rows “skipped”, which is not what the default does. The option text now shows under the field instead of only on hover.</div></div>'+
+    '<div><strong>Kept from production (6 Nov).</strong> The After Import choice and its four options are today’s, word for word, default Add Missing Fields. The 8 Sep version had dropped it and called existing rows “skipped”, which is not what the default does. Each option shows its text on hover, as production.</div></div>'+
     '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
     '<div><strong>Changed here.</strong> Verified live on 8 Sep: today <span class="mono">company_name</span>, <span class="mono">title</span> and <span class="mono">linkedin_url</span> all arrive unmapped, the field list is a long scroll with truncated labels and no working search, and re-importing the identical file a minute later loses every choice you made. One sample value per column, as production, and <strong>no validity ticks</strong> &ndash; nothing has been checked yet, so nothing claims it has.</div></div>'+
     '</div><div class="rule"></div>'+
@@ -1457,7 +1492,7 @@ function render(){
 /* Escape closes an open list first, then the dialog. Tab stays inside the dialog. */
 document.addEventListener('keydown',function(e){
   if(!$('scrim').classList.contains('show')) return;
-  if(e.key==='Escape'){ if(S.cfm){ cfmClose(); return; } if(S.pick){ var ix=S.pickIx; S.pick=null; S.q=''; render(); focusId('fp'+ix); } else closeWizard(); return; }
+  if(e.key==='Escape'){ if(S.cfm){ cfmClose(); return; } if(S.fsel){ var fid=S.fsel; S.fsel=null; render(); focusId(fselBtn(fid)); return; } if(S.pick){ var ix=S.pickIx; S.pick=null; S.q=''; render(); focusId('fp'+ix); } else closeWizard(); return; }
   if(e.key!=='Tab') return;
   var fs=[].slice.call($('modal').querySelectorAll('button:not([disabled]),input,select,[tabindex="0"]'));
   if(!fs.length) return;
@@ -1468,6 +1503,7 @@ document.addEventListener('keydown',function(e){
 
 document.addEventListener('click',function(e){
   if(S.pick && !e.target.closest('.fpick')){ S.pick=null; S.q=''; render(); }
+  if(S.fsel && !e.target.closest('.fsel')){ S.fsel=null; S.fselTip=null; render(); }
   if(!e.target.closest('#addmenu') && !e.target.closest('#hdr .btn-p')) $('addmenu').style.display='none';
   if(!e.target.closest('#notif') && !e.target.closest('#hdr .btn-s')) $('notif').classList.remove('show');
 });
