@@ -176,6 +176,22 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .setr{display:flex;gap:14px;align-items:flex-start}
 .setr .k{flex:0 0 96px;font-size:13px;font-weight:500;color:var(--g-700);padding-top:9px}
 .setr .v{flex:1;min-width:0}
+/* Review options share the card's inner edge (17px), so labels, controls and the card's numbers line up. */
+.opts{display:flex;flex-direction:column;gap:14px;padding:0 17px;margin-top:5px}
+.opts .setr .k,.setr.ins .k{font-size:13.5px;line-height:20px;font-weight:500;color:var(--g-800);padding-top:7px}
+.opts .setr .k.vk{padding-top:0}
+.opts .ck{padding:0}.opts .ck .t{font-size:13.5px;color:var(--g-900)}
+.opts .tgbox input{font-size:13.5px}
+.setr.ins{padding:0 17px}
+.ck{display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:5px 0}
+.ck input{margin-top:2px;width:15px;height:15px;accent-color:var(--blue-700);flex:0 0 auto}
+.ck .t{display:block;font-size:14px;line-height:20px;color:var(--g-800)}
+.ck .sb{display:block;font-size:12.5px;line-height:18px;color:var(--g-500);margin-top:1px}
+.sub{margin-left:25px;border-left:2px solid var(--g-200);padding-left:13px;margin-top:2px}
+.cred{font-size:13px;line-height:19px;color:var(--g-600);font-variant-numeric:tabular-nums;margin-top:5px}
+.cred strong{color:var(--g-900);font-weight:600}.cred.short{color:var(--yel-900)}.cred.short strong{color:var(--yel-900)}
+.crb{min-height:28px;height:28px;padding:4px 12px;font-size:12.5px;background:#fff;color:var(--g-800);border:1px solid var(--g-300)}
+
 .tagin{display:block;width:100%;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;padding:9px 12px;font:inherit;font-size:13px;line-height:18px;color:var(--g-900)}
 .tagin::placeholder{color:var(--g-500)}.tagin:focus{outline:none;border-color:var(--blue-700)}
 /* Review: headline, one quiet line, one line per problem (13 Nov, Minimal A) */
@@ -200,6 +216,55 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .rv-o .c.am{color:var(--yel-900)}
 .rv-o .rv-m.sub{margin-top:2px}
 .rv-o .tg{align-self:flex-start}
+.pc-t{font-size:15px;font-weight:600;color:var(--g-900);line-height:22px}.pc-s{font-size:13px;color:var(--g-500);line-height:19px}
+.rc{border:1px solid var(--g-200);border-radius:var(--r-btn);background:#fff}
+.rc-h{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--g-50);border-bottom:1px solid var(--g-200);border-radius:var(--r-btn) var(--r-btn) 0 0}
+.rc-after{margin-top:8px;padding:0 17px}
+.rc-b{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9999px;background:#DCFCE7;color:#15803D}
+.rc-b.w{background:var(--yel-50);color:var(--yel-700)}
+.rc-g{padding:6px 0}.rc-g+.rc-g{border-top:1px solid var(--g-200)}
+.rc-r{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:6px 16px;font-size:13.5px;line-height:20px}
+.rc-l{display:inline-flex;align-items:baseline;flex-wrap:wrap;column-gap:8px;color:var(--g-700)}
+.rc-n{font-size:12.5px;color:var(--g-500)}
+.rc-v{font-weight:600;color:var(--g-900);font-variant-numeric:tabular-nums}
+.rc-v .pc-sp{width:14px;height:14px;vertical-align:-2px}
+.rc .rc-dl{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:500;align-self:center}
+
+.pc-bw{background:var(--blue-50);color:var(--blue-700)}
+.pc-sp{display:inline-block;width:16px;height:16px;border-radius:9999px;border:2px solid var(--blue-200);border-top-color:var(--blue-700);animation:pcspin .8s linear infinite}
+@keyframes pcspin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.pc-sp{animation-duration:2.4s}}
+
+
+
+.dtb-a{border-left:2px solid var(--g-200)}.dtb-a th,.dtb-a td{padding-top:3px;padding-bottom:3px}.dtb-a th{padding-left:12px}
+.dtb-b,.dtb-c{border:1px solid var(--g-200);border-radius:var(--r-input)}
+.dtb-b th,.dtb-c th{padding-left:12px}.dtb-b td,.dtb-c td{padding-right:12px}
+.dtb-b tr+tr>*,.dtb-c tr+tr>*{border-top:1px solid var(--g-100)}
+.tgbox{display:flex;flex-wrap:wrap;align-items:center;gap:6px;border:1px solid var(--g-300);border-radius:var(--r-input);padding:5px 8px;background:#fff;cursor:text}
+.tgbox:focus-within{border-color:var(--blue-700)}
+.tgbox input{flex:1 1 120px;min-width:120px;border:0;outline:none;font:inherit;font-size:13px;padding:3px 2px;color:var(--g-900)}
+.chip-t{display:inline-flex;align-items:center;gap:4px;padding:2px 4px 2px 8px;border-radius:9999px;background:var(--g-100);font-size:12.5px;color:var(--g-800)}
+.chip-t button{display:inline-flex;border:0;background:transparent;padding:3px;border-radius:9999px;color:var(--g-500);cursor:pointer}.chip-t button:hover{background:var(--g-200);color:var(--g-800)}
+.vsec{display:flex;flex-direction:column;gap:2px}
+.osec{display:flex;flex-direction:column;gap:8px}.osec+.osec{margin-top:6px}.oh{font-size:13px;font-weight:600;color:var(--g-900)}
+.vrow{display:flex;align-items:center;gap:8px}
+.sw{position:relative;display:inline-flex;width:32px;height:18px;flex:0 0 auto}
+.sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.sw .sl{width:32px;height:18px;border-radius:9999px;background:var(--g-300);transition:background .15s ease}
+.sw .sl::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:9999px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .15s cubic-bezier(.2,.8,.2,1)}
+.sw input:checked+.sl{background:var(--blue-700)}.sw input:checked+.sl::after{transform:translateX(14px)}
+.sw input:focus-visible+.sl{outline:2px solid var(--blue-600);outline-offset:2px}
+.vl{font-weight:500;color:var(--g-900);cursor:pointer}
+.ib{position:relative;display:inline-flex;color:var(--g-500);cursor:help;border-radius:9999px}.ib:hover,.ib:focus{color:var(--g-700)}.ib:focus{outline:none}.ib:focus-visible{outline:2px solid var(--blue-600);outline-offset:2px}
+.ib .tip{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);width:260px;padding:8px 10px;border-radius:var(--r-input);background:var(--g-900);color:#fff;font-size:12px;line-height:17px;opacity:0;visibility:hidden;transition:opacity .12s;z-index:40;pointer-events:none}
+.ib:hover .tip,.ib:focus .tip{opacity:1;visibility:visible}
+@media(max-width:480px){.ib .tip{left:auto;right:-70px;transform:none;width:220px}.crx,.vsub{margin-left:0}.crx-a{flex-wrap:wrap;row-gap:8px}.crx-a .lnkb{text-align:left}}
+.rv-o .cfgl{margin-left:2px;font-size:12.5px;font-weight:500}
+.vsub{margin:2px 0 0 40px}
+.crx{margin:8px 0 0 40px;padding:10px 12px;border:1px solid var(--yel-200);background:var(--yel-50);border-radius:var(--r-input)}
+.crx-t{font-weight:600;color:var(--yel-900)}.crx-m{font-size:13px;color:var(--yel-900);margin-top:1px}
+.crx-a{display:flex;align-items:center;gap:14px;margin-top:8px}.crx-a .btn{height:30px;padding:0 12px;font-size:12.5px;background:#fff;color:var(--g-800);border:1px solid var(--g-300)}.crx-a .btn:hover{background:var(--g-50)}.rv-o .crx-a .lnkb{margin-left:0}
+
 
 /* ══ the result strip: what an import leaves behind ══ */
 #strip{flex:0 0 auto}
@@ -702,7 +767,7 @@ function closeWizard(){ if(S.timer){clearInterval(S.timer);S.timer=null;}
   setInert(false); returnFocus(); }
 
 function pickFile(k){ S.det=false;
-  S.file=k; S.map={}; S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q=''; S.ierr=null; S.tagsOpen=false; S.tagv='';
+  S.file=k; S.map={}; S.auto={}; S.touched={}; S.restored=null; S.pick=null; S.q=''; S.ierr=null; S.tagsOpen=false; S.tagv=''; S.tags=[];
   if(f().reject){ render(); return; }
   /* Only a rows-to-fix file (it carries our three columns) gets its mapping back,
      from the import it came from. Other files map as production does. */
@@ -1083,6 +1148,12 @@ function fpick(col,ix){
              : '<span class="mx-sp" aria-hidden="true"></span>';
   return '<div class="fcell">'+out+'</div>';
 }
+function tagKey(e){
+  var v=(S.tagv||'').trim();
+  if((e.key==='Enter'||e.key===',') && v){ e.preventDefault(); S.tags=S.tags||[]; if(S.tags.map(norm).indexOf(norm(v))<0) S.tags.push(v); S.tagv=''; render(); focusId('tagin'); }
+  else if(e.key==='Enter'){ e.preventDefault(); }
+  else if(e.key==='Backspace' && !S.tagv && (S.tags||[]).length){ S.tags.pop(); render(); focusId('tagin'); }
+}
 function clearField(col,ix){ S.map[col]='Don’t import'; S.touched[col]=true; S.pick=null; render(); focusId('fp'+ix); }
 function startCF(col,ix){ S.cf=col; S.cfv=(S.q||col).trim(); render(); flipMenu(); var i=$('cfn'); if(i){ i.focus(); i.select(); } }
 function createCF(col,ix){
@@ -1144,14 +1215,16 @@ function scMap(){
 
 function scChecking(){
   var d=f();
-  return hd()+steps('review')+'<div class="rule"></div>'+
-    '<div class="m-bd" style="padding:40px 22px;align-items:center;gap:17px">'+
-    '<div style="font-size:16px;font-weight:600">Reviewing rows</div>'+
-    '<div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:9px">'+
-    '<div class="bar" id="pchk" role="progressbar" aria-label="Reviewing rows" aria-valuemin="0" aria-valuemax="'+d.rows+'" aria-valuenow="0" aria-valuetext="0 of '+n(d.rows)+' rows"><i id="pfill"></i></div>'+
-    '<div style="text-align:center" class="muted" aria-hidden="true"><span id="pcount">0 of '+n(d.rows)+' rows</span></div></div>'+
-    '<button class="lnkb" type="button" onclick="closeWizard()">Cancel</button>'+
-    '</div>';
+  /* Checking happens in the card the result lands in (19 Nov): spinner badge, rows counted so far,
+     a spinner where each count will appear. Footer as on Review, Import waits. */
+  var SPr='<span class="pc-sp" aria-hidden="true"></span>';
+  var g1=isSeq()? ['Added to Step '+stp().n] : ['New prospects','Already in your list'], g2=isSeq()? ['Repeated rows','Won’t be added','Rows to fix'] : ['Repeated rows','Rows to fix'];
+  var rw=function(l){ return '<div class="rc-r"><span class="rc-l">'+l+'</span><span class="rc-v">'+SPr+'</span></div>'; };
+  return hd()+steps('review')+'<div class="rule"></div><div class="m-bd"><div class="rc" role="status" aria-live="polite">'+
+    '<div class="rc-h"><span class="rc-b pc-bw">'+SPr+'</span><div><div class="pc-t">Reviewing rows</div><div class="pc-s"><span id="pcount">0 of '+n(d.rows)+' rows</span></div></div></div>'+
+    '<div class="rc-g">'+g1.map(rw).join('')+'</div><div class="rc-g">'+g2.map(rw).join('')+'</div></div>'+
+    '<div class="bar" id="pchk" style="display:none"><i id="pfill"></i></div></div><div class="rule"></div>'+
+    '<div class="m-ft"><span class="sp"></span><button class="btn btn-g" type="button" onclick="closeWizard()">Cancel</button><button class="btn btn-p" type="button" aria-disabled="true">Import</button></div>';
 }
 
 function scSummary(){
@@ -1166,7 +1239,7 @@ function scSummary(){
   var added = fit + (isSeq()? exIn : 0), st = stp();
 
   /* Sequence: the step comes first, because every number below depends on it. */
-  if(isSeq() && !none) body += '<div class="setr"><label class="k" for="stepsel" style="padding-top:7px">Import into</label><div class="v">'+
+  if(isSeq() && !none) body += '<div class="setr ins"><label class="k" for="stepsel" style="padding-top:7px">Import into</label><div class="v">'+
       '<select id="stepsel" onchange="S.step=+this.value;render()" style="min-width:260px">'+
       SEQ.steps.map(function(x,i){ return '<option value="'+i+'"'+(i===(S.step||0)?' selected':'')+'>Step '+x.n+' · '+x.type+'</option>'; }).join('')+
       '</select></div></div>';
@@ -1176,12 +1249,33 @@ function scSummary(){
     : full ? 'No new prospects can be added'
     : isSeq() ? (added? n(added)+' prospect'+(added===1?'':'s')+' will be added to Step '+st.n : 'No prospects will be added to Step '+st.n)
     : fit ? n(fit)+' new prospect'+(fit===1?'':'s')+' will be added' : 'No new prospects will be added';
+  /* Refined card: the total moves into the header as the line under the headline; rows sit in two groups
+     (what goes in, what doesn't) split by one hairline, no rule under every row; short meanings sit beside
+     the label in grey instead of behind (i); the one row that needs the user carries a Download link. */
+  function rCard(head){
+    var toFixN = tfx + (isSeq()? so.file : 0), g1=[], g2=[];
+    var exNote = {add:'empty fields filled', upsert:'every field updated', over:'filled-in fields updated', skip:'left unchanged'}[S.ca];
+    if(isSeq()){ if(added) g1.push(['Added to Step '+st.n, added, (exIn? n(exIn)+' already in your list · ':'')+n(SEQ_DNC)+' on Do Not Contact, won’t be emailed']); }
+    else { if(fit) g1.push(['New prospects', fit]); if(ex) g1.push(['Already in your list', ex, exNote]); }
+    if(ov) g2.push(['Over your plan’s limit', ov]);
+    if(du) g2.push(['Repeated rows', du, 'first one kept']);
+    if(isSeq() && away) g2.push(['Won’t be added', away, 'in this sequence or unsubscribed']);
+    if(toFixN) g2.push(['Rows to fix', toFixN, null, true]);
+    var row=function(x){ return '<div class="rc-r"><span class="rc-l">'+x[0]+(x[2]?'<span class="rc-n">'+x[2]+'</span>':'')+
+      (x[3]?'<button class="lnkb rc-dl" type="button" onclick="dl()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>Download CSV</button>':'')+
+      '</span><span class="rc-v">'+n(x[1])+'</span></div>'; };
+    var ok = isSeq()? added>0 : (fit>0 || (ex>0 && S.ca!=='skip'));
+    var CHK= ok ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>'
+               : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>';
+    var hdr = '<div class="rc-h"><span class="rc-b'+(ok?'':' w')+'">'+CHK+'</span><div><div class="pc-t" id="rvh">'+head+'</div><div class="pc-s">'+n(d.rows)+' rows checked</div></div></div>';
+    return '<div class="rc">'+hdr+'<div class="rc-g">'+g1.map(row).join('')+'</div>'+(g2.length?'<div class="rc-g">'+g2.map(row).join('')+'</div>':'')+'</div>';
+  }
 
   /* ── 2. Quiet grey lines: everything that needs nothing from the user. ──
      The After Import option words the clause about prospects already in the list. */
   var fut = ca().fut.replace(' from your file',''), cut = fut.indexOf('. ');
   if(cut>0) fut = fut.slice(0,cut)+' ('+fut.charAt(cut+2).toLowerCase()+fut.slice(cut+3)+')';
-  var quiet=[], cl=[], body_det='';
+  var quiet=[], cl=[];
   if(isSeq()){ if(exIn) cl.push(n(exIn)+' already in your list '+fut);
     /* Do Not Contact (sequence and global lists): production adds them to the step marked blocked, so they
        are inside the headline count but never emailed. Said here so the headline stays honest. */
@@ -1197,20 +1291,15 @@ function scSummary(){
   var big=fixG().slice().sort(function(x,y){return y.count-x.count;})[0], dom=none && big && big.count/d.rows>0.5;
   if(none){ if(dom) quiet.push(n(big.count)+' of '+n(d.rows)+' have the same problem, which often means the wrong column is mapped to Email. <button class="lnkb" type="button" onclick="go(\'map\')">Check the mapping</button>'); }
   else quiet.push(n(d.rows)+' rows checked.'+(cl.length? ' '+cl.join(', ')+'.' : (clean? ' Every row is ready.' : '')));
-  /* Every Review: when the line carries more than the row count, it folds behind See details;
-     the blank-cell warning (Update All Fields) is in the details. */
-  if(!none && cl.length){
-    quiet[quiet.length-1] = n(d.rows)+' rows checked · <button class="lnkb" id="rvdetbtn" type="button" aria-expanded="'+(S.det?'true':'false')+'" aria-controls="rvdet" onclick="S.det=!S.det;render();focusId(\'rvdetbtn\')">'+(S.det?'Hide details':'See details')+'</button>';
-    if(S.det) body_det = '<ul class="rv-dl" id="rvdet">'+cl.map(function(c){
-      var w=c.replace(/^(\d[\d,]*) prospects already/,'$1 already'), cut=w.indexOf(' (a blank cell clears the existing value)');
-      return '<li>'+(cut>0? w.slice(0,cut)+'<small>A blank cell clears the existing value.</small>' : w)+'</li>'; }).join('')+'</ul>';
-  }
   /* What a step ahead needs: the rows still import. Unmapped fields are flagged on Map Fields instead. */
   if(isSeq() && added) SEQ.steps.slice(S.step||0).forEach(function(x){
     if(!x.need || !mappedTo(x.need.field)) return;
     quiet.push(n(Math.round(added*0.3))+' prospects have no '+x.need.short+' for the Step '+x.n+' '+x.need.kind+'.');
   });
-  body += '<div><div class="rv-h" id="rvh">'+head+'</div>'+quiet.map(function(q){ return '<div class="rv-m">'+q+'</div>'; }).join('')+body_det+'</div>';
+  /* Every Review but the all-to-fix one is the summary card; what a later step needs follows it in grey. */
+  var pc = !none;
+  if(pc) body += rCard(head)+quiet.slice(1).map(function(q){ return '<div class="rv-m rc-after">'+q+'</div>'; }).join('');
+  else body += '<div><div class="rv-h" id="rvh">'+head+'</div>'+quiet.map(function(q){ return '<div class="rv-m">'+q+'</div>'; }).join('')+'</div>';
 
   /* ── 3. One line per problem: dot, plain sentence, one link. Only rows that need the user.
      Red: rows to fix, or an import that failed. Amber: the plan limit, credits, another import. ── */
@@ -1225,22 +1314,32 @@ function scSummary(){
   if(ov) line('am', full ? 'You’ve reached your plan’s prospect limit' : n(ov)+' new prospects are over your plan’s limit',
       upL+(tfx? '' : lk('Download CSV','dl()')), 'whyfull');
   var toFix = tfx + (isSeq()? so.file : 0);
-  if(toFix) line('fx', n(toFix)+' row'+(toFix===1?'':'s')+' to fix', none? '' : lk('Download CSV','dl()'));
+  if(toFix && !pc) line('fx', n(toFix)+' row'+(toFix===1?'':'s')+' to fix', none? '' : lk('Download CSV','dl()'));
   if(lines.length) body += '<div class="rv-x">'+lines.join('')+'</div>';
 
-  /* ── 4. Options under a rule: Verify on one line, tags behind a link. ── */
+  /* ── 4. Options under a rule (19 Nov): Tags first, then Smart Verification as one switch with a low-key
+     (i) and Configure; the line under it says why to verify and the email verification credits it uses. ── */
   if(!none && !full){
-    var vline = !S.verify ? '<span class="c">· no credits will be used</span>'
-      : creditShort() ? '<span class="c am" id="whycr">· needs up to '+n(fit)+' credits, you have '+n(credits())+'</span>'
-      : '<span class="c">· up to '+n(fit)+' of your '+n(credits())+' credits</span>';
-    body += '<div class="rule"></div><div class="rv-o">'+
-      '<div class="vf"><input type="checkbox" id="vfy"'+(S.verify?' checked':'')+' onchange="S.verify=this.checked;render()">'+
-        '<div class="vt"><label for="vfy">Verify emails</label> '+vline+
-        (S.verify && creditShort()? lk('Add credits','elsewhere(\'the Add credits checkout, then returns here\')')+'<div class="rv-m sub">Or untick it to import now and verify later.</div>' : '')+'</div></div>'+
-      (S.tagsOpen
-        ? '<input id="tagin" class="tagin" type="text" aria-label="Tags" placeholder="Add tags to categorize your prospects…" value="'+esc(S.tagv||'')+'" oninput="S.tagv=this.value">'
-        : '<button class="lnkb tg" type="button" onclick="S.tagsOpen=true;render();$(\'tagin\').focus()">+ Add tags</button>')+
-      '</div>';
+    var chips=(S.tags||[]).map(function(t,i){ return '<span class="chip-t">'+esc(t)+'<button type="button" aria-label="Remove tag '+esc(t)+'" onclick="S.tags.splice('+i+',1);render();focusId(\'tagin\')">'+
+      '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>'; }).join('');
+    /* Options (19 Nov): the 8 Sep rows, as Hitesh picked: Tags with its box always there, then Verification
+       as one checkbox; the 15-day rule is stated, its days changed in settings; the credits line under it. */
+    var vn=isSeq()?added:fit;
+    var vsub = !S.verify
+      ? '<div class="sub"><div class="cred">No credits will be used. You can verify these from the prospect list later.</div></div>'
+      : creditShort()
+        ? '<div class="sub"><div class="cred short" id="whycr">You need up to <strong>'+n(vn)+'</strong> credits and have <strong>'+n(credits())+'</strong>. Add credits, or untick this to import now and verify later.</div>'+
+          '<div style="margin-top:7px"><button class="btn btn-g crb" type="button" onclick="elsewhere(\'the Add credits checkout, then returns here\')">Add credits</button></div></div>'
+        : '<div class="sub"><div class="cred">Up to <strong>'+n(vn)+'</strong> credits. You have '+n(credits())+'.</div></div>';
+    body += '<div class="opts">'+
+      '<div class="setr"><label class="k" for="tagin">Tags</label><div class="v"><div class="tgbox" onclick="focusId(\'tagin\')">'+chips+
+        '<input id="tagin" type="text" placeholder="'+((S.tags||[]).length?'Add another':'Add tags to categorize your prospects…')+'" value="'+esc(S.tagv||'')+'" oninput="S.tagv=this.value" onkeydown="tagKey(event)"></div></div></div>'+
+      '<div class="setr"><div class="k vk">Verification</div><div class="v">'+
+        '<label class="ck"><input type="checkbox" id="vfy"'+(S.verify?' checked':'')+' onchange="S.verify=this.checked;render();focusId(\'vfy\')">'+
+        '<span><span class="t">Verify emails after import</span>'+
+        '<span class="sb">Addresses already verified in the last 15 days are skipped. '+
+        '<button class="lnkb" type="button" onclick="elsewhere(\'Settings › Smart Verification (account owner and admins only)\')">Change the 15 days</button></span></span></label>'+
+        vsub+'</div></div></div>';
   }
 
   body += '<div class="bn bn-blu xnote">'+

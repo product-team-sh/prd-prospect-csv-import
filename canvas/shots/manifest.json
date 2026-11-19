@@ -228,7 +228,7 @@
   "sec": "Checking",
   "id": "c01",
   "title": "Checking every row",
-  "cap": "Reviewing rows: progress, then Cancel; no footer",
+  "cap": "Inside the summary card: rows counted so far, a spinner where each count lands",
   "file": "c01.png",
   "phone": false,
   "page": false
@@ -237,7 +237,7 @@
   "sec": "Review and Import",
   "id": "r01",
   "title": "Review",
-  "cap": "Headline, rows checked behind See details, one line per problem with its link",
+  "cap": "Summary card: what goes in, what does not, Download CSV on Rows to fix; Tags and Verification under it",
   "file": "r01.png",
   "phone": false,
   "page": false
@@ -246,7 +246,7 @@
   "sec": "Review and Import",
   "id": "r02",
   "title": "Clean file",
-  "cap": "Headline and grey line only: every row is ready",
+  "cap": "The card with one row; nothing needs the user",
   "file": "r02.png",
   "phone": false,
   "page": false
@@ -255,7 +255,7 @@
   "sec": "Review and Import",
   "id": "r03",
   "title": "Already in your list: Update All Fields",
-  "cap": "See details open: the first item says what this option does to them",
+  "cap": "The note beside Already in your list follows the option",
   "file": "r03.png",
   "phone": false,
   "page": false
@@ -264,7 +264,7 @@
   "sec": "Review and Import",
   "id": "r04",
   "title": "Already in your list: Overwrite",
-  "cap": "See details open: the first item says what this option does to them",
+  "cap": "The note beside Already in your list follows the option",
   "file": "r04.png",
   "phone": false,
   "page": false
@@ -273,7 +273,7 @@
   "sec": "Review and Import",
   "id": "r05",
   "title": "Already in your list: Skip Existing Prospects",
-  "cap": "See details open: the first item says what this option does to them",
+  "cap": "The note beside Already in your list follows the option",
   "file": "r05.png",
   "phone": false,
   "page": false
@@ -282,7 +282,7 @@
   "sec": "Review and Import",
   "id": "r06",
   "title": "Over the plan limit",
-  "cap": "Amber line and Upgrade plan; red stays for rows to fix",
+  "cap": "Its own row in the card; amber line with Upgrade plan",
   "file": "r06.png",
   "phone": false,
   "page": false
@@ -291,7 +291,7 @@
   "sec": "Review and Import",
   "id": "r07",
   "title": "Plan full",
-  "cap": "No new prospects can be added; only those already in the list are updated",
+  "cap": "Amber badge; No new prospects can be added; Upgrade plan",
   "file": "r07.png",
   "phone": false,
   "page": false
@@ -300,7 +300,7 @@
   "sec": "Review and Import",
   "id": "r08",
   "title": "Not enough credits",
-  "cap": "The Verify line turns amber with Add credits; Import disabled",
+  "cap": "The credits line turns amber with Add credits; Import disabled",
   "file": "r08.png",
   "phone": false,
   "page": false
@@ -363,7 +363,7 @@
   "sec": "Import into a sequence",
   "id": "s01",
   "title": "Into an email step",
-  "cap": "See details open: who is added, who is on Do Not Contact, who won’t be added",
+  "cap": "Added to Step 1 with who is already in the list and on Do Not Contact; who is not added",
   "file": "s01.png",
   "phone": false,
   "page": false
@@ -372,7 +372,7 @@
   "sec": "Import into a sequence",
   "id": "s02",
   "title": "Into a call step, some phones empty",
-  "cap": "Phone mapped; the rows checked line folds, a grey line counts the prospects without a phone",
+  "cap": "Phone mapped; a grey line under the card counts prospects without a phone",
   "file": "s02.png",
   "phone": false,
   "page": false
@@ -381,7 +381,7 @@
   "sec": "Import into a sequence",
   "id": "s03",
   "title": "Into a LinkedIn step, some URLs empty",
-  "cap": "Rows checked folds behind See details; one grey line for missing LinkedIn URLs",
+  "cap": "A grey line under the card for missing LinkedIn URLs",
   "file": "s03.png",
   "phone": false,
   "page": false
