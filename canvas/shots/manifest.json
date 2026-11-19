@@ -21,7 +21,7 @@
   "sec": "Upload: rejected files",
   "id": "u03",
   "title": "Excel file",
-  "cap": "Red alert with title, file and fix; the drop zone below stays live",
+  "cap": "Error inside the drop zone: icon, file, error, fix, Try again",
   "file": "u03.png",
   "phone": false,
   "page": false
@@ -30,7 +30,7 @@
   "sec": "Upload: rejected files",
   "id": "u04",
   "title": "Wrong file type",
-  "cap": "Red alert with title, file and fix; the drop zone below stays live",
+  "cap": "Error inside the drop zone: icon, file, error, fix, Try again",
   "file": "u04.png",
   "phone": false,
   "page": false
@@ -39,7 +39,7 @@
   "sec": "Upload: rejected files",
   "id": "u05",
   "title": "Over 95 MB",
-  "cap": "Red alert with title, file and fix; the drop zone below stays live",
+  "cap": "Error inside the drop zone: icon, file, error, fix, Try again",
   "file": "u05.png",
   "phone": false,
   "page": false
@@ -48,7 +48,7 @@
   "sec": "Upload: rejected files",
   "id": "u06",
   "title": "Over 100,000 rows",
-  "cap": "Red alert with title, file and fix; the drop zone below stays live",
+  "cap": "Error inside the drop zone: icon, file, error, fix, Try again",
   "file": "u06.png",
   "phone": false,
   "page": false
@@ -57,7 +57,7 @@
   "sec": "Upload: rejected files",
   "id": "u07",
   "title": "Over 120 columns",
-  "cap": "Red alert with title, file and fix; the drop zone below stays live",
+  "cap": "Error inside the drop zone: icon, file, error, fix, Try again",
   "file": "u07.png",
   "phone": false,
   "page": false
@@ -66,7 +66,7 @@
   "sec": "Upload: rejected files",
   "id": "u08",
   "title": "No prospects",
-  "cap": "Red alert with title, file and fix; the drop zone below stays live",
+  "cap": "Error inside the drop zone: icon, file, error, fix, Try again",
   "file": "u08.png",
   "phone": false,
   "page": false
@@ -75,7 +75,7 @@
   "sec": "Upload: rejected files",
   "id": "u09",
   "title": "Repeated column names",
-  "cap": "Red alert with title, file and fix; the drop zone below stays live",
+  "cap": "Error inside the drop zone: icon, file, error, fix, Try again",
   "file": "u09.png",
   "phone": false,
   "page": false
@@ -84,7 +84,7 @@
   "sec": "Upload: rejected files",
   "id": "u10",
   "title": "Columns with no name",
-  "cap": "Red alert with title, file and fix; the drop zone below stays live",
+  "cap": "Error inside the drop zone: icon, file, error, fix, Try again",
   "file": "u10.png",
   "phone": false,
   "page": false
@@ -93,7 +93,7 @@
   "sec": "Upload: rejected files",
   "id": "u11",
   "title": "Mixed separators",
-  "cap": "Red alert with title, file and fix; the drop zone below stays live",
+  "cap": "Error inside the drop zone: icon, file, error, fix, Try again",
   "file": "u11.png",
   "phone": false,
   "page": false
@@ -102,7 +102,7 @@
   "sec": "Upload: rejected files",
   "id": "u12",
   "title": "Not UTF-8",
-  "cap": "Red alert with title, file and fix; the drop zone below stays live",
+  "cap": "Error inside the drop zone: icon, file, error, fix, Try again",
   "file": "u12.png",
   "phone": false,
   "page": false
@@ -111,7 +111,7 @@
   "sec": "Upload: rejected files",
   "id": "u13",
   "title": "Can’t be read",
-  "cap": "Red alert with title, file and fix; the drop zone below stays live",
+  "cap": "Error inside the drop zone: icon, file, error, fix, Try again",
   "file": "u13.png",
   "phone": false,
   "page": false
@@ -120,7 +120,7 @@
   "sec": "Map Fields",
   "id": "m01",
   "title": "Columns to set",
-  "cap": "Match line; After Import below",
+  "cap": "Production table; unmatched selects amber; a cross removes a field",
   "file": "m01.png",
   "phone": false,
   "page": false
@@ -129,7 +129,7 @@
   "sec": "Map Fields",
   "id": "m02",
   "title": "Everything matched",
-  "cap": "All columns matched",
+  "cap": "Every select set; nothing highlighted",
   "file": "m02.png",
   "phone": false,
   "page": false
@@ -140,6 +140,15 @@
   "title": "Fixed file brought back",
   "cap": "Mapping restored from the import it came from; our three columns set to Don’t import",
   "file": "m03.png",
+  "phone": false,
+  "page": false
+ },
+ {
+  "sec": "Map Fields",
+  "id": "m05",
+  "title": "Create custom field",
+  "cap": "From the field list: name it, Create and map",
+  "file": "m05.png",
   "phone": false,
   "page": false
  },
@@ -219,7 +228,7 @@
   "sec": "Checking",
   "id": "c01",
   "title": "Checking every row",
-  "cap": "Nothing imported yet; Cancel link, no footer",
+  "cap": "Reviewing rows: progress, then Cancel; no footer",
   "file": "c01.png",
   "phone": false,
   "page": false
@@ -354,7 +363,7 @@
   "sec": "Import into a sequence",
   "id": "s01",
   "title": "Into an email step",
-  "cap": "Step picker above the headline; the grey line folds behind See details",
+  "cap": "See details open: who is added, who is on Do Not Contact, who won’t be added",
   "file": "s01.png",
   "phone": false,
   "page": false
@@ -498,7 +507,7 @@
   "sec": "Phone (390px)",
   "id": "p01",
   "title": "Rejected file",
-  "cap": "Alert, then drop zone; both full width",
+  "cap": "Error inside the drop zone, full width",
   "file": "p01.png",
   "phone": true,
   "page": false

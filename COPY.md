@@ -4,7 +4,7 @@ Companion to [PRD.md](PRD.md). **See every string rendered on its surface: [copy
 
 ### 5.1 Upload file
 
-A rejected file: a red alert above the drop zone. Alert icon, the **title** (red) with the file name beside it in grey, one sentence on the fix (neutral text). Below it the empty drop zone: "Drop the fixed file here, or choose a file". The zone stays live, so the fixed file goes straight back in. Next stays disabled. No toast and no "Oops!" anywhere in this flow. See it: [copy.html §5.1](copy.html#s5-1).
+A rejected file: the error shows inside the drop zone, centred. Error icon (red, in a soft red circle), the file name in grey, the **title**, one sentence on the fix, then a secondary button "Try again" (opens the file picker). The zone still takes a dropped file, so the fixed file goes straight back in. Next stays disabled. No toast and no "Oops!" anywhere in this flow. See it: [copy.html §5.1](copy.html#s5-1).
 
 **Only what the check knows.** Each message is limited to facts its check already has ([pre-select.tsx L41-L86](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/select-file/components/pre-select/pre-select.tsx#L41-L86), [select-file.tsx L49-L95](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/select-file/select-file.tsx#L49-L95)): the file name, the extension, and whether a limit was crossed. No row totals (parsing stops at the limit), no header names or column positions (the duplicate and blank checks return yes or no).
 
@@ -27,18 +27,20 @@ Every check that today runs only after Import (duplicate headers, mixed separato
 
 ### 5.2 Map Fields
 
-- Email row marked with a red *. Row look as production: neutral selects, no row tint. Header "Fields from file", "First 3 rows", "Field" (left edge of the selects).
-- Line above the rows: "{m} of {n} columns matched automatically." When all matched: "All {n} columns matched automatically." Grey, one line; unmatched columns are not highlighted.
+- Email row marked with a red *. Row look as production: neutral selects, no row tint. Header "Fields from file", "Sample", "Field" (left edge of the selects).
+- No line about matched columns. A column with no field yet: its "Select field" select is amber; the row stays plain.
 - No column mapped to Email: "Map a column to Email to continue." Red, one line. Next disabled. No email-like column at all: "This file has no email column. Add one, or choose another file." Red, one line, Next disabled.
 - **After Import** below the fields: production's four labels and descriptions verbatim ([conflict-action.ts](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/conflict-action.ts)), description shown under the select, default Add Missing Fields.
 - An undecided column shows "Select field"; one set aside shows "Don't import".
+- Header band, sentence case: "Fields from file", "Sample", "Field". Cross button on a mapped field: aria-label "Remove field from {column}".
+- Field list footer: "+ Create custom field". Its box: label "New custom field", prefilled name, "Back" and "Create and map". No matches: "No field matches “{search}”."
 - One column per field, as production: a field another column uses isn't offered in the list.
 - Cancel, Esc or the close button keeps the mapping while the dialog's file is kept.
 - Field picker: search keeps focus while typing; arrow keys move through options; Enter on the search picks the first match; Esc closes the list.
 
 ### 5.3 Checking
 
-"Checking your file", progress as "{done} of {rows} rows", "Nothing is imported yet." No footer; one text link, "Cancel", centred under the progress.
+"Reviewing rows", progress as "{done} of {rows} rows". No footer; one text link, "Cancel", centred under the progress.
 
 ### 5.4 Review and Import
 
@@ -126,7 +128,7 @@ Same dialog, Upload and Map Fields as the list import ([sequence path today](htt
 | Map Fields | No step picker (production has one here; it moves to Review) |
 | Review, above the headline | "Import into [Step 1 · Email ▾]", in Review's settings layout. Options name the step type ("Step 2 · LinkedIn connection request"). Default: the lowest step number, as production ([map-fields.tsx L92-L99](https://github.com/saleshandy/saleshandy-webui/blob/f9425f234ef9f23a3d1fe9a1bfd7b326b61b1ae5/src/components/sequence/components/sequence-single-content/components/sequence-single-contacts/components/map-fields/map-fields.tsx#L92-L99)). Changing it updates every line below at once |
 | Headline | "{n} prospects will be added to Step {k}". Counts new plus existing, because production adds existing prospects to the step under every After Import option |
-| Quiet lines (grey) | One line, folded: "{rows} rows checked · [See details]". See details expands in place as a short list (thin grey rule on the left): "{n} already in your list {outcome}", "{m} repeated rows skipped", "{k} won't be added"; the link becomes [Hide details]. {k} counts only the prospects turned away that are not in the CSV (already in this sequence, unsubscribed); those the user can act on are counted once, in the red line. So headline + repeated + {k} + rows to fix = {rows}; the {n} already in the list are part of the headline. No breakdown and no Admin setting link on Review; the reasons are in the CSV |
+| Quiet lines (grey) | One line, folded: "{rows} rows checked · [See details]". See details expands in place as a short list (thin grey rule on the left): "{n} already in your list {outcome}", "{d} are on your Do Not Contact list and won't be emailed", "{m} repeated rows skipped", "{k} won't be added"; {d} is part of the headline (added, never emailed); the link becomes [Hide details]. {k} counts only the prospects turned away that are not in the CSV (already in this sequence, unsubscribed); those the user can act on are counted once, in the red line. So headline + repeated + {k} + rows to fix = {rows}; the {n} already in the list are part of the headline. No breakdown and no Admin setting link on Review; the reasons are in the CSV |
 | Quiet line: step needs (grey) | Only when the field is mapped but some prospects have it empty: "{n} prospects have no phone number for the Step {k} call." Same for LinkedIn: "{n} prospects have no LinkedIn URL for the Step {k} task." They still import; no colour. Covers every step from the chosen one on |
 | Red line: rows to fix | {n} rows to fix [Download CSV], with {n} = rows in the download (rows to fix plus those not added that the user can act on) |
 | Map Fields: step needs (amber) | When no column is mapped to a field a step needs, one line in the message slot at the top of Map Fields (replaces the grey match line; a red Email error wins over it): "No column is mapped to {fields}, which {Step k / Steps j and k} {needs / need}." e.g. "No column is mapped to LinkedIn Profile or Phone Number, which Steps 2 and 3 need." Covers every step in the sequence; Next stays enabled |

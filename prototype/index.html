@@ -103,6 +103,14 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .m-ft .btn-l{min-width:0}
 
 .drop{border:1px dashed var(--g-300);border-radius:var(--r-btn);background:var(--g-50);padding:28px;display:flex;flex-direction:column;align-items:center;gap:11px;text-align:center}
+.dz-err{gap:10px;padding:28px 32px;border-color:var(--red-200)}
+.dz-ic{flex:0 0 44px;width:44px;height:44px;border-radius:9999px;background:var(--red-50);display:inline-flex;align-items:center;justify-content:center}
+.dz-msg{display:flex;flex-direction:column;align-items:center;gap:4px;max-width:100%;min-width:0}
+.dz-fn2{display:inline-flex;align-items:center;gap:5px;max-width:100%;font-size:12px;color:var(--g-500);margin-bottom:2px}.dz-fn2 svg{flex:0 0 auto}.dz-fn2 span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dz-t{font-size:14px;font-weight:600;color:var(--g-900);line-height:1.45}
+.dz-fix{font-size:13px;color:var(--g-600);line-height:1.5;max-width:460px}.dz-fix b{font-weight:600;color:var(--g-800)}
+.dz-btn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;font-size:13px;margin-top:4px}
+
 .drop.ok{border-style:solid;border-color:var(--grn-200);background:var(--grn-50)}
 .chip{border:1px solid var(--g-300);background:#fff;border-radius:9999px;padding:7px 13px;font-size:12.5px;color:var(--g-700);font-family:var(--mono)}
 .chip:hover{border-color:var(--blue-700);color:var(--blue-700)}
@@ -119,12 +127,17 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .bn-blu{background:var(--blue-50);border:1px solid var(--blue-200);color:var(--blue-900)}
 
 /* map table */
-.maprow{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--g-100)}
+/* Production table (import-contacts-modal .map-list): bordered box, grey header band, compact rows, no row rules. */
+.mtbl{border:1px solid var(--g-200);border-radius:var(--r-input)}
+.mtbl .hdlbl{background:var(--g-100);padding:9px 14px;border-radius:var(--r-input) var(--r-input) 0 0;font-size:12.5px;letter-spacing:0;text-transform:none;color:var(--g-600)}
+.mtbl .mrows{padding:4px 0}
+.maprow{display:flex;gap:10px;align-items:center;padding:5px 14px}
 .maprow.bad{background:var(--red-50);margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:var(--r-input);border-top-color:transparent}
 .maprow .f{flex:0 0 150px;font-size:13px;font-weight:600}
 .maprow .s{flex:1;min-width:0;display:flex;font-size:12px;color:var(--g-600);line-height:1.45;white-space:nowrap}
 /* Long sample values: one line per row; each value truncates on its own, values of 14 characters or fewer are never cut; full value on hover. */
 .maprow .s .v{flex:0 1 auto;min-width:0;max-width:55%;overflow:hidden;text-overflow:ellipsis}.maprow .s .v.k{flex-shrink:0}
+.maprow .s .v.one{max-width:100%}
 .maprow .s .d{flex:0 0 auto;padding:0 5px;color:var(--g-400)}
 .maprow select{flex:0 0 138px;font-family:inherit;font-size:12.5px;padding:7px 8px;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-900)}
 .maprow select.err{border-color:var(--red-700);color:var(--red-700)}
@@ -132,10 +145,21 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 
 /* ══ step 2: the field picker ══ */
 .fpick{position:relative;flex:0 0 190px}
+.fcell{flex:0 0 220px;display:flex;align-items:center;gap:6px}
+.mx{flex:0 0 24px;height:24px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;border-radius:9999px;color:var(--g-400);cursor:pointer}
+.mx:hover{background:var(--g-100);color:var(--g-700)}
+.mx-sp{flex:0 0 24px}
+.fm-new{display:block;width:100%;text-align:left;border:0;border-top:1px solid var(--g-200);background:#fff;padding:9px 13px;font-size:12.5px;font-weight:600;color:var(--blue-700);cursor:pointer}
+.fm-new:hover{background:var(--blue-50)}
+.cf{padding:12px;display:flex;flex-direction:column;gap:8px}.cf label{font-size:12px;font-weight:600;color:var(--g-700)}
+.cf input{border:1px solid var(--g-300)!important;border-radius:var(--r-input);padding:7px 9px!important}
+.cf-a{display:flex;justify-content:flex-end;align-items:center;gap:12px}.cf-a .btn{height:30px;padding:0 12px;font-size:12.5px}
 .fpick>button{width:100%;display:flex;align-items:center;gap:6px;text-align:left;font-size:12.5px;padding:7px 9px;border:1px solid var(--g-300);border-radius:var(--r-input);background:#fff;color:var(--g-900)}
 .fpick>button .v{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fpick>button svg{flex:0 0 auto;opacity:.6}
 .fpick.err>button{border-color:var(--red-700);color:var(--red-700)}
+/* Unmatched column: the only Map Fields highlight, on the select that needs a pick. */
+.fpick.need>button{border-color:var(--yel-600);background:var(--yel-50);color:var(--yel-900)}
 .fmenu{position:absolute;z-index:30;top:calc(100% + 4px);right:0;width:256px;background:#fff;border:1px solid var(--g-200);border-radius:var(--r-btn);box-shadow:var(--sh-lg);overflow:hidden}
 .fmenu input{display:block;width:100%;border:0;border-bottom:1px solid var(--g-200);padding:9px 11px;font-family:inherit;font-size:12.5px;color:var(--g-900);outline:none}
 .fmenu .list{max-height:208px;overflow:auto;padding:4px}
@@ -214,9 +238,9 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 .muted{color:var(--g-500);font-size:12px;line-height:1.5}
 .mono{font-family:var(--mono)}
 @media(max-width:720px){#rail{display:none}#modal{max-width:100%}#modal.wide{max-width:100%}
-  .maprow{flex-wrap:wrap;row-gap:6px}.maprow .f{flex:1 1 0;min-width:0}.maprow .fpick{flex:0 0 172px}
+  .maprow{flex-wrap:wrap;row-gap:6px}.maprow .f{flex:1 1 0;min-width:0}.maprow .fcell{flex:0 0 202px}.maprow .fpick{flex:0 0 172px}
   .maprow .s{order:3;flex:1 1 100%}.hdlbl span:nth-child(2){display:none}.hdlbl span:first-child{flex:1 1 auto!important}
-  .strip{flex-wrap:wrap;row-gap:10px}.strip>svg{order:0;align-self:flex-start;margin-top:2px}.strip .x{align-self:flex-start;margin-top:-3px}.strip .msg{order:1;flex:1 1 calc(100% - 100px)}.hdlbl span:last-child{flex:0 0 172px!important}.strip .x{order:2}
+  .strip{flex-wrap:wrap;row-gap:10px}.strip>svg{order:0;align-self:flex-start;margin-top:2px}.strip .x{align-self:flex-start;margin-top:-3px}.strip .msg{order:1;flex:1 1 calc(100% - 100px)}.hdlbl span:last-child{flex:0 0 202px!important}.strip .x{order:2}
   .strip .btn{order:3;flex:1 1 auto}.strip.todo .btn:first-of-type{margin-left:30px}
   .m-ft{row-gap:12px}.m-ft .sp{display:none}.m-ft .ftlink{flex:1 1 100%}.m-ft .btn{flex:1 1 100%}
   #async{right:16px}
@@ -252,7 +276,13 @@ body.mopen #toast{bottom:auto;top:50px}
 .pvs{position:relative}
 .pvs.more::after{content:'';position:absolute;top:1px;right:1px;bottom:1px;width:40px;background:linear-gradient(90deg,rgba(255,255,255,0),#fff);pointer-events:none;border-radius:0 var(--r-btn) var(--r-btn) 0}
 .pvw{border:1px solid var(--g-200);border-radius:var(--r-btn);overflow-x:auto}
-.pvw::-webkit-scrollbar{height:8px}.pvw::-webkit-scrollbar-thumb{background:var(--g-300);border-radius:4px;border:2px solid #fff}.pvw::-webkit-scrollbar-track{background:#fff}
+/* The sideways scroll has to be seen: an always-on track under the rows (grey band, top rule) with a solid
+   grey thumb, darker on hover. Grey, not blue: colour is kept for what needs the user. */
+@supports not selector(::-webkit-scrollbar){.pvw{scrollbar-color:var(--g-400) var(--g-100)}}  /* Firefox; in Chrome the standard property would switch off the styled bar */
+.pvw::-webkit-scrollbar{height:14px}
+.pvw::-webkit-scrollbar-track{background:var(--g-50);border-top:1px solid var(--g-200);border-radius:0 0 var(--r-btn) var(--r-btn)}
+.pvw::-webkit-scrollbar-thumb{background:var(--g-400);border-radius:9999px;border:4px solid transparent;background-clip:padding-box;min-width:40px}
+.pvw::-webkit-scrollbar-thumb:hover{background-color:var(--g-500)}
 .pvt{border-collapse:separate;border-spacing:0;font-size:13px;width:max-content;min-width:100%}
 .pvt th{background:var(--g-50);color:var(--g-800);font-weight:600;text-align:left;padding:9px 14px;border-bottom:1px solid var(--g-200);white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
 .pvt td{color:var(--g-700);padding:9px 14px;border-bottom:1px solid var(--g-100);white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
@@ -446,6 +476,7 @@ var SEQ = { name:'Q4 Outbound', other:'Q2 Webinar follow-up',
 function isSeq(){ return S.path==='seq'; }
 function stp(){ return SEQ.steps[S.step||0]; }
 /* Of the rows already in the list, how many the sequence turns away. Illustrative counts. */
+var SEQ_DNC=12;
 function seqOut(){ var ex=existN(); return (isSeq() && ex)? {other:40, same:12, bounce:5, unsub:3, all:60, file:45} : {other:0,same:0,bounce:0,unsub:0,all:0,file:0}; }
 var SHORT = {at:'email missing @', at2:'email missing @', empty:'email empty', empty2:'email empty', multi:'more than one email'};
 
@@ -699,7 +730,7 @@ function uploadFixedNow(){ var k=S.file, left=sum(fixG())+overN(); openWizard();
 
 function setField(col,val,ix){
   S.map[col]=val; S.touched[col]=true; S.pick=null; S.q=''; render(); focusId('fp'+ix); }
-function openPick(col,ix){ var was=S.pick===col; S.pick = was?null:col; S.q=''; S.pickIx=ix; render();
+function openPick(col,ix){ var was=S.pick===col; S.pick = was?null:col; S.q=''; S.cf=null; S.pickIx=ix; render();
   if(was){ focusId('fp'+ix); return; }
   flipMenu(); focusId('fq'); }
 /* The dialog clips overflow, so a list that would run past its bottom opens upwards. */
@@ -984,16 +1015,22 @@ function scUpload(){
       utf:{t:'This file isn’t saved as UTF‑8', fix:XL},
       read:{t:'We couldn’t read this file', fix:'If it’s open in Excel or still syncing, close it or wait, then try again.'}
     }[f().reject];
-    body = '<div class="bn bn-red rja" role="alert">'+
-      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7F1D1D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'+
-      '<div class="rja-b" id="upwhy"><div class="rja-h"><div class="rja-t">'+R.t+'</div>'+
-      '<div class="rja-fn" title="'+esc(f().name)+'">'+esc(f().name)+'</div></div>'+
-      '<div class="rja-fix">'+R.fix+'</div></div></div>'+
-      '<div class="drop" ondragover="event.preventDefault()" ondrop="event.preventDefault();S.file=null;render()">'+
-      '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 13v8"/><path d="m8 17 4-4 4 4"/><path d="M20 16.7A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 14.9"/></svg>'+
-      '<div style="font-size:14px;color:var(--g-600)">Drop the fixed file here, or <button class="lnkb" type="button" onclick="S.file=null;render()">choose a file</button></div></div>'+
+    /* Rejected: the error lives inside the drop zone itself (19 Nov): error icon, the error,
+       the file, the hint, and Try again. The zone still takes a dropped file. */
+    var ico='<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>';
+    /* Rejected (C, 19 Nov): inside the drop zone, centred: tinted error icon, the file, the error,
+       the hint, Try again. The zone still takes a dropped file. */
+    var nm=esc(f().name);
+    var FILE='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>';
+    var UP='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>';
+    var AL='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>';
+    body = '<div class="drop dz-err" ondragover="event.preventDefault()" ondrop="event.preventDefault();S.file=null;render()">'+
+      '<span class="dz-ic">'+AL+'</span>'+
+      '<div role="alert" class="dz-msg"><span class="dz-fn2" title="'+nm+'">'+FILE+'<span>'+nm+'</span></span>'+
+      '<div class="dz-t" id="upwhy">'+R.t+'</div><div class="dz-fix">'+R.fix+'</div></div>'+
+      '<button class="btn btn-g dz-btn" type="button" id="dztry" onclick="S.file=null;render()">'+UP+'Try again</button></div>'+
       '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-      '<div><strong>Changed here.</strong> Today a rejected file gets a 3-second toast ("The file type you are trying to upload is not supported." or "Import prospect CSV failed") and, for some checks, an empty "Oops!" as well. The reason and fix sit in a red alert above the drop zone, which stays live for the fixed file. Catalogue G03-059, G03-060.</div></div>';
+      '<div><strong>Changed here.</strong> Today a rejected file gets a 3-second toast ("The file type you are trying to upload is not supported." or "Import prospect CSV failed") and, for some checks, an empty "Oops!" as well. The reason, the file and the fix now sit inside the drop zone itself, with Try again; the zone still takes the fixed file. Catalogue G03-059, G03-060.</div></div>';
   } else {
     var d=f();
     /* File preview: the file is one line and its first rows sit under it,
@@ -1019,11 +1056,16 @@ function fpick(col,ix){
   var cur = S.map[col], open = S.pick===col, set = !unset(col);
   var q = norm(S.q||''), list = FIELDS.filter(function(fl){ return (!q || norm(fl).indexOf(q)>-1) && (fl==='Don’t import' || fl===cur || !mappedTo(fl)); });
   var cid = col.replace(/'/g,"\\'");
-  var out = '<div class="fpick'+(set?' set':'')+'">'+
+  var out = '<div class="fpick'+(set?' set':(S.touched[col]?'':' need'))+'">'+
     '<button type="button" id="fp'+ix+'" aria-labelledby="fc'+ix+' fp'+ix+'" aria-haspopup="listbox" aria-expanded="'+open+'" onclick="openPick(\''+cid+'\','+ix+')">'+
     '<span class="v">'+esc(set?cur:(S.touched[col]?'Don’t import':'Select field'))+'</span>'+
     '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></button>';
-  if(open){
+  if(open && S.cf===col){
+    out += '<div class="fmenu" onclick="event.stopPropagation()"><div class="cf"><label for="cfn">New custom field</label>'+
+      '<input id="cfn" type="text" value="'+esc(S.cfv)+'" oninput="S.cfv=this.value" onkeydown="cfKey(event,\''+cid+'\','+ix+')">'+
+      '<div class="cf-a"><button class="lnkb" type="button" onclick="S.cf=null;render();flipMenu();focusId(\'fq\')">Back</button>'+
+      '<button class="btn btn-p" type="button" onclick="createCF(\''+cid+'\','+ix+')">Create and map</button></div></div></div>';
+  } else if(open){
     out += '<div class="fmenu">'+
       '<input id="fq" type="text" placeholder="Search '+FIELDS.length+' fields…" value="'+esc(S.q)+'" '+
       'oninput="S.q=this.value;render();flipMenu()" onclick="event.stopPropagation()" onkeydown="pickKey(event)" aria-label="Search fields">'+
@@ -1032,10 +1074,26 @@ function fpick(col,ix){
         ? list.map(function(fl){
             return '<button type="button" role="option" aria-selected="'+(fl===cur)+'" class="opt'+(fl===cur?' on':'')+'" data-f="'+esc(fl)+'" onclick="setField(\''+cid+'\',this.getAttribute(\'data-f\'),'+ix+')" onkeydown="pickKey(event)">'+esc(fl)+'</button>';
           }).join('')
-        : '<div class="none">No field matches “'+esc(S.q)+'”. You can create a custom field instead.</div>')+
-      '</div></div>';
+        : '<div class="none">No field matches “'+esc(S.q)+'”.</div>')+
+      '</div><button class="fm-new" type="button" id="fmnew" onclick="event.stopPropagation();startCF(\''+cid+'\','+ix+')">+ Create custom field</button></div>';
   }
-  return out+'</div>';
+  out += '</div>';
+  /* Remove: a cross on the right of a mapped field, as the meeting asked (production has a trash icon on the left). */
+  out += set ? '<button class="mx" type="button" id="mx'+ix+'" aria-label="Remove field from '+esc(col)+'" onclick="clearField(\''+cid+'\','+ix+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>'
+             : '<span class="mx-sp" aria-hidden="true"></span>';
+  return '<div class="fcell">'+out+'</div>';
+}
+function clearField(col,ix){ S.map[col]='Don’t import'; S.touched[col]=true; S.pick=null; render(); focusId('fp'+ix); }
+function startCF(col,ix){ S.cf=col; S.cfv=(S.q||col).trim(); render(); flipMenu(); var i=$('cfn'); if(i){ i.focus(); i.select(); } }
+function createCF(col,ix){
+  var v=(S.cfv||'').trim(); if(!v){ focusId('cfn'); return; }
+  var hit=FIELDS.filter(function(fl){ return norm(fl)===norm(v); })[0];
+  if(!hit){ FIELDS.push(v); hit=v; }
+  S.cf=null; S.cfv=''; setField(col,hit,ix);
+}
+function cfKey(e,col,ix){
+  if(e.key==='Enter'){ e.preventDefault(); createCF(col,ix); }
+  else if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); S.cf=null; render(); flipMenu(); focusId('fq'); }
 }
 
 function scMap(){
@@ -1046,25 +1104,17 @@ function scMap(){
     var isEmail = S.map[c]==='Email';
     var cls = 'maprow';
     return '<div class="'+cls+'"><span class="f" id="fc'+i+'">'+esc(c)+(isEmail?' <span style="color:var(--red-700)" aria-hidden="true">*</span>':'')+'</span>'+
-      '<span class="s">'+d.samples[i].map(function(v){ v=v==null?'':String(v); return '<span class="v'+(v.length<=14?' k':'')+'" title="'+esc(v)+'">'+esc(v)+'</span>'; }).join('<span class="d" aria-hidden="true">·</span>')+'</span>'+fpick(c,i)+'</div>';
+      '<span class="s">'+(function(v){ v=v==null?'':String(v); return '<span class="v one" title="'+esc(v)+'">'+esc(v)+'</span>'; })(d.samples[i][0])+'</span>'+fpick(c,i)+'</div>';
   }).join('');
 
-  /* The header line is the whole point of this step: say how much is already
-     done, so the eye goes straight to what is not. */
-  var lead;
+  /* Only a restored mapping gets a line above the rows. */
+  var lead='';
   if(S.restored){
     lead = '<div class="bn bn-gry bn-1">'+
       '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>'+
       '<div style="flex:1">Mapping restored from your import of '+esc(S.restored)+'. <button class="btn btn-l" type="button" onclick="clearMapping()" style="padding:0;font-size:inherit;line-height:inherit;height:auto;min-height:0;display:inline;vertical-align:baseline">Clear and map again</button></div></div>';
-  } else if(todo.length){
-    lead = '<div class="bn bn-gry bn-1">'+
-      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-      '<div>'+matched+' of '+cols.length+' columns matched automatically.</div></div>';
-  } else {
-    lead = '<div class="bn bn-gry bn-1">'+
-      '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'+
-      '<div>All '+cols.length+' columns matched automatically.</div></div>';
   }
+  /* No matched-count line: the unmatched selects carry the highlight. */
 
   var warn = ok ? '' :
     '<div class="bn bn-red bn-1" role="alert"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'+
@@ -1074,8 +1124,8 @@ function scMap(){
 
   var moved = '';
   return hd()+steps('map')+'<div class="rule"></div><div class="m-bd">'+(ok?(seqNeedsBanner()||lead):warn)+moved+
-    '<div><div class="hdlbl"><span style="flex:0 0 150px">Fields from file</span><span style="flex:1">First 3 rows</span><span style="flex:0 0 190px">Field</span></div>'+
-    rows+'</div>'+
+    '<div class="mtbl"><div class="hdlbl"><span style="flex:0 0 150px">Fields from file</span><span style="flex:1">Sample</span><span style="flex:0 0 220px">Field</span></div>'+
+    '<div class="mrows">'+rows+'</div></div>'+
     /* After Import: kept from production (6 Nov). The option's own text is shown
        under the select instead of only on hover. */
     '<div class="cfg"><label class="k" for="cafield">After Import</label><div class="v">'+
@@ -1085,7 +1135,7 @@ function scMap(){
     '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
     '<div><strong>Kept from production (6 Nov).</strong> The After Import choice and its four options are today’s, word for word, default Add Missing Fields. The 8 Sep version had dropped it and called existing rows “skipped”, which is not what the default does. The option text now shows under the field instead of only on hover.</div></div>'+
     '<div class="bn bn-blu xnote"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'+
-    '<div><strong>Changed here.</strong> Verified live on 8 Sep: today <span class="mono">company_name</span>, <span class="mono">title</span> and <span class="mono">linkedin_url</span> all arrive unmapped, the field list is a long scroll with truncated labels and no working search, and re-importing the identical file a minute later loses every choice you made. Three sample rows instead of one, and <strong>no validity ticks</strong> &ndash; nothing has been checked yet, so nothing claims it has.</div></div>'+
+    '<div><strong>Changed here.</strong> Verified live on 8 Sep: today <span class="mono">company_name</span>, <span class="mono">title</span> and <span class="mono">linkedin_url</span> all arrive unmapped, the field list is a long scroll with truncated labels and no working search, and re-importing the identical file a minute later loses every choice you made. One sample value per column, as production, and <strong>no validity ticks</strong> &ndash; nothing has been checked yet, so nothing claims it has.</div></div>'+
     '</div><div class="rule"></div>'+
     '<div class="m-ft"><span class="sp"></span>'+
     '<button class="btn btn-g" type="button" onclick="go(\'upload\')">Back</button>'+
@@ -1096,11 +1146,10 @@ function scChecking(){
   var d=f();
   return hd()+steps('review')+'<div class="rule"></div>'+
     '<div class="m-bd" style="padding:40px 22px;align-items:center;gap:17px">'+
-    '<div style="font-size:16px;font-weight:600">Checking your file</div>'+
+    '<div style="font-size:16px;font-weight:600">Reviewing rows</div>'+
     '<div style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:9px">'+
-    '<div class="bar" id="pchk" role="progressbar" aria-label="Checking your file" aria-valuemin="0" aria-valuemax="'+d.rows+'" aria-valuenow="0" aria-valuetext="0 of '+n(d.rows)+' rows"><i id="pfill"></i></div>'+
+    '<div class="bar" id="pchk" role="progressbar" aria-label="Reviewing rows" aria-valuemin="0" aria-valuemax="'+d.rows+'" aria-valuenow="0" aria-valuetext="0 of '+n(d.rows)+' rows"><i id="pfill"></i></div>'+
     '<div style="text-align:center" class="muted" aria-hidden="true"><span id="pcount">0 of '+n(d.rows)+' rows</span></div></div>'+
-    '<div class="muted" style="text-align:center">Nothing is imported yet.</div>'+
     '<button class="lnkb" type="button" onclick="closeWizard()">Cancel</button>'+
     '</div>';
 }
@@ -1133,7 +1182,10 @@ function scSummary(){
   var fut = ca().fut.replace(' from your file',''), cut = fut.indexOf('. ');
   if(cut>0) fut = fut.slice(0,cut)+' ('+fut.charAt(cut+2).toLowerCase()+fut.slice(cut+3)+')';
   var quiet=[], cl=[], body_det='';
-  if(isSeq()){ if(exIn) cl.push(n(exIn)+' already in your list '+fut); }
+  if(isSeq()){ if(exIn) cl.push(n(exIn)+' already in your list '+fut);
+    /* Do Not Contact (sequence and global lists): production adds them to the step marked blocked, so they
+       are inside the headline count but never emailed. Said here so the headline stays honest. */
+    if(added) cl.push(n(SEQ_DNC)+' are on your Do Not Contact list and won’t be emailed'); }
   else if(ex) cl.push(n(ex)+' prospects already in your list '+fut);
   if(du) cl.push(n(du)+' repeated rows skipped');
   /* Sequence: prospects the step turns away that are not in the CSV (already in this sequence,
@@ -1260,7 +1312,7 @@ document.addEventListener('keydown',function(e){
 });
 
 document.addEventListener('click',function(e){
-  if(S.pick && !e.target.closest('.fpick')){ S.pick=null; S.q=''; render(); }
+  if(S.pick && !e.target.closest('.fpick')){ S.pick=null; S.q=''; S.cf=null; render(); }
   if(!e.target.closest('#addmenu') && !e.target.closest('#hdr .btn-p')) $('addmenu').style.display='none';
   if(!e.target.closest('#notif') && !e.target.closest('#hdr .btn-s')) $('notif').classList.remove('show');
 });
