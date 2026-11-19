@@ -305,6 +305,18 @@ table.crm td{padding:11px 24px;border-bottom:1px solid var(--g-100);color:var(--
 #notif.show{display:block}
 #notif .nh{padding:12px 15px;border-bottom:1px solid var(--g-200);font-size:13px;font-weight:600}
 #notif .nb{padding:13px 15px;display:flex;gap:11px}
+#notif{width:480px}
+#notif .nh{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;font-size:14px;font-weight:600;color:var(--g-900)}
+#notif .nmr{border:0;background:transparent;padding:0;font:inherit;font-size:14px;font-weight:400;color:#1D4ED8;cursor:pointer}
+#notif .nb{padding:16px;gap:12px;align-items:flex-start;border-bottom:1px solid var(--g-200)}
+.nbadge{flex:0 0 32px;width:32px;height:32px;border-radius:9999px;background:#EDE9FE;display:inline-flex;align-items:center;justify-content:center}
+.nmain{flex:1;min-width:0}.ntitle{font-size:14px;font-weight:600;color:var(--g-900);line-height:20px}
+.ncontent{font-size:12px;line-height:18px;color:#1F2937;margin-top:4px}.ncontent span{font-weight:600}
+.ndl{display:inline-flex;align-items:center;gap:4px;margin-top:8px;padding:0;border:0;background:transparent;color:#2563EB;font:inherit;font-size:12px;font-weight:500;line-height:16px;cursor:pointer}
+.ntime{font-size:12px;font-weight:500;color:#9CA3AF;margin-top:8px}
+.nact{flex:0 0 auto;border:0;background:transparent;padding:0;font:inherit;font-size:14px;font-weight:600;color:#1D4ED8;cursor:pointer}
+@media(max-width:520px){#notif{width:auto;left:14px}}
+
 .dot{width:28px;height:28px;border-radius:9999px;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
 
 /* ══ 6 Nov: After Import, failure states ══ */
@@ -430,7 +442,7 @@ body.mopen #toast{bottom:auto;top:50px}
 </div>
 
 <div id="notif">
-  <div class="nh">Notifications</div>
+  <div class="nh"><span>Notifications</span><button class="nmr" type="button" onclick="$('notifdot').style.display='none';this.style.visibility='hidden'">Mark all as Read</button></div>
   <div class="nb" id="notifbody"><span class="muted">Nothing yet. Run an import.</span></div>
 </div>
 
@@ -1023,13 +1035,19 @@ function finishImport(){
   var dlb = '<button class="lnkb" type="button" onclick="dl(\''+j.key+'\','+j.over+')">Download CSV</button>';
   var upb = '<button class="lnkb" type="button" onclick="elsewhere(\'Settings › Billing › Upgrade plan\')">Upgrade plan</button>';
   $('notifdot').style.display='block'; $('bellbtn').setAttribute('aria-label','Notifications, 1 new');
+  /* The bell, as production today (atoms/notification/notification.tsx, ProspectImportAsync): purple badge with
+     the user icon, title "Prospect import is completed", the log sentence (edge notification-log-templates.ts,
+     file name cut at 15 characters, sequence at 25, values bold), Download Failed Report when rows failed,
+     relative time, and View List on the right. Our only change: Imported and Failed counts add up honestly. */
+  var cut=function(t,k){ return t.length>k? t.slice(0,k)+'..' : t; };
   $('notifbody').innerHTML =
-    '<div class="dot" style="background:'+(inCsv?'var(--yel-50)':'var(--grn-50)')+'">'+
-    (inCsv?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
-          :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>')+'</div>'+
-    '<div style="flex:1"><div style="font-size:13px;font-weight:600">Your file '+esc(j.name)+' is imported'+(j.seq? ' in '+esc(SEQ.name):'')+' having '+n(j.rows)+' prospects: '+n(imp)+' Imported and '+n(inCsv)+' Failed</div>'+
-    (inCsv? '<div style="display:flex;gap:14px;margin-top:6px"><button class="btn btn-l" type="button" style="font-size:12px;padding:0" onclick="dl(\''+j.key+'\','+j.over+')">Download CSV</button></div>' : '')+
-    '<div class="muted" style="margin-top:5px;font-size:11px">Just now</div></div>';
+    '<span class="nbadge"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"> <path fill-rule="evenodd" clip-rule="evenodd" d="M7.50008 3.33341C6.11937 3.33341 5.00008 4.4527 5.00008 5.83342C5.00008 7.21413 6.11937 8.33342 7.50008 8.33342C8.88079 8.33342 10.0001 7.21413 10.0001 5.83342C10.0001 4.4527 8.88079 3.33341 7.50008 3.33341ZM3.33341 5.83342C3.33341 3.53223 5.19889 1.66675 7.50008 1.66675C9.80127 1.66675 11.6667 3.53223 11.6667 5.83342C11.6667 8.1346 9.80127 10.0001 7.50008 10.0001C5.19889 10.0001 3.33341 8.1346 3.33341 5.83342Z" fill="#6D28D9"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M5.83342 13.3334C5.17037 13.3334 4.53449 13.5968 4.06565 14.0656C3.59681 14.5345 3.33341 15.1704 3.33341 15.8334V17.5001C3.33341 17.9603 2.96032 18.3334 2.50008 18.3334C2.03984 18.3334 1.66675 17.9603 1.66675 17.5001V15.8334C1.66675 14.7283 2.10573 13.6685 2.88714 12.8871C3.66854 12.1057 4.72835 11.6667 5.83342 11.6667H9.16675C10.2718 11.6667 11.3316 12.1057 12.113 12.8871C12.8944 13.6685 13.3334 14.7283 13.3334 15.8334V17.5001C13.3334 17.9603 12.9603 18.3334 12.5001 18.3334C12.0398 18.3334 11.6667 17.9603 11.6667 17.5001V15.8334C11.6667 15.1704 11.4034 14.5345 10.9345 14.0656C10.4657 13.5968 9.82979 13.3334 9.16675 13.3334H5.83342Z" fill="#6D28D9"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5261 2.41029C12.6403 1.96444 13.0943 1.69555 13.5401 1.8097C14.4364 2.03918 15.2308 2.56043 15.7981 3.29128C16.3654 4.02212 16.6733 4.92098 16.6733 5.84616C16.6733 6.77134 16.3654 7.6702 15.7981 8.40105C15.2308 9.13189 14.4364 9.65314 13.5401 9.88262C13.0943 9.99678 12.6403 9.72788 12.5261 9.28203C12.412 8.83617 12.6809 8.38219 13.1267 8.26804C13.6645 8.13035 14.1411 7.8176 14.4815 7.37909C14.8219 6.94059 15.0066 6.40127 15.0066 5.84616C15.0066 5.29105 14.8219 4.75174 14.4815 4.31323C14.1411 3.87472 13.6645 3.56197 13.1267 3.42429C12.6809 3.31013 12.412 2.85615 12.5261 2.41029Z" fill="#6D28D9"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M14.1932 12.409C14.3083 11.9633 14.7628 11.6954 15.2084 11.8104C16.0988 12.0403 16.8882 12.5583 17.4535 13.2837C18.0187 14.0092 18.3281 14.9012 18.3334 15.8208L18.3334 15.8256L18.3334 17.4923C18.3334 17.9525 17.9603 18.3256 17.5001 18.3256C17.0398 18.3256 16.6667 17.9525 16.6667 17.4923V15.8282C16.6631 15.2772 16.4775 14.7428 16.1388 14.3082C15.7997 13.8729 15.326 13.5621 14.7918 13.4242C14.3461 13.3091 14.0782 12.8546 14.1932 12.409Z" fill="#6D28D9"/> </svg></span>'+
+    '<div class="nmain"><div class="ntitle">Prospect import is completed</div>'+
+    '<div class="ncontent">Your file <span title="'+esc(j.name)+'">'+esc(cut(j.name,15))+'</span> is imported'+(j.seq? ' in <span title="'+esc(SEQ.name)+'">'+esc(cut(SEQ.name,25))+'</span>':'')+
+      ' having <span>'+n(j.rows)+'</span> prospects: <span>'+n(imp)+'</span> Imported and <span>'+n(inCsv)+'</span> Failed</div>'+
+    (inCsv? '<button class="ndl" type="button" onclick="dl(\''+j.key+'\','+j.over+')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg><span>Download Failed Report</span></button>' : '')+
+    '<div class="ntime">Just now</div></div>'+
+    '<button class="nact" type="button" onclick="$(\'notif\').classList.remove(\'show\')">View List</button>';
 
   /* One toast says what happened. Amber with the download while rows are left (and Upgrade plan
      when rows are over the limit); green only when nothing is left. */

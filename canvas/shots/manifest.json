@@ -399,7 +399,7 @@
   "sec": "Import into a sequence",
   "id": "s06",
   "title": "Notifications after a sequence import",
-  "cap": "Added to the step, and how many weren’t",
+  "cap": "As production today, with the sequence named",
   "file": "s06.png",
   "phone": false,
   "page": true
@@ -453,7 +453,7 @@
   "sec": "After Import",
   "id": "a06",
   "title": "Notifications",
-  "cap": "The bell keeps the outcome and the download",
+  "cap": "As production today: title, sentence, Download Failed Report, View List",
   "file": "a06.png",
   "phone": false,
   "page": true
