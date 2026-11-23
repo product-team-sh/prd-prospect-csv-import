@@ -182,8 +182,8 @@
  {
   "sec": "Map Fields",
   "id": "m08",
-  "title": "After Import: Update All Fields",
-  "cap": "Production’s list; each option’s text shows on hover",
+  "title": "Already in your list: Replace with your file",
+  "cap": "Production’s footer; options named by outcome, each one’s text under its name",
   "file": "m08.png",
   "phone": false,
   "page": false
@@ -191,8 +191,8 @@
  {
   "sec": "Map Fields",
   "id": "m09",
-  "title": "After Import: Overwrite",
-  "cap": "Production’s list; each option’s text shows on hover",
+  "title": "Already in your list: Update filled fields only",
+  "cap": "Production’s footer; options named by outcome, each one’s text under its name",
   "file": "m09.png",
   "phone": false,
   "page": false
@@ -200,8 +200,8 @@
  {
   "sec": "Map Fields",
   "id": "m10",
-  "title": "After Import: Skip Existing Prospects",
-  "cap": "Production’s list; each option’s text shows on hover",
+  "title": "Already in your list: Leave unchanged",
+  "cap": "Production’s footer; options named by outcome, each one’s text under its name",
   "file": "m10.png",
   "phone": false,
   "page": false
@@ -254,8 +254,8 @@
  {
   "sec": "Review and Import",
   "id": "r03",
-  "title": "Already in your list: Update All Fields",
-  "cap": "The note beside Already in your list follows the option",
+  "title": "Already in your list: Replace with your file",
+  "cap": "The note beside Already in your list follows the option chosen on Map Fields",
   "file": "r03.png",
   "phone": false,
   "page": false
@@ -263,8 +263,8 @@
  {
   "sec": "Review and Import",
   "id": "r04",
-  "title": "Already in your list: Overwrite",
-  "cap": "The note beside Already in your list follows the option",
+  "title": "Already in your list: Update filled fields only",
+  "cap": "The note beside Already in your list follows the option chosen on Map Fields",
   "file": "r04.png",
   "phone": false,
   "page": false
@@ -272,8 +272,8 @@
  {
   "sec": "Review and Import",
   "id": "r05",
-  "title": "Already in your list: Skip Existing Prospects",
-  "cap": "The note beside Already in your list follows the option",
+  "title": "Already in your list: Leave unchanged",
+  "cap": "The note beside Already in your list follows the option chosen on Map Fields",
   "file": "r05.png",
   "phone": false,
   "page": false
@@ -354,7 +354,7 @@
   "sec": "Review and Import",
   "id": "r14",
   "title": "Download toast",
-  "cap": "What the file holds, right after Download",
+  "cap": "Short green toast after Download",
   "file": "r14.png",
   "phone": false,
   "page": true
@@ -534,7 +534,7 @@
   "sec": "Phone (390px)",
   "id": "p04",
   "title": "Sequence Review",
-  "cap": "Step picker above the headline",
+  "cap": "The card at phone width; counts stay on their rows",
   "file": "p04.png",
   "phone": true,
   "page": false
